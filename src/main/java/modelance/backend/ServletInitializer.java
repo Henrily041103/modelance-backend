@@ -1,4 +1,4 @@
-package com.modelance.backend;
+package modelance.backend;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

@@ -1,7 +1,7 @@
 package com.helloworld.demo.student;
 
 import java.util.concurrent.ExecutionException;
-import org.springframework.stereotype.Service;
+// import org.springframework.stereotype.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -9,7 +9,7 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 
-@Service
+// @Service
 public class StudentService {
     
     public String createStudent(Student student) throws ExecutionException, InterruptedException{
