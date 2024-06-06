@@ -2,7 +2,7 @@ package modelance.backend.model.account;
 
 import java.util.Date;
 
-public class AccountModel {
+public abstract class AccountModel {
     private String username;
     private String fullName;
     private AccountGender gender;
@@ -68,12 +68,6 @@ public class AccountModel {
         } else if (!id.equals(other.id))
             return false;
         return true;
-    }
-
-    public void createId() {
-        if (this.id.isEmpty()) {
-            this.id = username + password + email;
-        }
     }
 
     public String getUsername() {
@@ -167,5 +161,7 @@ public class AccountModel {
                 + dateOfBirth + ", password=" + password + ", id=" + id + ", email=" + email + "]";
     }
 
-    
+    public void setId(String id) {
+        this.id = id;
+    }
 }

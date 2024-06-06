@@ -2,8 +2,11 @@ package modelance.backend.controller;
 
 import java.util.concurrent.ExecutionException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
+
+import modelance.backend.config.security.TokenGenerator;
 
 import modelance.backend.model.account.AccountModel;
 import modelance.backend.service.account.AccountService;
@@ -12,14 +15,21 @@ import modelance.backend.service.account.NoAccountExistsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/account")
 public class AccountController {
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
+    private final TokenGenerator tokenGenerator;
 
-    private static class LoginRequestBody {
+    public AccountController(AccountService accountService, TokenGenerator tokenGenerator) {
+        this.accountService = accountService;
+        this.tokenGenerator = tokenGenerator;
+    }
+
+    static class LoginRequestBody {
         private String username;
         private String password;
 
@@ -30,16 +40,73 @@ public class AccountController {
         public String getPassword() {
             return password;
         }
+    }
+
+    static class LoginResponse {
+        private AccountModel account;
+        private String jwtToken;
+        private String statusMessage;
+
+        public LoginResponse() {
+            statusMessage = "Error!";
+        }
+
+        public void setAccount(AccountModel account) {
+            this.account = account;
+        }
+
+        public void setJwtToken(String jwtToken) {
+            this.jwtToken = jwtToken;
+        }
+
+        public void setStatusMessage(String statusMessage) {
+            this.statusMessage = statusMessage;
+        }
+
+        public AccountModel getAccount() {
+            return account;
+        }
+
+        public String getJwtToken() {
+            return jwtToken;
+        }
+
+        public String getStatusMessage() {
+            return statusMessage;
+        }
 
     }
 
     @PostMapping("login")
-    public String login(@RequestBody LoginRequestBody requestBody) {
+    public LoginResponse login(@RequestBody LoginRequestBody requestBody) {
+        LoginResponse response = new LoginResponse();
+        try {
+            AccountModel account = accountService.login(requestBody.getUsername(), requestBody.getPassword());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    account.getUsername(),
+                    account.getPassword());
+            String token = tokenGenerator.generateToken(authentication);
+            String message = "Success";
+            response.setAccount(account);
+            response.setJwtToken(token);
+            response.setStatusMessage(message);
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        } catch (NoAccountExistsException e1) {
+            //default state, do nothing
+        }
+
+        return response;
+    }
+
+    @GetMapping("{username}")
+    public String getMethodName(@PathVariable String username) {
         String message = "Something went wrong!";
 
         AccountModel account;
         try {
-            account = accountService.login(requestBody.getUsername(), requestBody.getPassword());
+            account = accountService.loadUserByUsername(username);
             message = account.toString();
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
             System.out.println(e.getMessage());

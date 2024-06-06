@@ -1,7 +1,6 @@
 package modelance.backend.model.account;
 
 import java.util.Date;
-
 import modelance.backend.model.work.Industry;
 import modelance.backend.model.work.Location;
 
@@ -14,7 +13,8 @@ public class ModelModel extends AccountModel {
     private int weight;
     private int height;
 
-    public ModelModel() {}
+    public ModelModel() {
+    }
 
     public ModelModel(String username, String fullName, AccountGender gender, AccountRole role, AccountStatus status,
             String avatar, Date createDate, Date dateOfBirth, String password, String id, String email,
@@ -84,5 +84,4 @@ public class ModelModel extends AccountModel {
     public void setHeight(int height) {
         this.height = height;
     }
-
 }

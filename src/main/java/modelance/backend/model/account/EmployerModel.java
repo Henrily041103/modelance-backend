@@ -1,7 +1,6 @@
 package modelance.backend.model.account;
 
 import java.util.Date;
-
 import modelance.backend.model.work.Industry;
 import modelance.backend.model.work.Location;
 
