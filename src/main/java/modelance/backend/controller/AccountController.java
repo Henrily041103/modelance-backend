@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import modelance.backend.config.security.TokenGenerator;
 
 import modelance.backend.model.account.AccountModel;
+import modelance.backend.model.account.EmployerModel;
+import modelance.backend.model.account.ModelModel;
 import modelance.backend.service.account.AccountService;
 import modelance.backend.service.account.NoAccountExistsException;
 
@@ -29,7 +31,7 @@ public class AccountController {
         this.tokenGenerator = tokenGenerator;
     }
 
-    static class LoginRequestBody {
+    static class LoginRequest {
         private String username;
         private String password;
 
@@ -78,15 +80,17 @@ public class AccountController {
     }
 
     @PostMapping("login")
-    public LoginResponse login(@RequestBody LoginRequestBody requestBody) {
+    public LoginResponse login(@RequestBody LoginRequest requestBody) {
         LoginResponse response = new LoginResponse();
         try {
             AccountModel account = accountService.login(requestBody.getUsername(), requestBody.getPassword());
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     account.getUsername(),
-                    account.getPassword());
+                    account.getPassword(),
+                    accountService.getAuthorities(account));
             String token = tokenGenerator.generateToken(authentication);
             String message = "Success";
+
             response.setAccount(account);
             response.setJwtToken(token);
             response.setStatusMessage(message);
@@ -94,26 +98,36 @@ public class AccountController {
             System.out.println(e.getMessage());
             e.printStackTrace();
         } catch (NoAccountExistsException e1) {
-            //default state, do nothing
+            // default state, do nothing
         }
 
         return response;
     }
 
-    @GetMapping("{username}")
-    public String getMethodName(@PathVariable String username) {
-        String message = "Something went wrong!";
-
-        AccountModel account;
+    @GetMapping("/model/{id}")
+    public ModelModel getModel(@PathVariable String id) {
+        ModelModel modelAccount = null;
         try {
-            account = accountService.loadUserByUsername(username);
-            message = account.toString();
+            modelAccount = accountService.loadModelModel(id);
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
 
-        return message;
+        return modelAccount;
+    }
+
+    @GetMapping("/employer/{id}")
+    public EmployerModel getEmployer(@PathVariable String id) {
+        EmployerModel employerAccount = null;
+        try {
+            employerAccount = accountService.loadEmployerModel(id);
+        } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return employerAccount;
     }
 
 }

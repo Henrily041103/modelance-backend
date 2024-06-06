@@ -15,6 +15,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.nimbusds.jose.JOSEException;
@@ -22,6 +24,8 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+
+import modelance.backend.service.account.AccountDetailService;
 
 @Configuration
 @EnableWebSecurity
@@ -53,6 +57,22 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    UserDetailsService users() {
+        return new AccountDetailService();
+    }
+
+    @Bean
+    JwtAuthenticationConverter jwtAuthenticationConverter() {
+        final JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("scope"); // defaults to "scope" or "scp"
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_"); // defaults to "SCOPE_"
+
+        final JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+        return jwtAuthenticationConverter;
+    }
+
+    @Bean
     SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 // settings
@@ -65,12 +85,18 @@ public class WebSecurityConfig {
                 // default controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/protected").authenticated())
+                        .requestMatchers("/protected").authenticated()
+                        .requestMatchers("/token").authenticated())
                 // login controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/account/login").permitAll()
-                        .requestMatchers("/account/**").authenticated());
+                        .requestMatchers("/account/model/**").hasAnyAuthority("ROLE_EMPLOYER", "ROLE_ADMIN")
+                        .requestMatchers("/account/employer/**").hasAnyAuthority("ROLE_MODEL", "ROLE_ADMIN"))
+                .logout((logout) -> logout
+                        .logoutUrl("/account/logout")
+                        .logoutSuccessUrl("/"));
 
         return http.build();
     }
+
 }

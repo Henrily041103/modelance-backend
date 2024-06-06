@@ -164,4 +164,8 @@ public abstract class AccountModel {
     public void setId(String id) {
         this.id = id;
     }
+
+    public void clone(AccountModel account) {
+        
+    }
 }

@@ -9,21 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 
 import modelance.backend.model.account.AccountModel;
-
-class AccountAuthority implements GrantedAuthority {
-
-    private String authority;
-
-    public AccountAuthority(String authority) {
-        this.authority = authority;
-    }
-
-    @Override
-    public String getAuthority() {
-        return authority;
-    }
-}
-
 public class AccountPrincipal implements UserDetails {
 
     private AccountModel account;
@@ -67,6 +52,10 @@ public class AccountPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() {
         return account.getStatus().getStatusName().toLowerCase() == "active";
+    }
+
+    public AccountModel getAccount() {
+        return account;
     }
 
 }
