@@ -90,8 +90,13 @@ public class WebSecurityConfig {
                 // login controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/account/login").permitAll()
-                        .requestMatchers("/account/model/**").hasAnyAuthority("ROLE_EMPLOYER", "ROLE_ADMIN")
-                        .requestMatchers("/account/employer/**").hasAnyAuthority("ROLE_MODEL", "ROLE_ADMIN"))
+                        .requestMatchers("/account/model/**").authenticated()
+                        .requestMatchers("/account/employer/**").authenticated())
+                // default controller
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/profile/details/**").authenticated()
+                        .requestMatchers("/profile/edit").authenticated())
+                //logout
                 .logout((logout) -> logout
                         .logoutUrl("/account/logout")
                         .logoutSuccessUrl("/"));

@@ -6,7 +6,6 @@ import modelance.backend.model.work.Location;
 
 public class EmployerModel extends AccountModel {
 
-    private String companyAddress;
     private String companyName;
     private String description;
     private Industry industry;
@@ -18,23 +17,14 @@ public class EmployerModel extends AccountModel {
 
     public EmployerModel(String username, String fullName, AccountGender gender, AccountRole role, AccountStatus status,
             String avatar, Date createDate, Date dateOfBirth, String password, String id, String email,
-            String companyAddress, String companyName, String description, Industry industry, Location location) {
+            String companyName, String description, Industry industry, Location location) {
         super(username, fullName, gender, role, status, avatar, createDate, dateOfBirth, password, id, email);
-        this.companyAddress = companyAddress;
         this.companyName = companyName;
         this.description = description;
         this.industry = industry;
         this.location = location;
     }
-
-    public String getCompanyAddress() {
-        return companyAddress;
-    }
-
-    public void setCompanyAddress(String companyAddress) {
-        this.companyAddress = companyAddress;
-    }
-
+    
     public String getCompanyName() {
         return companyName;
     }

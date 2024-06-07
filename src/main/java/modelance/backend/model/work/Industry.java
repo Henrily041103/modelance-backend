@@ -3,6 +3,9 @@ package modelance.backend.model.work;
 public class Industry {
     private String id;
     private String industryName;
+    
+    public Industry() {
+    }
     public Industry(String id, String industryName) {
         this.id = id;
         this.industryName = industryName;

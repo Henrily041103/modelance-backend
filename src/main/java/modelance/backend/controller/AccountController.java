@@ -7,8 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
 import modelance.backend.config.security.TokenGenerator;
-
-import modelance.backend.model.account.AccountModel;
+import modelance.backend.dto.AccountDTO;
 import modelance.backend.model.account.EmployerModel;
 import modelance.backend.model.account.ModelModel;
 import modelance.backend.service.account.AccountService;
@@ -45,7 +44,7 @@ public class AccountController {
     }
 
     static class LoginResponse {
-        private AccountModel account;
+        private AccountDTO accountDTO;
         private String jwtToken;
         private String statusMessage;
 
@@ -53,8 +52,8 @@ public class AccountController {
             statusMessage = "Error!";
         }
 
-        public void setAccount(AccountModel account) {
-            this.account = account;
+        public void setAccount(AccountDTO accountDTO) {
+            this.accountDTO = accountDTO;
         }
 
         public void setJwtToken(String jwtToken) {
@@ -65,8 +64,8 @@ public class AccountController {
             this.statusMessage = statusMessage;
         }
 
-        public AccountModel getAccount() {
-            return account;
+        public AccountDTO getAccount() {
+            return accountDTO;
         }
 
         public String getJwtToken() {
@@ -83,15 +82,14 @@ public class AccountController {
     public LoginResponse login(@RequestBody LoginRequest requestBody) {
         LoginResponse response = new LoginResponse();
         try {
-            AccountModel account = accountService.login(requestBody.getUsername(), requestBody.getPassword());
+            AccountDTO accDTO = accountService.login(requestBody.getUsername(), requestBody.getPassword());
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    account.getUsername(),
-                    account.getPassword(),
-                    accountService.getAuthorities(account));
+                accDTO.getUsername(),
+                accDTO.getPassword(),
+                accountService.getAuthorities(accDTO));
             String token = tokenGenerator.generateToken(authentication);
             String message = "Success";
-
-            response.setAccount(account);
+            response.setAccount(accDTO);
             response.setJwtToken(token);
             response.setStatusMessage(message);
         } catch (InterruptedException | ExecutionException e) {
@@ -100,7 +98,6 @@ public class AccountController {
         } catch (NoAccountExistsException e1) {
             // default state, do nothing
         }
-
         return response;
     }
 
@@ -113,7 +110,6 @@ public class AccountController {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
         return modelAccount;
     }
 
@@ -126,7 +122,6 @@ public class AccountController {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
         return employerAccount;
     }
 

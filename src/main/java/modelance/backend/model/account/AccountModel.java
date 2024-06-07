@@ -2,7 +2,7 @@ package modelance.backend.model.account;
 
 import java.util.Date;
 
-public abstract class AccountModel {
+public class AccountModel {
     private String username;
     private String fullName;
     private AccountGender gender;
