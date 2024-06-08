@@ -1,11 +1,14 @@
 package modelance.backend.controller.account;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import modelance.backend.config.security.TokenGenerator;
 import modelance.backend.dto.AccountDTO;
@@ -18,6 +21,7 @@ import modelance.backend.service.account.NoAccountExistsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -108,6 +112,22 @@ public class AccountController {
         }
 
         return response;
+    }
+
+    @PostMapping(path = "avatar", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public String[] postMethodName(
+            @RequestParam("name") String name,
+            @RequestParam("file") MultipartFile file,
+            Authentication authentication) {
+        String test = "nah";
+
+        try {
+            test = accountService.uploadAvatar(file, authentication);
+        } catch (IOException | NoAccountExistsException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return new String[] { test, name };
     }
 
     @GetMapping("/model/{id}")

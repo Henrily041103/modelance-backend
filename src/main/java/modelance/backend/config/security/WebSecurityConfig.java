@@ -88,7 +88,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/account/register").permitAll()
                         .requestMatchers("/account/model/**").authenticated()
                         .requestMatchers("/account/employer/**").authenticated()
-                        .requestMatchers("/account/password/change").authenticated())
+                        .requestMatchers("/account/password/change").authenticated()
+                        .requestMatchers("/account/avatar").authenticated())
                 // profile controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/profile/details/**").authenticated()

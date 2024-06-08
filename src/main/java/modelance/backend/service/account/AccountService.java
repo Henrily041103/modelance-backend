@@ -1,21 +1,26 @@
 package modelance.backend.service.account;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.firebase.cloud.StorageClient;
+
 import modelance.backend.model.account.AccountModel;
 import modelance.backend.model.account.AccountRole;
 import modelance.backend.model.account.AccountStatus;
@@ -26,9 +31,11 @@ import modelance.backend.config.security.AccountAuthority;
 @Service
 public class AccountService {
     private Firestore firestore;
+    private StorageClient storageClient;
 
     public AccountService() {
         this.firestore = FirestoreClient.getFirestore();
+        this.storageClient = StorageClient.getInstance();
     }
 
     public List<AccountAuthority> getAuthorities(AccountModel account) {
@@ -218,5 +225,34 @@ public class AccountService {
             }
         }
         return employerModel;
+    }
+
+    public String uploadAvatar(MultipartFile file, Authentication authentication)
+            throws IOException, NoAccountExistsException, InterruptedException, ExecutionException {
+        String userId = authentication.getName();
+        String filename = file.getOriginalFilename();
+        String filetype = filename.substring(filename.lastIndexOf(".") + 1);
+        String filepath = "avatar/" + userId + "." + filetype;
+
+        Bucket bucket = storageClient.bucket();
+
+        bucket.create(filepath, file.getInputStream());
+
+        String url = "https://firebasestorage.googleapis.com/v0/b/modelance-84abf.appspot.com/o/avatar%2F"
+                + userId + "."
+                + filetype
+                + "?alt=media";
+
+        DocumentSnapshot documentSnap = firestore.collection("Account").document(userId).get().get();
+        if (documentSnap.exists()) {
+            try {
+                firestore.collection("Account").document(userId).update("avatar", url);
+
+            } catch (ClassCastException | NullPointerException e) {
+                throw new NoAccountExistsException();
+            }
+        }
+
+        return url;
     }
 }

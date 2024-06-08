@@ -26,6 +26,7 @@ public class ModelJobService {
         this.firestore = FirestoreClient.getFirestore();
     }
 
+    @SuppressWarnings("null")
     public ArrayList<JobDTO> getJobListService() throws ExecutionException, InterruptedException {
         ArrayList<JobDTO> jobList = new ArrayList<>();
         ApiFuture<QuerySnapshot> future = firestore.collection("Job").get();
@@ -47,6 +48,7 @@ public class ModelJobService {
         return jobList;
     }
 
+    @SuppressWarnings("null")
     public JobDTO getJobsById(String id) throws ExecutionException, InterruptedException {
         JobDTO jobDTO = new JobDTO();
         DocumentReference docRef = firestore.collection("Job").document(id.trim());
