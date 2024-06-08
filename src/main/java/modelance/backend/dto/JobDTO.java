@@ -112,4 +112,19 @@ public class JobDTO {
         this.status = status;
     }
 
+    // {
+    //     "title": "Hand model job",
+    //     "payment": 50000000,
+    //     "imageURL": [
+    //         ""
+    //     ],
+    //     "category": "2",
+    //     "employer": {
+    //         "id": "YIkgMPNSJoecrgOo3tsn"
+    //     },
+    //     "startDate": "2024-07-24T17:00:00.912+00:00",
+    //     "endDate": "2024-07-25T17:00:00.436+00:00",
+    //     "jobDescription": " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio."
+    // }
+
 }

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.annotation.Exclude;
 
 public class JobModel {
-    private String id;
     private String title;
     private ArrayList<String> imageURL;
     private String jobDescription;
@@ -16,6 +16,7 @@ public class JobModel {
     private DocumentReference status;
     private DocumentReference category;
     private DocumentReference employer;
+    private String id;
 
     public JobModel() {
     }
@@ -33,7 +34,8 @@ public class JobModel {
         this.category = category;
         this.employer = employer;
     }
-
+    
+    @Exclude
     public String getId() {
         return id;
     }

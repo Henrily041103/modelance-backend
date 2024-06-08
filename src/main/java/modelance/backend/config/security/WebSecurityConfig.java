@@ -97,6 +97,14 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/job/all").authenticated()
                         .requestMatchers("/job/details/**").authenticated())
+                // employer job management controller
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/jobmanager/create").authenticated()
+                        .requestMatchers("/jobmanager/**").authenticated()
+                        .requestMatchers("/jobmanager/details/**").authenticated()
+                        .requestMatchers("/jobmanager/finish/**").authenticated()
+                        .requestMatchers("/jobmanager/cancel/**").authenticated()
+                        .requestMatchers("/jobmanager/close/**").authenticated())
                 // logout
                 .logout((logout) -> logout
                         .logoutUrl("/account/logout")
