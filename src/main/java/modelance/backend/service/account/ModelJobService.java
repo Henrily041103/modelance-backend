@@ -11,7 +11,6 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
-
 import modelance.backend.dto.EmployerDTO;
 import modelance.backend.dto.JobDTO;
 import modelance.backend.model.account.EmployerModel;
@@ -20,10 +19,10 @@ import modelance.backend.model.work.JobModel;
 import modelance.backend.model.work.JobStatusModel;
 
 @Service
-public class JobService {
+public class ModelJobService {
     private Firestore firestore;
 
-    public JobService() {
+    public ModelJobService() {
         this.firestore = FirestoreClient.getFirestore();
     }
 
@@ -41,8 +40,7 @@ public class JobService {
             jobDTO.setId(jobModel.getId());
             jobDTO.setTitle(jobModel.getTitle());
             jobDTO.setImageURL(jobModel.getImageURL());
-            if (categoriesModel != null)
-                jobDTO.setCategory(categoriesModel.getCategoryName());
+            jobDTO.setCategory(categoriesModel.getCategoryName());
             jobDTO.setPayment(jobModel.getPayment());
             jobList.add(jobDTO);
         }
@@ -56,7 +54,6 @@ public class JobService {
         DocumentSnapshot docSnap = future.get();
         if (docSnap.exists()) {
             JobModel jobModel = docSnap.toObject(JobModel.class);
-            if (jobModel == null) return jobDTO;
             jobDTO.setId(jobModel.getId());
             jobDTO.setTitle(jobModel.getTitle());
             jobDTO.setPayment(jobModel.getPayment());
@@ -67,10 +64,7 @@ public class JobService {
 
             // Get category
             DocumentSnapshot cateSnap = jobModel.getCategory().get().get();
-            System.out.println("\n");
-            System.out.println(cateSnap);
             JobCategoriesModel categoriesModel = cateSnap.toObject(JobCategoriesModel.class);
-            if (categoriesModel == null) return jobDTO; 
             jobDTO.setCategory(categoriesModel.getCategoryName());
 
             // Get employer
@@ -78,9 +72,7 @@ public class JobService {
             System.out.println("\n");
             System.out.println(empSnap);
             EmployerModel empModel = empSnap.toObject(EmployerModel.class);
-
             EmployerDTO empDTO = new EmployerDTO();
-            if (empModel == null) return jobDTO; 
             empDTO.setId(empModel.getId());
             empDTO.setFullName(empModel.getFullName());
             empDTO.setAvatar(empModel.getAvatar());
@@ -88,8 +80,6 @@ public class JobService {
 
             // Get status
             DocumentSnapshot statSnap = jobModel.getStatus().get().get();
-            System.out.println("\n");
-            System.out.println(statSnap);
             JobStatusModel statModel = statSnap.toObject(JobStatusModel.class);
             if (statModel == null) return jobDTO; 
             jobDTO.setStatus(statModel.getStatusName());
