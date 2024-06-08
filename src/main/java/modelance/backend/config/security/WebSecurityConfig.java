@@ -92,11 +92,15 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/account/login").permitAll()
                         .requestMatchers("/account/model/**").authenticated()
                         .requestMatchers("/account/employer/**").authenticated())
-                // default controller
+                // profile controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/profile/details/**").authenticated()
                         .requestMatchers("/profile/edit").authenticated())
-                //logout
+                // model's view job controller
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/job/all").authenticated()
+                        .requestMatchers("/job").authenticated())
+                // logout
                 .logout((logout) -> logout
                         .logoutUrl("/account/logout")
                         .logoutSuccessUrl("/"));

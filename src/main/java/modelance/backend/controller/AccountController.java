@@ -84,9 +84,9 @@ public class AccountController {
         try {
             AccountDTO accDTO = accountService.login(requestBody.getUsername(), requestBody.getPassword());
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                accDTO.getUsername(),
-                accDTO.getPassword(),
-                accountService.getAuthorities(accDTO));
+                    accDTO.getUsername(),
+                    accDTO.getPassword(),
+                    accountService.getAuthorities(accDTO));
             String token = tokenGenerator.generateToken(authentication);
             String message = "Success";
             response.setAccount(accDTO);
