@@ -1,5 +1,6 @@
-package modelance.backend.controller;
+package modelance.backend.controller.account;
 
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,61 +32,13 @@ public class AccountController {
         this.tokenGenerator = tokenGenerator;
     }
 
-    static class LoginRequest {
-        private String username;
-        private String password;
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-    }
-
-    static class LoginResponse {
-        private AccountModel account;
-        private String jwtToken;
-        private String statusMessage;
-
-        public LoginResponse() {
-            statusMessage = "Error!";
-        }
-
-        public void setAccount(AccountModel account) {
-            this.account = account;
-        }
-
-        public void setJwtToken(String jwtToken) {
-            this.jwtToken = jwtToken;
-        }
-
-        public void setStatusMessage(String statusMessage) {
-            this.statusMessage = statusMessage;
-        }
-
-        public AccountModel getAccount() {
-            return account;
-        }
-
-        public String getJwtToken() {
-            return jwtToken;
-        }
-
-        public String getStatusMessage() {
-            return statusMessage;
-        }
-
-    }
-
     @PostMapping("login")
     public LoginResponse login(@RequestBody LoginRequest requestBody) {
         LoginResponse response = new LoginResponse();
         try {
             AccountModel account = accountService.login(requestBody.getUsername(), requestBody.getPassword());
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    account.getUsername(),
+                    account.getId(),
                     account.getPassword(),
                     accountService.getAuthorities(account));
             String token = tokenGenerator.generateToken(authentication);
@@ -99,6 +52,56 @@ public class AccountController {
             e.printStackTrace();
         } catch (NoAccountExistsException e1) {
             // default state, do nothing
+        }
+
+        return response;
+    }
+
+    @PostMapping("register")
+    public RegisterResponse register(@RequestBody RegisterRequest request) {
+        RegisterResponse response = new RegisterResponse();
+        response.setMessage("failed");
+
+        try {
+            AccountModel account = accountService.register(request.getUsername(), request.getPassword(),
+                    request.getEmail(), request.getRole());
+            response.setAccount(account);
+            if (account != null)
+                response.setMessage("success");
+        } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+    @PostMapping("password/change")
+    public ChangePasswordResponse changePassword(
+            @RequestBody ChangePasswordRequest request,
+            Authentication authentication) {
+        ChangePasswordResponse response = new ChangePasswordResponse();
+        response.setResult(false);
+        try {
+            response.setResult(
+                    accountService.changePassword(request.getOldPassword(), request.getNewPassword(), authentication));
+        } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+    @PostMapping("change")
+    public ChangeAccountDataResponse changeAccountData(
+            @RequestBody Map<String, Object> updates,
+            Authentication authentication) {
+        ChangeAccountDataResponse response = new ChangeAccountDataResponse();
+        response.setResult(false);
+
+        try {
+            response.setResult(accountService.changeAccountData(updates, authentication));
+        } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
+            e.printStackTrace();
         }
 
         return response;

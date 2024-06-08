@@ -50,15 +50,15 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    UserDetailsService users() {
+        return new AccountDetailService();
+    }
+
+    @Bean
     AuthenticationManager accountAuthenticationManager(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         return new ProviderManager(authenticationProvider);
-    }
-
-    @Bean
-    UserDetailsService users() {
-        return new AccountDetailService();
     }
 
     @Bean
@@ -82,16 +82,13 @@ public class WebSecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(Customizer.withDefaults()))
-                // default controller
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/protected").authenticated()
-                        .requestMatchers("/token").authenticated())
-                // login controller
+                // account controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/account/login").permitAll()
-                        .requestMatchers("/account/model/**").hasAnyAuthority("ROLE_EMPLOYER", "ROLE_ADMIN")
-                        .requestMatchers("/account/employer/**").hasAnyAuthority("ROLE_MODEL", "ROLE_ADMIN"))
+                        .requestMatchers("/account/register").permitAll()
+                        .requestMatchers("/account/model/**").authenticated()
+                        .requestMatchers("/account/employer/**").authenticated()
+                        .requestMatchers("/account/password/change").authenticated())
                 .logout((logout) -> logout
                         .logoutUrl("/account/logout")
                         .logoutSuccessUrl("/"));

@@ -31,7 +31,7 @@ public class AccountPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return account.getUsername();
+        return account.getId();
     }
 
     @Override

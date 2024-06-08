@@ -2,7 +2,11 @@ package modelance.backend.model.account;
 
 import java.util.Date;
 
-public abstract class AccountModel {
+import com.google.cloud.firestore.annotation.Exclude;
+import com.google.cloud.firestore.annotation.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
+public class AccountModel {
     private String username;
     private String fullName;
     private AccountGender gender;
@@ -12,6 +16,7 @@ public abstract class AccountModel {
     private Date createDate;
     private Date dateOfBirth;
     private String password;
+    @Exclude
     private String id;
     private String email;
 
@@ -43,6 +48,10 @@ public abstract class AccountModel {
     public AccountModel(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public AccountModel(String id) {
+        this.id = id;
     }
 
     @Override
@@ -150,6 +159,7 @@ public abstract class AccountModel {
         this.email = email;
     }
 
+    @Exclude
     public String getId() {
         return id;
     }
@@ -163,9 +173,5 @@ public abstract class AccountModel {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public void clone(AccountModel account) {
-        
     }
 }
