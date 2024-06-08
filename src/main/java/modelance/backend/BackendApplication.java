@@ -24,6 +24,7 @@ public class BackendApplication {
 			InputStream serviceAccount = new FileInputStream("./serviceAccount.json");
 			FirebaseOptions options = FirebaseOptions.builder()
 					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+					.setStorageBucket("modelance-84abf.appspot.com")
 					.build();
 
 			FirebaseApp.initializeApp(options);
