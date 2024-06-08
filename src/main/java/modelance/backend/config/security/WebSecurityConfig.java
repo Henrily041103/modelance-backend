@@ -99,7 +99,7 @@ public class WebSecurityConfig {
                 // model's view job controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/job/all").authenticated()
-                        .requestMatchers("/job").authenticated())
+                        .requestMatchers("/job/details/**").authenticated())
                 // logout
                 .logout((logout) -> logout
                         .logoutUrl("/account/logout")

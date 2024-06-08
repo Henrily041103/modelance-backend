@@ -6,20 +6,27 @@ import modelance.backend.service.account.JobService;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 
 @RestController
 @RequestMapping("/job")
-public class JobController {
+public class ModelJobController {
     private final JobService jobService;
 
-    public JobController(JobService jobService) {
+    public ModelJobController(JobService jobService) {
         this.jobService = jobService;
     }
 
     @GetMapping("/all")
     public ArrayList<JobDTO> getAllJobs() throws ExecutionException, InterruptedException {
         return jobService.getJobListService();
+    }
+
+    @GetMapping("/details/{id}")
+    public JobDTO getJobDetails(@PathVariable String id) throws InterruptedException, ExecutionException {
+        return jobService.getJobsById(id);
     }
 
 }

@@ -1,6 +1,7 @@
 package modelance.backend.dto;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class JobDTO {
     private String id;
@@ -8,16 +9,35 @@ public class JobDTO {
     private Long payment;
     private ArrayList<String> imageURL;
     private String category;
-    
-    public JobDTO(String id, String title, Long payment, ArrayList<String> imageURL, String category) {
+    private EmployerDTO employer;
+    private Date startDate;
+    private Date endDate;
+    private String jobDescription;
+    private String status;
+
+    public JobDTO(String id, String title, Long payment, ArrayList<String> imageURL, String category, EmployerDTO employer,
+            Date startDate, Date endDate, String jobDescription, String status) {
         this.id = id;
         this.title = title;
         this.payment = payment;
         this.imageURL = imageURL;
         this.category = category;
+        this.employer = employer;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.jobDescription = jobDescription;
+        this.status = status;
     }
 
     public JobDTO() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -52,12 +72,44 @@ public class JobDTO {
         this.category = category;
     }
 
-    public String getId() {
-        return id;
+    public EmployerDTO getEmployer() {
+        return employer;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setEmployer(EmployerDTO employer) {
+        this.employer = employer;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getJobDescription() {
+        return jobDescription;
+    }
+
+    public void setJobDescription(String jobDescription) {
+        this.jobDescription = jobDescription;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }
