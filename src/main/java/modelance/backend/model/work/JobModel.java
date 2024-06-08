@@ -34,7 +34,7 @@ public class JobModel {
         this.category = category;
         this.employer = employer;
     }
-
+    
     @Exclude
     public String getId() {
         return id;

@@ -100,7 +100,7 @@ public class WebSecurityConfig {
                 // employer job management controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/jobmanager/create").authenticated()
-                        .requestMatchers("/jobmanager/posted").authenticated()
+                        .requestMatchers("/jobmanager/**").authenticated()
                         .requestMatchers("/jobmanager/details/**").authenticated()
                         .requestMatchers("/jobmanager/finish/**").authenticated()
                         .requestMatchers("/jobmanager/cancel/**").authenticated()

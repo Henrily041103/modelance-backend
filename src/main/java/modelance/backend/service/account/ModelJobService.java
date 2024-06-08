@@ -69,8 +69,6 @@ public class ModelJobService {
 
             // Get employer
             DocumentSnapshot empSnap = jobModel.getEmployer().get().get();
-            System.out.println("\n");
-            System.out.println(empSnap);
             EmployerModel empModel = empSnap.toObject(EmployerModel.class);
             EmployerDTO empDTO = new EmployerDTO();
             empDTO.setId(empModel.getId());
@@ -81,7 +79,6 @@ public class ModelJobService {
             // Get status
             DocumentSnapshot statSnap = jobModel.getStatus().get().get();
             JobStatusModel statModel = statSnap.toObject(JobStatusModel.class);
-            if (statModel == null) return jobDTO; 
             jobDTO.setStatus(statModel.getStatusName());
         }
         return jobDTO;

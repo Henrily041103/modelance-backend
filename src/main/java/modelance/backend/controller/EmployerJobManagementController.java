@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 import modelance.backend.dto.JobDTO;
 import modelance.backend.service.account.EmployerJobManagementService;
 import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,14 +26,14 @@ public class EmployerJobManagementController {
         return jobService.createNewJob(jobDTO);
     }
     
-    @GetMapping("/posted")
-    public String getAllPostedJob() {
-        return new String();
+    @GetMapping("/{id}")
+    public ArrayList<JobDTO> getAllPostedJob(@PathVariable String id) throws ExecutionException, InterruptedException {
+        return jobService.getAllPostedJob(id);
     }
     
     @GetMapping("/details/{id}")
-    public String getPostedJobDetails(@PathVariable String id) {
-        return new String();
+    public JobDTO getPostedJobDetails(@PathVariable String id) throws InterruptedException, ExecutionException {
+        return jobService.getPostedJobDetails(id);
     }
 
     @PutMapping("/finish/{id}")
