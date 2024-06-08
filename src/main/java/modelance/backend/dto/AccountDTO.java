@@ -1,25 +1,32 @@
 package modelance.backend.dto;
 
+import modelance.backend.model.account.AccountModel;
 import modelance.backend.model.account.AccountRole;
 
 public class AccountDTO {
     private String id;
     private String username;
-    private String password;
     private String fullName;
     private AccountRole role;
     private String avatar;
 
-    public AccountDTO(String id, String username, String password, String fullName, AccountRole role, String avatar) {
+    public AccountDTO(String id, String username, String fullName, AccountRole role, String avatar) {
         this.id = id;
         this.username = username;
-        this.password = password;
         this.fullName = fullName;
         this.role = role;
         this.avatar = avatar;
     }
 
     public AccountDTO() {
+    }
+
+    public AccountDTO(AccountModel model) {
+        this.id = model.getId();
+        this.username = model.getUsername();
+        this.fullName = model.getFullName();
+        this.role = model.getRole();
+        this.avatar = model.getAvatar();
     }
 
     public String getId() {
@@ -60,14 +67,6 @@ public class AccountDTO {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
 }

@@ -41,7 +41,8 @@ public class JobService {
             jobDTO.setId(jobModel.getId());
             jobDTO.setTitle(jobModel.getTitle());
             jobDTO.setImageURL(jobModel.getImageURL());
-            jobDTO.setCategory(categoriesModel.getCategoryName());
+            if (categoriesModel != null)
+                jobDTO.setCategory(categoriesModel.getCategoryName());
             jobDTO.setPayment(jobModel.getPayment());
             jobList.add(jobDTO);
         }
@@ -55,6 +56,7 @@ public class JobService {
         DocumentSnapshot docSnap = future.get();
         if (docSnap.exists()) {
             JobModel jobModel = docSnap.toObject(JobModel.class);
+            if (jobModel == null) return jobDTO;
             jobDTO.setId(jobModel.getId());
             jobDTO.setTitle(jobModel.getTitle());
             jobDTO.setPayment(jobModel.getPayment());
@@ -63,30 +65,33 @@ public class JobService {
             jobDTO.setEndDate(jobModel.getEndDate());
             jobDTO.setJobDescription(jobModel.getJobDescription());
 
-            //Get category
+            // Get category
             DocumentSnapshot cateSnap = jobModel.getCategory().get().get();
             System.out.println("\n");
             System.out.println(cateSnap);
             JobCategoriesModel categoriesModel = cateSnap.toObject(JobCategoriesModel.class);
+            if (categoriesModel == null) return jobDTO; 
             jobDTO.setCategory(categoriesModel.getCategoryName());
 
-            //Get employer
+            // Get employer
             DocumentSnapshot empSnap = jobModel.getEmployer().get().get();
             System.out.println("\n");
             System.out.println(empSnap);
             EmployerModel empModel = empSnap.toObject(EmployerModel.class);
 
             EmployerDTO empDTO = new EmployerDTO();
+            if (empModel == null) return jobDTO; 
             empDTO.setId(empModel.getId());
             empDTO.setFullName(empModel.getFullName());
             empDTO.setAvatar(empModel.getAvatar());
             jobDTO.setEmployer(empDTO);
 
-            //Get status
+            // Get status
             DocumentSnapshot statSnap = jobModel.getStatus().get().get();
             System.out.println("\n");
-            System.out.println(statSnap);   
+            System.out.println(statSnap);
             JobStatusModel statModel = statSnap.toObject(JobStatusModel.class);
+            if (statModel == null) return jobDTO; 
             jobDTO.setStatus(statModel.getStatusName());
         }
         return jobDTO;
