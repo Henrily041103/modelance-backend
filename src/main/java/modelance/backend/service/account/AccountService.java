@@ -9,7 +9,6 @@ import java.util.concurrent.ExecutionException;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -17,13 +16,12 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
-
 import modelance.backend.model.account.AccountModel;
 import modelance.backend.model.account.AccountRole;
 import modelance.backend.model.account.AccountStatus;
 import modelance.backend.model.account.EmployerModel;
 import modelance.backend.model.account.ModelModel;
-import modelance.backend.config.security.AccountAuthority;;
+import modelance.backend.config.security.AccountAuthority;
 
 @Service
 public class AccountService {
@@ -46,23 +44,18 @@ public class AccountService {
             case "employer":
                 authorities.add(new AccountAuthority("EMPLOYER"));
                 break;
-
         }
-
         return authorities;
     }
 
     public AccountModel login(String username, String password)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
         AccountModel account = null;
-
         if (username.trim() != "" && password.trim() != "") {
             ApiFuture<QuerySnapshot> readAccountQuery = firestore.collection("Account")
                     .whereEqualTo("username", username).whereEqualTo("password", password)
                     .get();
-
             List<QueryDocumentSnapshot> matchedAccount = readAccountQuery.get().getDocuments();
-
             if (matchedAccount.size() == 0) {
                 throw new NoAccountExistsException();
             }
@@ -148,7 +141,7 @@ public class AccountService {
 
                 firestore.collection("Account").document(userId).update(checkedUpdates);
                 result = true;
-                
+
             } catch (ClassCastException | NullPointerException e) {
                 throw new NoAccountExistsException();
             }
@@ -160,24 +153,70 @@ public class AccountService {
     public ModelModel loadModelModel(String id)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
         ModelModel account = null;
-
         if (id.trim() != "") {
-            // DocumentReference modelDoc
-
+            Firestore dbFirestore = FirestoreClient.getFirestore();
+            // Model
+            DocumentReference docRef = dbFirestore.collection("Model").document(id);
+            ApiFuture<DocumentSnapshot> future = docRef.get();
+            DocumentSnapshot docSnap = future.get();
+            if (docSnap.exists()) {
+                account = docSnap.toObject(ModelModel.class);
+            }
+            // Account
+            DocumentReference docAccRef = dbFirestore.collection("Account").document(id);
+            ApiFuture<DocumentSnapshot> accfuture = docAccRef.get();
+            DocumentSnapshot accDocSnap = accfuture.get();
+            if (accDocSnap.exists()) {
+                AccountModel acc = accDocSnap.toObject(AccountModel.class);
+                if (account != null && acc != null) {
+                    account.setId(id);
+                    account.setAvatar(acc.getAvatar());
+                    account.setCreateDate(acc.getCreateDate());
+                    account.setDateOfBirth(acc.getDateOfBirth());
+                    account.setEmail(acc.getEmail());
+                    account.setFullName(acc.getFullName());
+                    account.setGender(acc.getGender());
+                    account.setRole(acc.getRole());
+                    account.setStatus(acc.getStatus());
+                    account.setUsername(acc.getUsername());
+                }
+            }
         }
-
         return account;
     }
 
     public EmployerModel loadEmployerModel(String id)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
-        EmployerModel account = null;
-
+        EmployerModel employerModel = null;
         if (id.trim() != "") {
-            // DocumentReference modelDoc
-
+            // Employer
+            Firestore dbFirestore = FirestoreClient.getFirestore();
+            DocumentReference docRef = dbFirestore.collection("Employer").document(id);
+            ApiFuture<DocumentSnapshot> future = docRef.get();
+            DocumentSnapshot docSnap = future.get();
+            if (docSnap.exists()) {
+                employerModel = docSnap.toObject(EmployerModel.class);
+            }
+            // Account
+            DocumentReference docAccRef = dbFirestore.collection("Account").document(id);
+            ApiFuture<DocumentSnapshot> accfuture = docAccRef.get();
+            DocumentSnapshot accDocSnap = accfuture.get();
+            if (accDocSnap.exists()) {
+                AccountModel acc = accDocSnap.toObject(AccountModel.class);
+                if (acc != null && employerModel != null) {
+                    employerModel.setId(id);
+                    employerModel.setAvatar(acc.getAvatar());
+                    employerModel.setCreateDate(acc.getCreateDate());
+                    employerModel.setDateOfBirth(acc.getDateOfBirth());
+                    employerModel.setEmail(acc.getEmail());
+                    employerModel.setFullName(acc.getFullName());
+                    employerModel.setGender(acc.getGender());
+                    employerModel.setRole(acc.getRole());
+                    employerModel.setStatus(acc.getStatus());
+                    employerModel.setUsername(acc.getUsername());
+                }
+            }
         }
-
-        return account;
+        return employerModel;
     }
 }

@@ -1,0 +1,11 @@
+To do list:
+*Model:
+Return a Model details
+- Return a list of Job
+- Return a list of Portfolio of a Model
+- Return a gallery of a Model
+
+*Employer:
+Return an Employer details
+- Return a list of Model
+- Return a list of posted Jobs

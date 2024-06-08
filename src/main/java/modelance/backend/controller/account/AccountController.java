@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
 import modelance.backend.config.security.TokenGenerator;
-
+import modelance.backend.dto.AccountDTO;
 import modelance.backend.model.account.AccountModel;
 import modelance.backend.model.account.EmployerModel;
 import modelance.backend.model.account.ModelModel;
@@ -44,7 +44,9 @@ public class AccountController {
             String token = tokenGenerator.generateToken(authentication);
             String message = "Success";
 
-            response.setAccount(account);
+            AccountDTO accDTO = new AccountDTO(account);
+
+            response.setAccount(accDTO);
             response.setJwtToken(token);
             response.setStatusMessage(message);
         } catch (InterruptedException | ExecutionException e) {
@@ -53,7 +55,6 @@ public class AccountController {
         } catch (NoAccountExistsException e1) {
             // default state, do nothing
         }
-
         return response;
     }
 
@@ -65,7 +66,9 @@ public class AccountController {
         try {
             AccountModel account = accountService.register(request.getUsername(), request.getPassword(),
                     request.getEmail(), request.getRole());
-            response.setAccount(account);
+
+            AccountDTO accDTO = new AccountDTO(account);
+            response.setAccount(accDTO);
             if (account != null)
                 response.setMessage("success");
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
@@ -116,7 +119,6 @@ public class AccountController {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
         return modelAccount;
     }
 
@@ -129,7 +131,6 @@ public class AccountController {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
         return employerAccount;
     }
 

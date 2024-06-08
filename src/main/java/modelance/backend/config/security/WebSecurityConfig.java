@@ -89,6 +89,15 @@ public class WebSecurityConfig {
                         .requestMatchers("/account/model/**").authenticated()
                         .requestMatchers("/account/employer/**").authenticated()
                         .requestMatchers("/account/password/change").authenticated())
+                // profile controller
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/profile/details/**").authenticated()
+                        .requestMatchers("/profile/edit").authenticated())
+                // model's view job controller
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/job/all").authenticated()
+                        .requestMatchers("/job/details/**").authenticated())
+                // logout
                 .logout((logout) -> logout
                         .logoutUrl("/account/logout")
                         .logoutSuccessUrl("/"));

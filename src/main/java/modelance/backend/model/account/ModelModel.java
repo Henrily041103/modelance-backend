@@ -1,10 +1,11 @@
 package modelance.backend.model.account;
 
 import java.util.Date;
+
 import modelance.backend.model.work.Industry;
 import modelance.backend.model.work.Location;
 
-public class ModelModel extends AccountModel {
+public class ModelModel extends AccountModel{
     private Industry industry;
     private Location location;
     private int bust;
@@ -15,6 +16,8 @@ public class ModelModel extends AccountModel {
 
     public ModelModel() {
     }
+
+    
 
     public ModelModel(String username, String fullName, AccountGender gender, AccountRole role, AccountStatus status,
             String avatar, Date createDate, Date dateOfBirth, String password, String id, String email,
