@@ -115,19 +115,21 @@ public class AccountController {
     }
 
     @PostMapping(path = "avatar", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public String[] postMethodName(
-            @RequestParam("name") String name,
+    public ChangeAvatarResponse changeAvatar(
             @RequestParam("file") MultipartFile file,
             Authentication authentication) {
-        String test = "nah";
-
+        ChangeAvatarResponse response = new ChangeAvatarResponse();
+        response.setMessage("failed");
         try {
-            test = accountService.uploadAvatar(file, authentication);
+            String url = accountService.uploadAvatar(file, authentication);
+            if (url != null && url.trim() != "") {
+                response.setMessage("success");
+                response.setUrl(url);
+            }
         } catch (IOException | NoAccountExistsException | InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-
-        return new String[] { test, name };
+        return response;
     }
 
     @GetMapping("/model/{id}")
