@@ -107,6 +107,10 @@ public class WebSecurityConfig {
                         .requestMatchers("/jobmanager/finish/**").authenticated()
                         .requestMatchers("/jobmanager/cancel/**").authenticated()
                         .requestMatchers("/jobmanager/close/**").authenticated())
+                // employer contract management controller
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/contract/**").authenticated()
+                        .requestMatchers("/contract/add").authenticated())
                 // logout
                 .logout((logout) -> logout
                         .logoutUrl("/account/logout")

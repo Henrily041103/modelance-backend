@@ -10,14 +10,14 @@ public class ContractDTO {
     private long payment;
     private Date startTime;
     private Date endTime;
-    private String job;
+    private JobDTO job;
     private String status;
 
     public ContractDTO() {
     }
 
     public ContractDTO(ArrayList<String> employerTerms, ArrayList<String> modelTerms, ModelDTO model, long payment,
-            Date startTime, Date endTime, String job, String status) {
+            Date startTime, Date endTime, JobDTO job, String status) {
         this.employerTerms = employerTerms;
         this.modelTerms = modelTerms;
         this.model = model;
@@ -76,11 +76,11 @@ public class ContractDTO {
         this.endTime = endTime;
     }
 
-    public String getJob() {
+    public JobDTO getJob() {
         return job;
     }
 
-    public void setJob(String job) {
+    public void setJob(JobDTO job) {
         this.job = job;
     }
 
