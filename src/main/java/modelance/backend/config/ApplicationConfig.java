@@ -180,5 +180,4 @@ public class ApplicationConfig {
 
         return http.build();
     }
-
 }
