@@ -11,6 +11,8 @@ import modelance.backend.service.account.NoAccountExistsException;
 import modelance.backend.service.account.ProfileService;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/profile")
@@ -39,5 +41,11 @@ public class EmployerProfileController {
     public String updateEmployer(@RequestBody EmployerModel employerModel) throws InterruptedException, ExecutionException {
         return profileService.updateEmployerProfile(employerModel);
     }
+
+    @GetMapping("/review")
+    public String getMethodName(@RequestParam String param) {
+        return new String();
+    }
+    
     
 }
