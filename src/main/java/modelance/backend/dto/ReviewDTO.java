@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class ReviewDTO {
     private String content;
-    private ContractDTO contract;
+    private String contract;
     private Date datetime;
     private int rating;
     private EmployerDTO reviewer;
@@ -13,7 +13,7 @@ public class ReviewDTO {
     public ReviewDTO() {
     }
 
-    public ReviewDTO(String content, ContractDTO contract, Date datetime, int rating, EmployerDTO reviewer,
+    public ReviewDTO(String content, String contract, Date datetime, int rating, EmployerDTO reviewer,
             ModelDTO reviewee) {
         this.content = content;
         this.contract = contract;
@@ -31,11 +31,11 @@ public class ReviewDTO {
         this.content = content;
     }
 
-    public ContractDTO getContract() {
+    public String getContract() {
         return contract;
     }
 
-    public void setContract(ContractDTO contract) {
+    public void setContract(String contract) {
         this.contract = contract;
     }
 

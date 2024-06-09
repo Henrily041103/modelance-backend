@@ -93,7 +93,8 @@ public class WebSecurityConfig {
                 // profile controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/profile/details/**").authenticated()
-                        .requestMatchers("/profile/edit").authenticated())
+                        .requestMatchers("/profile/edit").authenticated()
+                        .requestMatchers("/profile/review/**").authenticated())
                 // model's view job controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/job/all").authenticated()
