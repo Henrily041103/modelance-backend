@@ -37,21 +37,18 @@ public class EmployerJobManagementController {
     }
 
     @PutMapping("/finish/{id}")
-    public String finishJob(@PathVariable String id) {
-        
-        return "entity";
+    public String finishJob(@PathVariable String id) throws InterruptedException, ExecutionException {
+        return jobService.updateJobStatus(id,"5");
     }
 
     @PutMapping("/cancel/{id}")
-    public String cancelJob(@PathVariable String id) {
-        
-        return "entity";
+    public String cancelJob(@PathVariable String id) throws InterruptedException, ExecutionException {
+        return jobService.updateJobStatus(id,"3");
     }
 
     @PutMapping("/close/{id}")
-    public String closeJob(@PathVariable String id) {
-        
-        return "entity";
+    public String closeJob(@PathVariable String id) throws InterruptedException, ExecutionException {
+        return jobService.updateJobStatus(id,"4");
     }
 
 

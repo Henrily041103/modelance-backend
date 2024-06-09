@@ -11,10 +11,9 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
-
 import modelance.backend.dto.EmployerDTO;
 import modelance.backend.dto.JobDTO;
-import modelance.backend.model.account.EmployerModel;
+import modelance.backend.model.account.AccountModel;
 import modelance.backend.model.work.JobCategoriesModel;
 import modelance.backend.model.work.JobModel;
 import modelance.backend.model.work.JobStatusModel;
@@ -82,8 +81,7 @@ public class EmployerJobManagementService {
     public JobDTO getPostedJobDetails(String id) throws InterruptedException, ExecutionException {
         JobDTO jobDTO = new JobDTO();
         DocumentReference docRef = firestore.collection("Job").document(id.trim());
-        ApiFuture<DocumentSnapshot> future = docRef.get();
-        DocumentSnapshot docSnap = future.get();
+        DocumentSnapshot docSnap = docRef.get().get();
         if (docSnap.exists()) {
             JobModel jobModel = docSnap.toObject(JobModel.class);
             if (jobModel == null)
@@ -99,29 +97,34 @@ public class EmployerJobManagementService {
             // Get category
             DocumentSnapshot cateSnap = jobModel.getCategory().get().get();
             JobCategoriesModel categoriesModel = cateSnap.toObject(JobCategoriesModel.class);
-            if (categoriesModel != null) {
-                jobDTO.setCategory(categoriesModel.getCategoryName());
-            }
+            jobDTO.setCategory(categoriesModel.getCategoryName());
 
             // Get employer
-            DocumentSnapshot empSnap = jobModel.getEmployer().get().get();
-            EmployerModel empModel = empSnap.toObject(EmployerModel.class);
+            DocumentReference employerRef = jobModel.getEmployer();
+            DocumentReference accountRef = firestore.collection("Account").document(employerRef.getId());
+            DocumentSnapshot snap = accountRef.get().get();
+            AccountModel accountModel = snap.toObject(AccountModel.class);
+            System.out.println(accountModel);
             EmployerDTO empDTO = new EmployerDTO();
-            if (empModel != null) {
-                empDTO.setId(empModel.getId());
-                empDTO.setFullName(empModel.getFullName());
-                empDTO.setAvatar(empModel.getAvatar());
-                jobDTO.setEmployer(empDTO);
-            }
+            empDTO.setId(employerRef.getId());
+            empDTO.setFullName(accountModel.getFullName());
+            empDTO.setAvatar(accountModel.getAvatar());
+            jobDTO.setEmployer(empDTO);
 
             // Get status
             DocumentSnapshot statSnap = jobModel.getStatus().get().get();
             JobStatusModel statModel = statSnap.toObject(JobStatusModel.class);
-            if (statModel != null) {
-                jobDTO.setStatus(statModel.getStatusName());
-            }
+            jobDTO.setStatus(statModel.getStatusName());
         }
+        System.out.println(jobDTO);
         return jobDTO;
+    }
+
+    public String updateJobStatus(String id, String statusid) throws InterruptedException, ExecutionException {
+        DocumentReference statusRef = firestore.collection("JobStatus").document(statusid);
+        DocumentReference jobRef = firestore.collection("Job").document(id);
+        jobRef.update("status",statusRef);
+        return "";
     }
 
 }
