@@ -21,24 +21,47 @@ public class EmployerContractManagementService {
         this.firestore = FirestoreClient.getFirestore();
     }
 
-    public ContractModel addContract(ContractDTO contractDTO) {
-        contractDTO.setEmployerTerms(null);
-        contractDTO.setEmployerTerms(null);
-        contractDTO.setModel(null);
-        contractDTO.setPayment(0);
-        contractDTO.setStartTime(null);
-        contractDTO.setEndTime(null);
-        contractDTO.setJob(null);
-        contractDTO.setStatus(null);
-        return new ContractModel();
+    public String addContract(ContractDTO contractDTO) throws InterruptedException, ExecutionException {
+        // Check duplicated jobs
+        DocumentReference jobRef = firestore.collection("Job").document(contractDTO.getJob().getId());
+        JobModel jobModel = jobRef.get().get().toObject(JobModel.class);
+        String jobStatusDoc = jobModel.getStatus().getId();
+        if (!jobStatusDoc.equals("1")) return "duplicated job";
+
+        // Contract Model
+        ContractModel contractModel = new ContractModel();
+        contractModel.setEmployerTerms(contractDTO.getEmployerTerms());
+        contractModel.setModelTerms(contractDTO.getModelTerms());
+        contractModel.setPayment(contractDTO.getPayment());
+        contractModel.setStartTime(contractDTO.getStartTime());
+        contractModel.setEndTime(contractDTO.getEndTime());
+
+        // Get Model reference
+        DocumentReference modelRef = firestore.collection("Model").document(contractDTO.getModel().getId());
+        contractModel.setModel(modelRef);
+
+        // Get Job reference
+        contractModel.setJob(jobRef);
+
+        // Get Contract status reference
+        DocumentReference statRef = firestore.collection("ContractStatus").document(contractDTO.getJob().getId());
+        contractModel.setStatus(statRef);
+
+        //Update job status
+        DocumentReference jobStatusRef = firestore.collection("JobStatus").document("2");
+        jobRef.update("status", jobStatusRef);
+        System.out.println(jobStatusRef + "2");
+
+        firestore.collection("Contract").add(contractModel);
+        return "Added contract";
     }
 
     public ContractDTO viewContract(String id) throws InterruptedException, ExecutionException {
-        //Get contract model
+        // Get contract model
         DocumentReference contractRef = firestore.collection("Contract").document(id);
         ContractModel contractModel = contractRef.get().get().toObject(ContractModel.class);
 
-        //Generate contract DTO to send to controller
+        // Generate contract DTO to send to controller
         ContractDTO contractDTO = new ContractDTO();
         contractDTO.setEmployerTerms(contractModel.getEmployerTerms());
         contractDTO.setModelTerms(contractModel.getModelTerms());
@@ -46,7 +69,7 @@ public class EmployerContractManagementService {
         contractDTO.setStartTime(contractModel.getStartTime());
         contractDTO.setEndTime(contractModel.getEndTime());
 
-        //Get Model
+        // Get Model
         DocumentReference modelRef = contractModel.getModel();
         ModelModel model = modelRef.get().get().toObject(ModelModel.class);
         ModelDTO modelDTO = new ModelDTO();
@@ -55,7 +78,7 @@ public class EmployerContractManagementService {
         modelDTO.setAvatar(model.getAvatar());
         contractDTO.setModel(modelDTO);
 
-        //Get Job
+        // Get Job
         DocumentReference jobRef = contractModel.getJob();
         JobModel jobModel = jobRef.get().get().toObject(JobModel.class);
         JobDTO jobDTO = new JobDTO();
@@ -63,7 +86,7 @@ public class EmployerContractManagementService {
         jobDTO.setTitle(jobModel.getTitle());
         contractDTO.setJob(jobDTO);
 
-        //Get contract status
+        // Get contract status
         DocumentReference statusRef = contractModel.getStatus();
         ContractStatusModel statusModel = statusRef.get().get().toObject(ContractStatusModel.class);
         contractDTO.setStatus(statusModel.getStatusName());

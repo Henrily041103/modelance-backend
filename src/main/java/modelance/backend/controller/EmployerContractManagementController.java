@@ -3,11 +3,8 @@ package modelance.backend.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import modelance.backend.dto.ContractDTO;
-import modelance.backend.model.work.ContractModel;
 import modelance.backend.service.account.EmployerContractManagementService;
-
 import java.util.concurrent.ExecutionException;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +26,7 @@ public class EmployerContractManagementController {
     }
 
     @PostMapping("/add")
-    public ContractModel addContract(@RequestBody ContractDTO contractDTO) throws InterruptedException, ExecutionException {
+    public String addContract(@RequestBody ContractDTO contractDTO) throws InterruptedException, ExecutionException {
         return contractService.addContract(contractDTO);
     }
 
