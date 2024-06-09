@@ -1,12 +1,13 @@
 package modelance.backend.config;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -79,8 +80,9 @@ public class ApplicationConfig {
     @Bean
     PayOS payOS() throws StreamReadException, DatabindException, IOException {
         ObjectMapper mapper = new ObjectMapper();
-        InputStream serviceAccount = new FileInputStream("./paymentAccount.json");
-        PaymentAccount account = mapper.readValue(serviceAccount, PaymentAccount.class);
+        Resource resource = new ClassPathResource("paymentAccount.json");
+        InputStream paymentAccount = resource.getInputStream();
+        PaymentAccount account = mapper.readValue(paymentAccount, PaymentAccount.class);
         return new PayOS(account.getClientId(), account.getApiKey(), account.getChecksumKey());
     }
 
