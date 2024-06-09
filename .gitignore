@@ -34,3 +34,4 @@ build/
 
 ### Secrets ###
 serviceAccount.json
+paymentAccount.json

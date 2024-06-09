@@ -20,7 +20,6 @@ public class BackendApplication {
 
 	public static void main(String[] args) {
 		try {
-
 			InputStream serviceAccount = new FileInputStream("./serviceAccount.json");
 			FirebaseOptions options = FirebaseOptions.builder()
 					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
