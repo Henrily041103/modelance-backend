@@ -255,4 +255,23 @@ public class AccountService {
 
         return url;
     }
+
+    public AccountModel getAccountById(String userId) throws InterruptedException, ExecutionException {
+        AccountModel account = null;
+
+        try {
+            DocumentSnapshot employerDoc = firestore.collection("Account").document(userId).get().get();
+            if (!employerDoc.exists())
+                throw new NoAccountExistsException();
+
+            AccountModel employer = employerDoc.toObject(AccountModel.class);
+            if (employer == null)
+                throw new NoAccountExistsException();
+            employer.setId(userId);
+        } catch (NoAccountExistsException e) {
+            e.printStackTrace();
+        }
+
+        return account;
+    }
 }

@@ -4,16 +4,16 @@ import java.util.Date;
 
 import com.google.firebase.database.Exclude;
 
-public class Transaction {
+public class TransactionModel {
     @Exclude
     private String id;
     private String status;
     private Date datetime;
     private boolean isBank;
     private long amount;
-    private Wallet wallet;
+    private WalletModel wallet;
 
-    public Transaction(String id, String status, Date datetime, boolean isBank, long amount, Wallet wallet) {
+    public TransactionModel(String id, String status, Date datetime, boolean isBank, long amount, WalletModel wallet) {
         this.id = id;
         this.status = status;
         this.datetime = datetime;
@@ -22,7 +22,7 @@ public class Transaction {
         this.wallet = wallet;
     }
 
-    public Transaction() {
+    public TransactionModel() {
     }
 
     @Exclude
@@ -66,11 +66,11 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public Wallet getWallet() {
+    public WalletModel getWallet() {
         return wallet;
     }
 
-    public void setWallet(Wallet wallet) {
+    public void setWallet(WalletModel wallet) {
         this.wallet = wallet;
     }
 }

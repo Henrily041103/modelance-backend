@@ -4,16 +4,16 @@ import com.google.firebase.database.Exclude;
 
 import modelance.backend.model.account.AccountModel;
 
-public class Wallet {
+public class WalletModel {
     @Exclude
     private String id;
     private AccountModel account;
     private long balance;
 
-    public Wallet() {
+    public WalletModel() {
     }
 
-    public Wallet(String id, AccountModel account, long balance) {
+    public WalletModel(String id, AccountModel account, long balance) {
         this.id = id;
         this.account = account;
         this.balance = balance;
