@@ -10,17 +10,17 @@ import modelance.backend.dto.ReviewDTO;
 import modelance.backend.model.account.EmployerModel;
 import modelance.backend.service.account.AccountService;
 import modelance.backend.service.account.NoAccountExistsException;
-import modelance.backend.service.account.ProfileService;
+import modelance.backend.service.account.EmployerProfileService;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/eprofile")
 public class EmployerProfileController {
-    private final ProfileService profileService;
+    private final EmployerProfileService profileService;
     private final AccountService accountService;
 
-    public EmployerProfileController(ProfileService profileService, AccountService accountService) {
+    public EmployerProfileController(EmployerProfileService profileService, AccountService accountService) {
         this.profileService = profileService;
         this.accountService = accountService;
     }

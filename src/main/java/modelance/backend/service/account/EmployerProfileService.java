@@ -20,10 +20,10 @@ import modelance.backend.model.account.EmployerModel;
 import modelance.backend.model.work.ReviewModel;
 
 @Service
-public class ProfileService {
+public class EmployerProfileService {
     private Firestore firestore;
 
-    public ProfileService() {
+    public EmployerProfileService() {
         this.firestore = FirestoreClient.getFirestore();
     }
 

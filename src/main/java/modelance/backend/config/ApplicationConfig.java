@@ -154,11 +154,11 @@ public class ApplicationConfig {
                         .requestMatchers("/account/employer/**").authenticated()
                         .requestMatchers("/account/password/change").authenticated()
                         .requestMatchers("/account/avatar").authenticated())
-                // profile controller
+                // employer profile controller
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/profile/details/**").authenticated()
-                        .requestMatchers("/profile/edit").authenticated()
-                        .requestMatchers("/profile/review/**").authenticated())
+                        .requestMatchers("/eprofile/details/**").authenticated()
+                        .requestMatchers("/eprofile/edit").authenticated()
+                        .requestMatchers("/eprofile/review/**").authenticated())
                 // model's view job controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/job/all").authenticated()
