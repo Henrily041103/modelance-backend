@@ -4,11 +4,12 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.stereotype.Service;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
-import modelance.backend.dto.LocationDTO;
-import modelance.backend.dto.ModelBodyIndexDTO;
-import modelance.backend.dto.ModelProfileDTO;
-import modelance.backend.model.account.AccountModel;
-import modelance.backend.model.account.ModelModel;
+
+import modelance.backend.firebasedto.account.AccountDTO;
+import modelance.backend.firebasedto.account.ModelDTO;
+import modelance.backend.model.LocationModel;
+import modelance.backend.model.ModelBodyIndexModel;
+import modelance.backend.model.ModelProfileModel;
 
 @Service
 public class ModelProfileService {
@@ -18,12 +19,12 @@ public class ModelProfileService {
         this.firestore = FirestoreClient.getFirestore();
     }
 
-    public ModelProfileDTO getProfile(String id) throws InterruptedException, ExecutionException {
-        AccountModel accountModel = firestore.collection("Account").document(id).get().get()
-                .toObject(AccountModel.class);
-        ModelModel modelModel = firestore.collection("Model").document(id).get().get().toObject(ModelModel.class);
+    public ModelProfileModel getProfile(String id) throws InterruptedException, ExecutionException {
+        AccountDTO accountModel = firestore.collection("Account").document(id).get().get()
+                .toObject(AccountDTO.class);
+        ModelDTO modelModel = firestore.collection("Model").document(id).get().get().toObject(ModelDTO.class);
 
-        ModelProfileDTO profileDTO = new ModelProfileDTO();
+        ModelProfileModel profileDTO = new ModelProfileModel();
         profileDTO.setId(id);
         profileDTO.setUsername(accountModel.getUsername());
         profileDTO.setFullName(accountModel.getFullName());
@@ -34,14 +35,14 @@ public class ModelProfileService {
         profileDTO.setAccountStatus(accountModel.getStatus().getStatusName());
         profileDTO.setIndustry(modelModel.getIndustry().getIndustryName());
 
-        LocationDTO location = new LocationDTO();
+        LocationModel location = new LocationModel();
         location.setAndress(modelModel.getLocation().getAddress());
         location.setDistrict(modelModel.getLocation().getDistrict());
         location.setProvince(modelModel.getLocation().getProvince());
         location.setWard(modelModel.getLocation().getWard());
         profileDTO.setLocation(location);
 
-        ModelBodyIndexDTO bodyIndex = new ModelBodyIndexDTO();
+        ModelBodyIndexModel bodyIndex = new ModelBodyIndexModel();
         bodyIndex.setBust(modelModel.getBust());
         bodyIndex.setHeight(modelModel.getHeight());
         bodyIndex.setHip(modelModel.getHip());
@@ -50,6 +51,14 @@ public class ModelProfileService {
         profileDTO.setBodyIndex(bodyIndex);
 
         return profileDTO;
+    }
+
+    public String updateProfile(String id, ModelProfileModel profile) {
+        AccountDTO aModel = new AccountDTO();
+        ModelDTO mModel = new ModelDTO();
+        firestore.collection("Account").document(id).set(aModel);
+        firestore.collection("Model").document(id).set(mModel);
+        return "";
     }
 
 }

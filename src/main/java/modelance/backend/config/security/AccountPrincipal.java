@@ -6,14 +6,14 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.List;
+import modelance.backend.firebasedto.account.AccountDTO;
 
-import modelance.backend.model.account.AccountModel;
+import java.util.List;
 public class AccountPrincipal implements UserDetails {
 
-    private AccountModel account;
+    private AccountDTO account;
 
-    public AccountPrincipal(AccountModel account) {
+    public AccountPrincipal(AccountDTO account) {
         this.account = account;
     }
 
@@ -54,7 +54,7 @@ public class AccountPrincipal implements UserDetails {
         return account.getStatus().getStatusName().toLowerCase() == "active";
     }
 
-    public AccountModel getAccount() {
+    public AccountDTO getAccount() {
         return account;
     }
 

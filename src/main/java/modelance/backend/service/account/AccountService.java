@@ -21,12 +21,12 @@ import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.cloud.StorageClient;
 
-import modelance.backend.model.account.AccountModel;
-import modelance.backend.model.account.AccountRole;
-import modelance.backend.model.account.AccountStatus;
-import modelance.backend.model.account.EmployerModel;
-import modelance.backend.model.account.ModelModel;
 import modelance.backend.config.security.AccountAuthority;
+import modelance.backend.firebasedto.account.AccountDTO;
+import modelance.backend.firebasedto.account.AccountRoleDTO;
+import modelance.backend.firebasedto.account.AccountStatusDTO;
+import modelance.backend.firebasedto.account.EmployerDTO;
+import modelance.backend.firebasedto.account.ModelDTO;
 
 @Service
 public class AccountService {
@@ -38,7 +38,7 @@ public class AccountService {
         this.storageClient = StorageClient.getInstance();
     }
 
-    public List<AccountAuthority> getAuthorities(AccountModel account) {
+    public List<AccountAuthority> getAuthorities(AccountDTO account) {
         List<AccountAuthority> authorities = new ArrayList<>();
 
         switch (account.getRole().getRoleName().toLowerCase()) {
@@ -55,9 +55,9 @@ public class AccountService {
         return authorities;
     }
 
-    public AccountModel login(String username, String password)
+    public AccountDTO login(String username, String password)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
-        AccountModel account = null;
+        AccountDTO accountDTO = null;
         if (username.trim() != "" && password.trim() != "") {
             ApiFuture<QuerySnapshot> readAccountQuery = firestore.collection("Account")
                     .whereEqualTo("username", username).whereEqualTo("password", password)
@@ -69,20 +69,20 @@ public class AccountService {
             DocumentSnapshot accountDocument = matchedAccount.get(0);
             if (accountDocument.exists()) {
                 try {
-                    account = accountDocument.toObject(AccountModel.class);
-                    if (account != null)
-                        account.setId(accountDocument.getId());
+                    accountDTO = accountDocument.toObject(AccountDTO.class);
+                    if (accountDTO != null)
+                        accountDTO.setId(accountDocument.getId());
                 } catch (ClassCastException | NullPointerException e) {
                     throw new NoAccountExistsException();
                 }
             }
         }
-        return account;
+        return accountDTO;
     }
 
-    public AccountModel register(String username, String password, String email, String role)
+    public AccountDTO register(String username, String password, String email, String role)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
-        AccountModel account = null;
+        AccountDTO account = null;
 
         if (username.trim() != "" && password.trim() != "") {
             ApiFuture<QuerySnapshot> readAccountQuery = firestore.collection("Account")
@@ -92,11 +92,11 @@ public class AccountService {
             List<QueryDocumentSnapshot> matchedAccount = readAccountQuery.get().getDocuments();
 
             if (matchedAccount.size() == 0) {
-                account = new AccountModel(username, password);
+                account = new AccountDTO(username, password);
                 account.setEmail(email);
                 account.setCreateDate(Calendar.getInstance().getTime());
-                account.setRole(new AccountRole("1", role));
-                account.setStatus(new AccountStatus("1", "active"));
+                account.setRole(new AccountRoleDTO("1", role));
+                account.setStatus(new AccountStatusDTO("1", "active"));
                 ApiFuture<DocumentReference> addQuery = firestore.collection("Account").add(account);
                 DocumentReference addDoc = addQuery.get();
                 account.setId(addDoc.getId());
@@ -115,7 +115,7 @@ public class AccountService {
             DocumentSnapshot documentSnap = firestore.collection("Account").document(userId).get().get();
             if (documentSnap.exists()) {
                 try {
-                    AccountModel account = documentSnap.toObject(AccountModel.class);
+                    AccountDTO account = documentSnap.toObject(AccountDTO.class);
                     if (account != null && account.getPassword().equals(oldPassword)) {
                         firestore.collection("Account").document(userId).update("password", newPassword);
                         result = true;
@@ -157,9 +157,9 @@ public class AccountService {
         return result;
     }
 
-    public ModelModel loadModelModel(String id)
+    public ModelDTO loadModelModel(String id)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
-        ModelModel account = null;
+        ModelDTO account = null;
         if (id.trim() != "") {
             Firestore dbFirestore = FirestoreClient.getFirestore();
             // Model
@@ -167,14 +167,14 @@ public class AccountService {
             ApiFuture<DocumentSnapshot> future = docRef.get();
             DocumentSnapshot docSnap = future.get();
             if (docSnap.exists()) {
-                account = docSnap.toObject(ModelModel.class);
+                account = docSnap.toObject(ModelDTO.class);
             }
             // Account
             DocumentReference docAccRef = dbFirestore.collection("Account").document(id);
             ApiFuture<DocumentSnapshot> accfuture = docAccRef.get();
             DocumentSnapshot accDocSnap = accfuture.get();
             if (accDocSnap.exists()) {
-                AccountModel acc = accDocSnap.toObject(AccountModel.class);
+                AccountDTO acc = accDocSnap.toObject(AccountDTO.class);
                 if (account != null && acc != null) {
                     account.setId(id);
                     account.setAvatar(acc.getAvatar());
@@ -192,9 +192,9 @@ public class AccountService {
         return account;
     }
 
-    public EmployerModel loadEmployerModel(String id)
+    public EmployerDTO loadEmployerModel(String id)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
-        EmployerModel employerModel = null;
+        EmployerDTO employerModel = null;
         if (id.trim() != "") {
             // Employer
             Firestore dbFirestore = FirestoreClient.getFirestore();
@@ -202,14 +202,14 @@ public class AccountService {
             ApiFuture<DocumentSnapshot> future = docRef.get();
             DocumentSnapshot docSnap = future.get();
             if (docSnap.exists()) {
-                employerModel = docSnap.toObject(EmployerModel.class);
+                employerModel = docSnap.toObject(EmployerDTO.class);
             }
             // Account
             DocumentReference docAccRef = dbFirestore.collection("Account").document(id);
             ApiFuture<DocumentSnapshot> accfuture = docAccRef.get();
             DocumentSnapshot accDocSnap = accfuture.get();
             if (accDocSnap.exists()) {
-                AccountModel acc = accDocSnap.toObject(AccountModel.class);
+                AccountDTO acc = accDocSnap.toObject(AccountDTO.class);
                 if (acc != null && employerModel != null) {
                     employerModel.setId(id);
                     employerModel.setAvatar(acc.getAvatar());
@@ -256,15 +256,15 @@ public class AccountService {
         return url;
     }
 
-    public AccountModel getAccountById(String userId) throws InterruptedException, ExecutionException {
-        AccountModel account = null;
+    public AccountDTO getAccountById(String userId) throws InterruptedException, ExecutionException {
+        AccountDTO account = null;
 
         try {
             DocumentSnapshot employerDoc = firestore.collection("Account").document(userId).get().get();
             if (!employerDoc.exists())
                 throw new NoAccountExistsException();
 
-            AccountModel employer = employerDoc.toObject(AccountModel.class);
+            AccountDTO employer = employerDoc.toObject(AccountDTO.class);
             if (employer == null)
                 throw new NoAccountExistsException();
             employer.setId(userId);

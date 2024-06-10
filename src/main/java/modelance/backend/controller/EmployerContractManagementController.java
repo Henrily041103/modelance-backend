@@ -2,7 +2,8 @@ package modelance.backend.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import modelance.backend.dto.ContractDTO;
+
+import modelance.backend.model.ContractModel;
 import modelance.backend.service.account.EmployerContractManagementService;
 import java.util.concurrent.ExecutionException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +22,12 @@ public class EmployerContractManagementController {
     }
 
     @GetMapping("/{id}")
-    public ContractDTO viewContract(@PathVariable String id) throws InterruptedException, ExecutionException {
+    public ContractModel viewContract(@PathVariable String id) throws InterruptedException, ExecutionException {
         return contractService.viewContract(id);
     }
 
     @PostMapping("/add")
-    public String addContract(@RequestBody ContractDTO contractDTO) throws InterruptedException, ExecutionException {
+    public String addContract(@RequestBody ContractModel contractDTO) throws InterruptedException, ExecutionException {
         return contractService.addContract(contractDTO);
     }
 

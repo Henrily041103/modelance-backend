@@ -1,7 +1,8 @@
 package modelance.backend.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-import modelance.backend.dto.JobDTO;
+
+import modelance.backend.model.JobModel;
 import modelance.backend.service.account.ModelJobService;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -20,12 +21,12 @@ public class ModelJobController {
     }
 
     @GetMapping("/all")
-    public ArrayList<JobDTO> getAllJobs() throws ExecutionException, InterruptedException {
+    public ArrayList<JobModel> getAllJobs() throws ExecutionException, InterruptedException {
         return jobService.getJobListService();
     }
 
     @GetMapping("/details/{id}")
-    public JobDTO getJobDetails(@PathVariable String id) throws InterruptedException, ExecutionException {
+    public JobModel getJobDetails(@PathVariable String id) throws InterruptedException, ExecutionException {
         return jobService.getJobsById(id);
     }
 

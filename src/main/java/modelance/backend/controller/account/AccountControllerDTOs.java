@@ -1,6 +1,6 @@
 package modelance.backend.controller.account;
 
-import modelance.backend.dto.AccountDTO;
+import modelance.backend.model.AccountModel;
 
 class LoginRequest {
     private String username;
@@ -16,7 +16,7 @@ class LoginRequest {
 }
 
 class LoginResponse {
-    private AccountDTO account;
+    private AccountModel account;
     private String jwtToken;
     private String statusMessage;
 
@@ -24,7 +24,7 @@ class LoginResponse {
         statusMessage = "Error!";
     }
 
-    public void setAccount(AccountDTO account) {
+    public void setAccount(AccountModel account) {
         this.account = account;
     }
 
@@ -36,7 +36,7 @@ class LoginResponse {
         this.statusMessage = statusMessage;
     }
 
-    public AccountDTO getAccount() {
+    public AccountModel getAccount() {
         return account;
     }
 
@@ -92,7 +92,7 @@ class RegisterRequest {
 
 class RegisterResponse {
     private String message;
-    private AccountDTO account;
+    private AccountModel account;
 
     public String getMessage() {
         return message;
@@ -102,11 +102,11 @@ class RegisterResponse {
         this.message = message;
     }
 
-    public AccountDTO getAccount() {
+    public AccountModel getAccount() {
         return account;
     }
 
-    public void setAccount(AccountDTO account) {
+    public void setAccount(AccountModel account) {
         this.account = account;
     }
 

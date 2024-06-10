@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.google.firebase.cloud.FirestoreClient;
 
-import modelance.backend.dto.ContractDTO;
-import modelance.backend.model.account.AccountModel;
-import modelance.backend.model.wallet.TransactionModel;
-import modelance.backend.model.wallet.WalletModel;
+import modelance.backend.firebasedto.account.AccountDTO;
+import modelance.backend.firebasedto.wallet.TransactionDTO;
+import modelance.backend.firebasedto.wallet.WalletDTO;
 import modelance.backend.service.account.AccountService;
 
 @Service
@@ -22,18 +22,18 @@ public class WalletService {
     private final Firestore firestore;
     private final AccountService accountService;
 
-    public WalletService(Firestore firestore, AccountService accountService) {
-        this.firestore = firestore;
-        this.accountService = accountService;
+    public WalletService() {
+        this.firestore = FirestoreClient.getFirestore();
+        this.accountService = new AccountService();
     }
 
-    public WalletModel getWallet(Authentication authentication)
+    public WalletDTO getWallet(Authentication authentication)
             throws InterruptedException, ExecutionException {
-        WalletModel result = null;
+        WalletDTO result = null;
 
         try {
             String userId = authentication.getName();
-            AccountModel account = accountService.getAccountById(userId);
+            AccountDTO account = accountService.getAccountById(userId);
 
             QuerySnapshot walletQuery = firestore.collection("Wallet").whereEqualTo("account.id", account.getId()).get()
                     .get();
@@ -42,7 +42,7 @@ public class WalletService {
             QueryDocumentSnapshot walletDoc = walletQuery.getDocuments().get(0);
             if (!walletDoc.exists())
                 throw new NoWalletExistsException();
-            WalletModel walletModel = walletDoc.toObject(WalletModel.class);
+            WalletDTO walletModel = walletDoc.toObject(WalletDTO.class);
             walletModel.setAccount(account);
 
             result = walletModel;
@@ -54,12 +54,12 @@ public class WalletService {
         return result;
     }
 
-    public List<TransactionModel> getTransactions(Authentication authentication)
+    public List<TransactionDTO> getTransactions(Authentication authentication)
             throws InterruptedException, ExecutionException {
-        List<TransactionModel> transactions = new ArrayList<>();
+        List<TransactionDTO> transactions = new ArrayList<>();
 
         String userId = authentication.getName();
-        AccountModel account = accountService.getAccountById(userId);
+        AccountDTO account = accountService.getAccountById(userId);
 
         QuerySnapshot transactionQuery = firestore.collection("Transaction")
                 .whereEqualTo("wallet.account.id", account.getId()).get().get();
@@ -67,22 +67,20 @@ public class WalletService {
             return transactions;
         List<QueryDocumentSnapshot> transactionDocs = transactionQuery.getDocuments();
         for (QueryDocumentSnapshot transactionDoc : transactionDocs) {
-            TransactionModel transaction = transactionDoc.toObject(TransactionModel.class);
+            TransactionDTO transaction = transactionDoc.toObject(TransactionDTO.class);
             transactions.add(transaction);
         }
 
         return transactions;
     }
 
-    public TransactionModel endOfContractMoneyTransfer(Authentication authentication, String contractId)
+    public TransactionDTO endOfContractMoneyTransfer(Authentication authentication, String contractId)
             throws InterruptedException, ExecutionException {
-        TransactionModel transaction = null;
+        TransactionDTO transaction = null;
 
-        String employerId = authentication.getName();
-        AccountModel employer = accountService.getAccountById(employerId);
-        // ContractDTO contract = 
-
-
+        // String employerId = authentication.getName();
+        // AccountDTO employer = accountService.getAccountById(employerId);
+        
         return transaction;
     }
 }

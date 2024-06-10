@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import modelance.backend.dto.ReviewDTO;
-import modelance.backend.model.account.EmployerModel;
+
+import modelance.backend.firebasedto.account.EmployerDTO;
+import modelance.backend.model.ReviewModel;
 import modelance.backend.service.account.AccountService;
 import modelance.backend.service.account.NoAccountExistsException;
 import modelance.backend.service.account.EmployerProfileService;
@@ -26,8 +27,8 @@ public class EmployerProfileController {
     }
 
     @GetMapping("/{id}")
-    public EmployerModel getEmployer(@PathVariable String id) {
-        EmployerModel employerAccount = null;
+    public EmployerDTO getEmployer(@PathVariable String id) {
+        EmployerDTO employerAccount = null;
         try {
             employerAccount = accountService.loadEmployerModel(id);
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
@@ -38,13 +39,13 @@ public class EmployerProfileController {
     }
 
     @PutMapping("/update")
-    public String updateEmployer(@RequestBody EmployerModel employerModel)
+    public String updateEmployer(@RequestBody EmployerDTO employerModel)
             throws InterruptedException, ExecutionException {
         return profileService.updateEmployerProfile(employerModel);
     }
 
     @GetMapping("/review/{id}")
-    public ArrayList<ReviewDTO> getAllReview(@PathVariable String id) throws InterruptedException, ExecutionException {
+    public ArrayList<ReviewModel> getAllReview(@PathVariable String id) throws InterruptedException, ExecutionException {
         return profileService.getAllReview(id);
     }
 

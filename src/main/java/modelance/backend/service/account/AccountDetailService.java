@@ -12,7 +12,7 @@ import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
 
 import modelance.backend.config.security.AccountPrincipal;
-import modelance.backend.model.account.AccountModel;
+import modelance.backend.firebasedto.account.AccountDTO;
 
 public class AccountDetailService implements UserDetailsService {
     private Firestore firestore;
@@ -23,13 +23,13 @@ public class AccountDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        AccountModel account = null;
+        AccountDTO account = null;
         try {
             if (userId.trim() != "") {
                 ApiFuture<DocumentSnapshot> query = firestore.collection("Account").document(userId).get();
                 DocumentSnapshot document = query.get();
                 if (document.exists()) {
-                    account = document.toObject(AccountModel.class);
+                    account = document.toObject(AccountDTO.class);
                 }
             }
             AccountPrincipal accountPrincipal = new AccountPrincipal(account);

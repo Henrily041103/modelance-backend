@@ -2,7 +2,7 @@ package modelance.backend.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import modelance.backend.dto.ModelProfileDTO;
+import modelance.backend.model.ModelProfileModel;
 import modelance.backend.service.account.ModelProfileService;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -26,13 +26,13 @@ public class ModelProfileController {
     }
 
     @GetMapping("/{id}")
-    public ModelProfileDTO getProfile(@PathVariable String id) throws InterruptedException, ExecutionException {
+    public ModelProfileModel getProfile(@PathVariable String id) throws InterruptedException, ExecutionException {
         return profileService.getProfile(id);
     }
 
     @PutMapping("update/{id}")
-    public String updateProfile(@PathVariable String id, @RequestBody String entity) {
-        return entity;
+    public String updateProfile(@PathVariable String id, @RequestBody ModelProfileModel profile) {
+        return profileService.updateProfile(id, profile);
     }
 
     @GetMapping("/rating/{id}")

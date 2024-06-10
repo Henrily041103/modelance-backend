@@ -154,6 +154,9 @@ public class ApplicationConfig {
                         .requestMatchers("/account/employer/**").authenticated()
                         .requestMatchers("/account/password/change").authenticated()
                         .requestMatchers("/account/avatar").authenticated())
+                // model profile controller
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/mprofile/**").authenticated())
                 // employer profile controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/eprofile/details/**").authenticated()

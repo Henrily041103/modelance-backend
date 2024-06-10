@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import modelance.backend.config.security.TokenGenerator;
-import modelance.backend.dto.AccountDTO;
-import modelance.backend.model.account.AccountModel;
-import modelance.backend.model.account.EmployerModel;
-import modelance.backend.model.account.ModelModel;
+import modelance.backend.firebasedto.account.AccountDTO;
+import modelance.backend.firebasedto.account.EmployerDTO;
+import modelance.backend.firebasedto.account.ModelDTO;
+import modelance.backend.model.AccountModel;
 import modelance.backend.service.account.AccountService;
 import modelance.backend.service.account.NoAccountExistsException;
 
@@ -40,17 +40,17 @@ public class AccountController {
     public LoginResponse login(@RequestBody LoginRequest requestBody) {
         LoginResponse response = new LoginResponse();
         try {
-            AccountModel account = accountService.login(requestBody.getUsername(), requestBody.getPassword());
+            AccountDTO accountDTO = accountService.login(requestBody.getUsername(), requestBody.getPassword());
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    account.getId(),
-                    account.getPassword(),
-                    accountService.getAuthorities(account));
+                    accountDTO.getId(),
+                    accountDTO.getPassword(),
+                    accountService.getAuthorities(accountDTO));
             String token = tokenGenerator.generateToken(authentication);
             String message = "Success";
 
-            AccountDTO accDTO = new AccountDTO(account);
+            AccountModel account = new AccountModel(accountDTO);
 
-            response.setAccount(accDTO);
+            response.setAccount(account);
             response.setJwtToken(token);
             response.setStatusMessage(message);
         } catch (InterruptedException | ExecutionException e) {
@@ -68,11 +68,11 @@ public class AccountController {
         response.setMessage("failed");
 
         try {
-            AccountModel account = accountService.register(request.getUsername(), request.getPassword(),
+            AccountDTO accountDTO = accountService.register(request.getUsername(), request.getPassword(),
                     request.getEmail(), request.getRole());
 
-            AccountDTO accDTO = new AccountDTO(account);
-            response.setAccount(accDTO);
+            AccountModel account = new AccountModel(accountDTO);
+            response.setAccount(account);
             if (account != null)
                 response.setMessage("success");
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
@@ -133,8 +133,8 @@ public class AccountController {
     }
 
     @GetMapping("/model/{id}")
-    public ModelModel getModel(@PathVariable String id) {
-        ModelModel modelAccount = null;
+    public ModelDTO getModel(@PathVariable String id) {
+        ModelDTO modelAccount = null;
         try {
             modelAccount = accountService.loadModelModel(id);
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
@@ -145,8 +145,8 @@ public class AccountController {
     }
 
     @GetMapping("/employer/{id}")
-    public EmployerModel getEmployer(@PathVariable String id) {
-        EmployerModel employerAccount = null;
+    public EmployerDTO getEmployer(@PathVariable String id) {
+        EmployerDTO employerAccount = null;
         try {
             employerAccount = accountService.loadEmployerModel(id);
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
