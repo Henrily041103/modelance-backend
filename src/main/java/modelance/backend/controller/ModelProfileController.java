@@ -1,8 +1,13 @@
 package modelance.backend.controller;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import modelance.backend.dto.ModelProfileDTO;
 import modelance.backend.service.account.ModelProfileService;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.concurrent.ExecutionException;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 @RestController
-@RequestMapping("/mproflie")
+@RequestMapping("/mprofile")
 public class ModelProfileController {
     private final ModelProfileService profileService;
 
@@ -21,8 +26,8 @@ public class ModelProfileController {
     }
 
     @GetMapping("/{id}")
-    public String getProfile(@PathVariable String id) {
-        return new String();
+    public ModelProfileDTO getProfile(@PathVariable String id) throws InterruptedException, ExecutionException {
+        return profileService.getProfile(id);
     }
 
     @PutMapping("update/{id}")
