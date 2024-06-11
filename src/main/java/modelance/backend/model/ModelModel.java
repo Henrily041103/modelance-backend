@@ -3,6 +3,7 @@ package modelance.backend.model;
 import modelance.backend.firebasedto.account.AccountRoleDTO;
 
 public class ModelModel {
+    //{id:"",username:''}
     private String id;
     private String username;
     private String fullName;

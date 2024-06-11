@@ -7,22 +7,30 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 
 import modelance.backend.firebasedto.account.AccountDTO;
+import modelance.backend.firebasedto.account.AccountRoleDTO;
 import modelance.backend.firebasedto.wallet.TransactionDTO;
 import modelance.backend.firebasedto.wallet.WalletDTO;
+import modelance.backend.firebasedto.work.ContractDTO;
+import modelance.backend.model.AccountModel;
+import modelance.backend.model.ContractModel;
 import modelance.backend.service.account.AccountService;
 
 @Service
 public class WalletService {
     private final Firestore firestore;
     private final AccountService accountService;
+    private final ObjectMapper objectMapper;
 
-    public WalletService() {
+    public WalletService(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
         this.firestore = FirestoreClient.getFirestore();
         this.accountService = new AccountService();
     }
@@ -43,7 +51,7 @@ public class WalletService {
             if (!walletDoc.exists())
                 throw new NoWalletExistsException();
             WalletDTO walletModel = walletDoc.toObject(WalletDTO.class);
-            walletModel.setAccount(account);
+            // walletModel.setAccount(account);
 
             result = walletModel;
 
@@ -74,13 +82,25 @@ public class WalletService {
         return transactions;
     }
 
-    public TransactionDTO endOfContractMoneyTransfer(Authentication authentication, String contractId)
+    public TransactionDTO endOfContractMoneyTransfer(String contractId)
             throws InterruptedException, ExecutionException {
         TransactionDTO transaction = null;
 
         // String employerId = authentication.getName();
-        // AccountDTO employer = accountService.getAccountById(employerId);
-        
+        // AccountDTO employer = new AccountDTO(employerId);
+        // employer.setRole(new AccountRoleDTO("3","employer"));
+
+        DocumentSnapshot contractSnap = firestore.collection("Contract").document(contractId).get().get();
+
+        if (contractSnap.exists()) {
+            ContractDTO contractDTO = contractSnap.toObject(ContractDTO.class);
+            if (contractDTO == null) return transaction;
+            AccountDTO employer = objectMapper.convertValue(contractDTO.getEmployer(), AccountDTO.class);
+            AccountDTO model = objectMapper.convertValue(contractDTO.getModel(), AccountDTO.class);
+
+
+        }
+
         return transaction;
     }
 }
