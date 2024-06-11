@@ -1,11 +1,17 @@
-To do list:
-*Model:
-Return a Model details
-- Return a list of Job
-- Return a list of Portfolio of a Model
-- Return a gallery of a Model
+Change from DocRef to Map in Firebase.
 
-*Employer:
-Return an Employer details
-- Return a list of Model
-- Return a list of posted Jobs
+*Contract:
+- job {id, title }
+- model {id, fullname}
+- status (ContractStatus) {id, statusName}
+- employer {id, fullName}
+
+*Job:
+- category {id, categoryName}
+- employer {id, fullName}
+- status (JobStatus) {id, statusName}
+
+*Review:
+- contract {id}
+- reviewee (Account) {id, fullName}
+- reviewer (Account) {id, fullName}

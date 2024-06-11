@@ -1,21 +1,70 @@
 package modelance.backend.firebasedto.work;
 
 import java.util.Date;
-import com.google.cloud.firestore.DocumentReference;
 
 public class ReviewDTO {
     private String content;
-    private DocumentReference contract;
+    private ContractDTO contract;
     private Date datetime;
     private int rating;
-    private DocumentReference reviewer;
-    private DocumentReference reviewee;
+    private AccountDTO reviewer;
+    private AccountDTO reviewee;
+
+    public class ContractDTO {
+        private String id;
+
+        public ContractDTO() {
+        }
+
+        public ContractDTO(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+    }
+
+    public class AccountDTO {
+        private String id;
+        private String fullName;
+
+        public AccountDTO() {
+        }
+
+        public AccountDTO(String id, String fullName) {
+            this.id = id;
+            this.fullName = fullName;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getFullName() {
+            return fullName;
+        }
+
+        public void setFullName(String fullName) {
+            this.fullName = fullName;
+        }
+
+    }
 
     public ReviewDTO() {
     }
 
-    public ReviewDTO(String content, DocumentReference contract, Date datetime, int rating,
-            DocumentReference reviewer, DocumentReference reviewee) {
+    public ReviewDTO(String content, ContractDTO contract, Date datetime, int rating, AccountDTO reviewer,
+            AccountDTO reviewee) {
         this.content = content;
         this.contract = contract;
         this.datetime = datetime;
@@ -32,11 +81,11 @@ public class ReviewDTO {
         this.content = content;
     }
 
-    public DocumentReference getContract() {
+    public ContractDTO getContract() {
         return contract;
     }
 
-    public void setContract(DocumentReference contract) {
+    public void setContract(ContractDTO contract) {
         this.contract = contract;
     }
 
@@ -56,19 +105,19 @@ public class ReviewDTO {
         this.rating = rating;
     }
 
-    public DocumentReference getReviewer() {
+    public AccountDTO getReviewer() {
         return reviewer;
     }
 
-    public void setReviewer(DocumentReference reviewer) {
+    public void setReviewer(AccountDTO reviewer) {
         this.reviewer = reviewer;
     }
 
-    public DocumentReference getReviewee() {
+    public AccountDTO getReviewee() {
         return reviewee;
     }
 
-    public void setReviewee(DocumentReference reviewee) {
+    public void setReviewee(AccountDTO reviewee) {
         this.reviewee = reviewee;
     }
 
