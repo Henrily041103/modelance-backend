@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
+// import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
@@ -16,9 +16,11 @@ import modelance.backend.firebasedto.account.AccountDTO;
 
 public class AccountDetailService implements UserDetailsService {
     private Firestore firestore;
+    // private ObjectMapper objectMapper;
 
     public AccountDetailService() {
         this.firestore = FirestoreClient.getFirestore();
+        // this.objectMapper = new ObjectMapper();
     }
 
     @Override

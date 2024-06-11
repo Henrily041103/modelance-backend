@@ -1,7 +1,6 @@
 package modelance.backend.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-
 import modelance.backend.model.JobModel;
 import modelance.backend.service.account.EmployerJobManagementService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +9,6 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
@@ -26,31 +24,15 @@ public class EmployerJobManagementController {
     public String createNewJob(@RequestBody JobModel jobDTO) throws ExecutionException, InterruptedException {
         return jobService.createNewJob(jobDTO);
     }
-    
+
     @GetMapping("/{id}")
-    public ArrayList<JobModel> getAllPostedJob(@PathVariable String id) throws ExecutionException, InterruptedException {
+    public ArrayList<JobModel> getAllPostedJob(@PathVariable String id)
+            throws ExecutionException, InterruptedException {
         return jobService.getAllPostedJob(id);
     }
-    
+
     @GetMapping("/details/{id}")
     public JobModel getPostedJobDetails(@PathVariable String id) throws InterruptedException, ExecutionException {
         return jobService.getPostedJobDetails(id);
     }
-
-    @PutMapping("/finish/{id}")
-    public String finishJob(@PathVariable String id) throws InterruptedException, ExecutionException {
-        return jobService.updateJobStatus(id,"5");
-    }
-
-    @PutMapping("/cancel/{id}")
-    public String cancelJob(@PathVariable String id) throws InterruptedException, ExecutionException {
-        return jobService.updateJobStatus(id,"3");
-    }
-
-    @PutMapping("/close/{id}")
-    public String closeJob(@PathVariable String id) throws InterruptedException, ExecutionException {
-        return jobService.updateJobStatus(id,"4");
-    }
-
-
 }

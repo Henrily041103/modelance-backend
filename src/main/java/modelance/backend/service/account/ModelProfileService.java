@@ -4,7 +4,6 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.stereotype.Service;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
-
 import modelance.backend.firebasedto.account.AccountDTO;
 import modelance.backend.firebasedto.account.ModelDTO;
 import modelance.backend.model.LocationModel;
@@ -20,37 +19,37 @@ public class ModelProfileService {
     }
 
     public ModelProfileModel getProfile(String id) throws InterruptedException, ExecutionException {
-        AccountDTO accountModel = firestore.collection("Account").document(id).get().get()
+        AccountDTO accountDTO = firestore.collection("Account").document(id).get().get()
                 .toObject(AccountDTO.class);
-        ModelDTO modelModel = firestore.collection("Model").document(id).get().get().toObject(ModelDTO.class);
+        ModelDTO modelDTO = firestore.collection("Model").document(id).get().get().toObject(ModelDTO.class);
 
-        ModelProfileModel profileDTO = new ModelProfileModel();
-        profileDTO.setId(id);
-        profileDTO.setUsername(accountModel.getUsername());
-        profileDTO.setFullName(accountModel.getFullName());
-        profileDTO.setEmail(accountModel.getEmail());
-        profileDTO.setAvatar(accountModel.getAvatar());
-        profileDTO.setDateOfBirth(accountModel.getDateOfBirth());
-        profileDTO.setGender(accountModel.getGender().getGenderName());
-        profileDTO.setAccountStatus(accountModel.getStatus().getStatusName());
-        profileDTO.setIndustry(modelModel.getIndustry().getIndustryName());
+        ModelProfileModel profileModel = new ModelProfileModel();
+        profileModel.setId(id);
+        profileModel.setUsername(accountDTO.getUsername());
+        profileModel.setFullName(accountDTO.getFullName());
+        profileModel.setEmail(accountDTO.getEmail());
+        profileModel.setAvatar(accountDTO.getAvatar());
+        profileModel.setDateOfBirth(accountDTO.getDateOfBirth());
+        profileModel.setGender(accountDTO.getGender().getGenderName());
+        profileModel.setAccountStatus(accountDTO.getStatus().getStatusName());
+        profileModel.setIndustry(modelDTO.getIndustry().getIndustryName());
 
         LocationModel location = new LocationModel();
-        location.setAndress(modelModel.getLocation().getAddress());
-        location.setDistrict(modelModel.getLocation().getDistrict());
-        location.setProvince(modelModel.getLocation().getProvince());
-        location.setWard(modelModel.getLocation().getWard());
-        profileDTO.setLocation(location);
+        location.setAndress(modelDTO.getLocation().getAddress());
+        location.setDistrict(modelDTO.getLocation().getDistrict());
+        location.setProvince(modelDTO.getLocation().getProvince());
+        location.setWard(modelDTO.getLocation().getWard());
+        profileModel.setLocation(location);
 
         ModelBodyIndexModel bodyIndex = new ModelBodyIndexModel();
-        bodyIndex.setBust(modelModel.getBust());
-        bodyIndex.setHeight(modelModel.getHeight());
-        bodyIndex.setHip(modelModel.getHip());
-        bodyIndex.setWaist(modelModel.getWaist());
-        bodyIndex.setWeight(modelModel.getWeight());
-        profileDTO.setBodyIndex(bodyIndex);
+        bodyIndex.setBust(modelDTO.getBust());
+        bodyIndex.setHeight(modelDTO.getHeight());
+        bodyIndex.setHip(modelDTO.getHip());
+        bodyIndex.setWaist(modelDTO.getWaist());
+        bodyIndex.setWeight(modelDTO.getWeight());
+        profileModel.setBodyIndex(bodyIndex);
 
-        return profileDTO;
+        return profileModel;
     }
 
     public String updateProfile(String id, ModelProfileModel profile) {

@@ -2,6 +2,9 @@ package modelance.backend.firebasedto.work;
 
 import java.util.ArrayList;
 import java.util.Date;
+import modelance.backend.firebasedto.constant.StatusDTO;
+import modelance.backend.firebasedto.refdto.PersonDTO;
+import modelance.backend.firebasedto.refdto.SjobDTO;
 
 public class ContractDTO {
     private ArrayList<String> employerTerms;
@@ -9,145 +12,12 @@ public class ContractDTO {
     private Long payment;
     private Date startTime;
     private Date endTime;
-    private JobDTO job;
-    private ModelDTO model;
-    private EmployerDTO employer;
+    private SjobDTO job;
+    private PersonDTO model;
+    private PersonDTO employer;
     private StatusDTO status;
 
-    public class JobDTO {
-        private String id;
-        private String title;
-
-        public JobDTO(String id, String title) {
-            this.id = id;
-            this.title = title;
-        }
-
-        public JobDTO() {
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-    }
-
-    public class ModelDTO {
-        private String id;
-        private String fullName;
-
-        public ModelDTO(String id, String fullName) {
-            this.id = id;
-            this.fullName = fullName;
-        }
-
-        public ModelDTO() {
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getFullName() {
-            return fullName;
-        }
-
-        public void setFullName(String fullName) {
-            this.fullName = fullName;
-        }
-
-    }
-
-    public class EmployerDTO {
-        private String id;
-        private String fullName;
-
-        public EmployerDTO(String id, String fullName) {
-            this.id = id;
-            this.fullName = fullName;
-        }
-
-        public EmployerDTO() {
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getFullName() {
-            return fullName;
-        }
-
-        public void setFullName(String fullName) {
-            this.fullName = fullName;
-        }
-
-    }
-
-    public class StatusDTO {
-        private String id;
-        private String statusName;
-
-        public StatusDTO(String id, String statusName) {
-            this.id = id;
-            this.statusName = statusName;
-        }
-
-        public StatusDTO() {
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getStatusName() {
-            return statusName;
-        }
-
-        public void setStatusName(String statusName) {
-            this.statusName = statusName;
-        }
-
-    }
-
     public ContractDTO() {
-    }
-
-    public ContractDTO(ArrayList<String> employerTerms, ArrayList<String> modelTerms, Long payment, Date startTime,
-            Date endTime, JobDTO job, ModelDTO model, EmployerDTO employer, StatusDTO status) {
-        this.employerTerms = employerTerms;
-        this.modelTerms = modelTerms;
-        this.payment = payment;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.job = job;
-        this.model = model;
-        this.employer = employer;
-        this.status = status;
     }
 
     public ArrayList<String> getEmployerTerms() {
@@ -190,27 +60,27 @@ public class ContractDTO {
         this.endTime = endTime;
     }
 
-    public JobDTO getJob() {
+    public SjobDTO getJob() {
         return job;
     }
 
-    public void setJob(JobDTO job) {
+    public void setJob(SjobDTO job) {
         this.job = job;
     }
 
-    public ModelDTO getModel() {
+    public PersonDTO getModel() {
         return model;
     }
 
-    public void setModel(ModelDTO model) {
+    public void setModel(PersonDTO model) {
         this.model = model;
     }
 
-    public EmployerDTO getEmployer() {
+    public PersonDTO getEmployer() {
         return employer;
     }
 
-    public void setEmployer(EmployerDTO employer) {
+    public void setEmployer(PersonDTO employer) {
         this.employer = employer;
     }
 
