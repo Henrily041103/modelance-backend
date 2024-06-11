@@ -3,32 +3,83 @@ package modelance.backend.firebasedto.work;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.google.cloud.firestore.DocumentReference;
+class ContractAccountDTO {
+    
+    private String id;
+    private String fullName;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+}
+
+class ContractJobDTO {
+    private String id;
+    private String jobTitle;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getJobTitle() {
+        return jobTitle;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
+
+}
+
+class ContractStatusDTO {
+    private String id;
+    private String statusName;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
+}
 
 public class ContractDTO {
     private ArrayList<String> employerTerms;
     private ArrayList<String> modelTerms;
-    private DocumentReference model;
+    private ContractAccountDTO model;
+    private ContractAccountDTO employer;
     private long payment;
     private Date startTime;
     private Date endTime;
-    private DocumentReference job;
-    private DocumentReference status;
-
-    public ContractDTO() {
-    }
-
-    public ContractDTO(ArrayList<String> employerTerms, ArrayList<String> modelTerms, DocumentReference model,
-            long payment, Date startTime, Date endTime, DocumentReference job, DocumentReference status) {
-        this.employerTerms = employerTerms;
-        this.modelTerms = modelTerms;
-        this.model = model;
-        this.payment = payment;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.job = job;
-        this.status = status;
-    }
+    private ContractJobDTO job;
+    private ContractStatusDTO status;
 
     public ArrayList<String> getEmployerTerms() {
         return employerTerms;
@@ -46,11 +97,11 @@ public class ContractDTO {
         this.modelTerms = modelTerms;
     }
 
-    public DocumentReference getModel() {
+    public ContractAccountDTO getModel() {
         return model;
     }
 
-    public void setModel(DocumentReference model) {
+    public void setModel(ContractAccountDTO model) {
         this.model = model;
     }
 
@@ -78,20 +129,28 @@ public class ContractDTO {
         this.endTime = endTime;
     }
 
-    public DocumentReference getJob() {
+    public ContractJobDTO getJob() {
         return job;
     }
 
-    public void setJob(DocumentReference job) {
+    public void setJob(ContractJobDTO job) {
         this.job = job;
     }
 
-    public DocumentReference getStatus() {
+    public ContractStatusDTO getStatus() {
         return status;
     }
 
-    public void setStatus(DocumentReference status) {
+    public void setStatus(ContractStatusDTO status) {
         this.status = status;
+    }
+
+    public ContractAccountDTO getEmployer() {
+        return employer;
+    }
+
+    public void setEmployer(ContractAccountDTO employer) {
+        this.employer = employer;
     }
 
 }

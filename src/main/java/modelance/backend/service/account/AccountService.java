@@ -237,7 +237,7 @@ public class AccountService {
         Bucket bucket = storageClient.bucket();
 
         bucket.create(filepath, file.getInputStream());
-
+        
         String url = "https://firebasestorage.googleapis.com/v0/b/modelance-84abf.appspot.com/o/avatar%2F"
                 + userId + "."
                 + filetype
