@@ -15,7 +15,9 @@ public class ModelDTO extends AccountDTO{
     private int height;
 
     public ModelDTO() {
-    }    
+    }
+
+    
 
     public ModelDTO(String username, String fullName, GenderDTO gender, AccountRoleDTO role, AccountStatusDTO status,
             String avatar, Date createDate, Date dateOfBirth, String password, String id, String email,
@@ -84,11 +86,5 @@ public class ModelDTO extends AccountDTO{
 
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    @Override
-    public String toString() {
-        return "ModelDTO [industry=" + industry + ", location=" + location + ", bust=" + bust + ", hip=" + hip
-                + ", waist=" + waist + ", weight=" + weight + ", height=" + height + "]";
     }
 }

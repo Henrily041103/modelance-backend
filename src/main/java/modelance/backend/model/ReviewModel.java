@@ -1,18 +1,26 @@
 package modelance.backend.model;
 
 import java.util.Date;
-import modelance.backend.firebasedto.refdto.ContDTO;
-import modelance.backend.firebasedto.refdto.PersonDTO;
 
 public class ReviewModel {
     private String content;
-    private ContDTO contract;
+    private String contract;
     private Date datetime;
     private int rating;
-    private PersonDTO reviewer;
-    private PersonDTO reviewee;
+    private EmployerModel reviewer;
+    private ModelModel reviewee;
 
     public ReviewModel() {
+    }
+
+    public ReviewModel(String content, String contract, Date datetime, int rating, EmployerModel reviewer,
+            ModelModel reviewee) {
+        this.content = content;
+        this.contract = contract;
+        this.datetime = datetime;
+        this.rating = rating;
+        this.reviewer = reviewer;
+        this.reviewee = reviewee;
     }
 
     public String getContent() {
@@ -23,11 +31,11 @@ public class ReviewModel {
         this.content = content;
     }
 
-    public ContDTO getContract() {
+    public String getContract() {
         return contract;
     }
 
-    public void setContract(ContDTO contract) {
+    public void setContract(String contract) {
         this.contract = contract;
     }
 
@@ -47,19 +55,19 @@ public class ReviewModel {
         this.rating = rating;
     }
 
-    public PersonDTO getReviewer() {
+    public EmployerModel getReviewer() {
         return reviewer;
     }
 
-    public void setReviewer(PersonDTO reviewer) {
+    public void setReviewer(EmployerModel reviewer) {
         this.reviewer = reviewer;
     }
 
-    public PersonDTO getReviewee() {
+    public ModelModel getReviewee() {
         return reviewee;
     }
 
-    public void setReviewee(PersonDTO reviewee) {
+    public void setReviewee(ModelModel reviewee) {
         this.reviewee = reviewee;
     }
 

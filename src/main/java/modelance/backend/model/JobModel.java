@@ -2,128 +2,36 @@ package modelance.backend.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import com.google.cloud.firestore.annotation.Exclude;
 
 public class JobModel {
     private String id;
     private String title;
-    private ArrayList<String> imageURL;
-    private String jobDescription;
     private Long payment;
+    private ArrayList<String> imageURL;
+    private String category;
+    private EmployerModel employer;
     private Date startDate;
     private Date endDate;
-    private StatusDTO status;
-    private CategoryDTO category;
-    private EmployerDTO employer;
+    private String jobDescription;
+    private String status;
 
-    public class StatusDTO {
-        private String id;
-        private String statusName;
-
-        public StatusDTO(String id, String statusName) {
-            this.id = id;
-            this.statusName = statusName;
-        }
-
-        public StatusDTO() {
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getStatusName() {
-            return statusName;
-        }
-
-        public void setStatusName(String statusName) {
-            this.statusName = statusName;
-        }
-
-    }
-
-    public class CategoryDTO {
-        private String id;
-        private String categoryName;
-
-        public CategoryDTO(String id, String categoryName) {
-            this.id = id;
-            this.categoryName = categoryName;
-        }
-
-        public CategoryDTO() {
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getCategoryName() {
-            return categoryName;
-        }
-
-        public void setCategoryName(String categoryName) {
-            this.categoryName = categoryName;
-        }
-
-    }
-
-    public class EmployerDTO {
-        private String id;
-        private String fullName;
-
-        public EmployerDTO(String id, String fullName) {
-            this.id = id;
-            this.fullName = fullName;
-        }
-
-        public EmployerDTO() {
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getFullName() {
-            return fullName;
-        }
-
-        public void setFullName(String fullName) {
-            this.fullName = fullName;
-        }
-
-    }
-
-    public JobModel(String id, String title, ArrayList<String> imageURL, String jobDescription, Long payment,
-            Date startDate, Date endDate, StatusDTO status, CategoryDTO category, EmployerDTO employer) {
+    public JobModel(String id, String title, Long payment, ArrayList<String> imageURL, String category, EmployerModel employer,
+            Date startDate, Date endDate, String jobDescription, String status) {
         this.id = id;
         this.title = title;
-        this.imageURL = imageURL;
-        this.jobDescription = jobDescription;
         this.payment = payment;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.status = status;
+        this.imageURL = imageURL;
         this.category = category;
         this.employer = employer;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.jobDescription = jobDescription;
+        this.status = status;
     }
 
     public JobModel() {
     }
 
-    @Exclude
     public String getId() {
         return id;
     }
@@ -140,6 +48,14 @@ public class JobModel {
         this.title = title;
     }
 
+    public Long getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Long payment) {
+        this.payment = payment;
+    }
+
     public ArrayList<String> getImageURL() {
         return imageURL;
     }
@@ -148,20 +64,20 @@ public class JobModel {
         this.imageURL = imageURL;
     }
 
-    public String getJobDescription() {
-        return jobDescription;
+    public String getCategory() {
+        return category;
     }
 
-    public void setJobDescription(String jobDescription) {
-        this.jobDescription = jobDescription;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public Long getPayment() {
-        return payment;
+    public EmployerModel getEmployer() {
+        return employer;
     }
 
-    public void setPayment(Long payment) {
-        this.payment = payment;
+    public void setEmployer(EmployerModel employer) {
+        this.employer = employer;
     }
 
     public Date getStartDate() {
@@ -180,28 +96,35 @@ public class JobModel {
         this.endDate = endDate;
     }
 
-    public StatusDTO getStatus() {
+    public String getJobDescription() {
+        return jobDescription;
+    }
+
+    public void setJobDescription(String jobDescription) {
+        this.jobDescription = jobDescription;
+    }
+
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(StatusDTO status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public CategoryDTO getCategory() {
-        return category;
-    }
-
-    public void setCategory(CategoryDTO category) {
-        this.category = category;
-    }
-
-    public EmployerDTO getEmployer() {
-        return employer;
-    }
-
-    public void setEmployer(EmployerDTO employer) {
-        this.employer = employer;
-    }
+    // {
+    //     "title": "Hand model job",
+    //     "payment": 50000000,
+    //     "imageURL": [
+    //         ""
+    //     ],
+    //     "category": "2",
+    //     "employer": {
+    //         "id": "YIkgMPNSJoecrgOo3tsn"
+    //     },
+    //     "startDate": "2024-07-24T17:00:00.912+00:00",
+    //     "endDate": "2024-07-25T17:00:00.436+00:00",
+    //     "jobDescription": " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio."
+    // }
 
 }

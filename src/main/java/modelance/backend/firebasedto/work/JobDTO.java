@@ -3,9 +3,6 @@ package modelance.backend.firebasedto.work;
 import java.util.ArrayList;
 import java.util.Date;
 import com.google.cloud.firestore.annotation.Exclude;
-import modelance.backend.firebasedto.constant.CategoryDTO;
-import modelance.backend.firebasedto.constant.StatusDTO;
-import modelance.backend.firebasedto.refdto.PersonDTO;
 
 public class JobDTO {
     private String id;
@@ -17,9 +14,113 @@ public class JobDTO {
     private Date endDate;
     private StatusDTO status;
     private CategoryDTO category;
-    private PersonDTO employer;
+    private EmployerDTO employer;
+
+    public class StatusDTO {
+        private String id;
+        private String statusName;
+
+        public StatusDTO(String id, String statusName) {
+            this.id = id;
+            this.statusName = statusName;
+        }
+
+        public StatusDTO() {
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getStatusName() {
+            return statusName;
+        }
+
+        public void setStatusName(String statusName) {
+            this.statusName = statusName;
+        }
+
+    }
+
+    public class CategoryDTO {
+        private String id;
+        private String categoryName;
+
+        public CategoryDTO(String id, String categoryName) {
+            this.id = id;
+            this.categoryName = categoryName;
+        }
+
+        public CategoryDTO() {
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getCategoryName() {
+            return categoryName;
+        }
+
+        public void setCategoryName(String categoryName) {
+            this.categoryName = categoryName;
+        }
+
+    }
+
+    public class EmployerDTO {
+        private String id;
+        private String fullName;
+
+        public EmployerDTO(String id, String fullName) {
+            this.id = id;
+            this.fullName = fullName;
+        }
+
+        public EmployerDTO() {
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getFullName() {
+            return fullName;
+        }
+
+        public void setFullName(String fullName) {
+            this.fullName = fullName;
+        }
+
+    }
 
     public JobDTO() {
+    }
+
+    public JobDTO(String id, String title, ArrayList<String> imageURL, String jobDescription, Long payment,
+            Date startDate, Date endDate, StatusDTO status, CategoryDTO category, EmployerDTO employer) {
+        this.id = id;
+        this.title = title;
+        this.imageURL = imageURL;
+        this.jobDescription = jobDescription;
+        this.payment = payment;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
+        this.category = category;
+        this.employer = employer;
     }
 
     @Exclude
@@ -95,11 +196,11 @@ public class JobDTO {
         this.category = category;
     }
 
-    public PersonDTO getEmployer() {
+    public EmployerDTO getEmployer() {
         return employer;
     }
 
-    public void setEmployer(PersonDTO employer) {
+    public void setEmployer(EmployerDTO employer) {
         this.employer = employer;
     }
 
