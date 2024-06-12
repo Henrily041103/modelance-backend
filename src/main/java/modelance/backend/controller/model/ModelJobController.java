@@ -1,4 +1,4 @@
-package modelance.backend.controller;
+package modelance.backend.controller.model;
 
 import org.springframework.web.bind.annotation.RestController;
 

@@ -27,6 +27,7 @@ import modelance.backend.firebasedto.account.AccountRoleDTO;
 import modelance.backend.firebasedto.account.AccountStatusDTO;
 import modelance.backend.firebasedto.account.EmployerDTO;
 import modelance.backend.firebasedto.account.ModelDTO;
+import modelance.backend.firebasedto.work.WalletDTO;
 
 @Service
 public class AccountService {
@@ -100,6 +101,11 @@ public class AccountService {
                 ApiFuture<DocumentReference> addQuery = firestore.collection("Account").add(account);
                 DocumentReference addDoc = addQuery.get();
                 account.setId(addDoc.getId());
+
+                WalletDTO wallet = new WalletDTO();
+                wallet.setAccount(account);
+                wallet.setBalance(0);
+                firestore.collection("Wallet").add(wallet);
             }
 
         }
@@ -237,7 +243,7 @@ public class AccountService {
         Bucket bucket = storageClient.bucket();
 
         bucket.create(filepath, file.getInputStream());
-        
+
         String url = "https://firebasestorage.googleapis.com/v0/b/modelance-84abf.appspot.com/o/avatar%2F"
                 + userId + "."
                 + filetype

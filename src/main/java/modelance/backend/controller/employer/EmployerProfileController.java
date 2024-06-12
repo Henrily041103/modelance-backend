@@ -1,4 +1,4 @@
-package modelance.backend.controller;
+package modelance.backend.controller.employer;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;

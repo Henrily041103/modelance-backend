@@ -2,18 +2,78 @@ package modelance.backend.model;
 
 import java.util.Date;
 
+class TransactionAccountModel {
+    private String id;
+    private String role;
+
+    public TransactionAccountModel(String id, String role) {
+        this.id = id;
+        this.role = role;
+    }
+
+    public TransactionAccountModel() {
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+}
+
+class TransactionWalletModel {
+    private String id;
+    private TransactionAccountModel account;
+
+    public TransactionWalletModel(String id, String role) {
+        TransactionAccountModel account = new TransactionAccountModel(id, role);
+        this.account = account;
+    }
+
+    public TransactionWalletModel() {
+    }
+
+    public TransactionAccountModel getAccount() {
+        return account;
+    }
+
+    public void setAccount(TransactionAccountModel account) {
+        this.account = account;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+}
+
 public class TransactionModel {
-    private WalletModel wallet;
+    private TransactionWalletModel wallet;
     private String status;
     private Date datetime;
     private int amount;
     private boolean isBank;
 
-    public WalletModel getWallet() {
+    public TransactionWalletModel getWallet() {
         return wallet;
     }
 
-    public void setWallet(WalletModel wallet) {
+    public void setWallet(TransactionWalletModel wallet) {
         this.wallet = wallet;
     }
 

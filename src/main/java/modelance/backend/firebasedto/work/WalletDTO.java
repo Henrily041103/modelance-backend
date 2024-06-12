@@ -1,19 +1,19 @@
-package modelance.backend.firebasedto.wallet;
+package modelance.backend.firebasedto.work;
 
 import com.google.firebase.database.Exclude;
 
-import modelance.backend.model.AccountModel;
+import modelance.backend.firebasedto.account.AccountDTO;
 
 public class WalletDTO {
     @Exclude
     private String id;
-    private AccountModel account;
+    private AccountDTO account;
     private long balance;
 
     public WalletDTO() {
     }
 
-    public WalletDTO(String id, AccountModel account, long balance) {
+    public WalletDTO(String id, AccountDTO account, long balance) {
         this.id = id;
         this.account = account;
         this.balance = balance;
@@ -28,11 +28,11 @@ public class WalletDTO {
         this.id = id;
     }
 
-    public AccountModel getAccount() {
+    public AccountDTO getAccount() {
         return account;
     }
 
-    public void setAccount(AccountModel account) {
+    public void setAccount(AccountDTO account) {
         this.account = account;
     }
 

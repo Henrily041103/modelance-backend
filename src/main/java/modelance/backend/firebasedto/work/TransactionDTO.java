@@ -1,4 +1,4 @@
-package modelance.backend.firebasedto.wallet;
+package modelance.backend.firebasedto.work;
 
 import java.util.Date;
 

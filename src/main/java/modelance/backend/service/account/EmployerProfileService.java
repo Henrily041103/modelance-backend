@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
@@ -21,9 +23,11 @@ import modelance.backend.model.ReviewModel;
 @Service
 public class EmployerProfileService {
     private Firestore firestore;
+    private final ObjectMapper objectMapper;
 
-    public EmployerProfileService() {
+    public EmployerProfileService(ObjectMapper objectMapper) {
         this.firestore = FirestoreClient.getFirestore();
+        this.objectMapper = objectMapper;
     }
 
     public String updateEmployerProfile(EmployerDTO employerModel) throws InterruptedException, ExecutionException {
@@ -40,10 +44,7 @@ public class EmployerProfileService {
         // Get reviewer
         DocumentReference empRef = firestore.collection("Account").document(id);
         AccountDTO accDTO = empRef.get().get().toObject(AccountDTO.class);
-        EmployerModel employer = new EmployerModel();
-        employer.setId(empRef.getId());
-        employer.setFullName(accDTO.getFullName());
-        employer.setAvatar(accDTO.getAvatar());
+        EmployerModel employer = objectMapper.convertValue(accDTO, EmployerModel.class);
 
         // Get all reviews sent by given reviewer
         ApiFuture<QuerySnapshot> future = firestore.collection("Review").whereEqualTo("reviewer", empRef).get();
@@ -51,22 +52,18 @@ public class EmployerProfileService {
         for (QueryDocumentSnapshot doc : documents) {
             ReviewDTO reviewDTO = doc.toObject(ReviewDTO.class);
 
-            // Get contract ref
-            DocumentReference contractRef = reviewDTO.getContract();
-            
             // Get reviewee
-            DocumentReference revieweeRef = reviewDTO.getReviewee();
-            AccountDTO modelDTO = revieweeRef.get().get().toObject(AccountDTO.class);
+            AccountDTO reviewee = objectMapper.convertValue(reviewDTO.getReviewee(), AccountDTO.class);
 
             ModelModel model = new ModelModel();
-            model.setId(revieweeRef.getId());
-            model.setFullName(modelDTO.getFullName());
-            model.setAvatar(modelDTO.getAvatar());
+            model.setId(reviewee.getId());
+            model.setFullName(reviewee.getFullName());
+            model.setAvatar(reviewee.getAvatar());
 
             //Review DTO
             ReviewModel review = new ReviewModel();
             review.setContent(reviewDTO.getContent());
-            review.setContract(contractRef.getId());
+            review.setContract(reviewDTO.getContract().getId());
             review.setDatetime(reviewDTO.getDatetime());
             review.setRating(reviewDTO.getRating());
             review.setReviewer(employer);
