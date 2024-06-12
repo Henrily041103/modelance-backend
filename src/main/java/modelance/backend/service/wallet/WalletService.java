@@ -15,22 +15,22 @@ import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 
 import modelance.backend.firebasedto.account.AccountDTO;
-import modelance.backend.firebasedto.account.AccountRoleDTO;
+// import modelance.backend.firebasedto.account.AccountRoleDTO;
 import modelance.backend.firebasedto.wallet.TransactionDTO;
 import modelance.backend.firebasedto.wallet.WalletDTO;
 import modelance.backend.firebasedto.work.ContractDTO;
-import modelance.backend.model.AccountModel;
-import modelance.backend.model.ContractModel;
+// import modelance.backend.model.AccountModel;
+// import modelance.backend.model.ContractModel;
 import modelance.backend.service.account.AccountService;
 
 @Service
 public class WalletService {
     private final Firestore firestore;
     private final AccountService accountService;
-    private final ObjectMapper objectMapper;
+    // private final ObjectMapper objectMapper;
 
     public WalletService(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+        // this.objectMapper = objectMapper;
         this.firestore = FirestoreClient.getFirestore();
         this.accountService = new AccountService();
     }
@@ -95,8 +95,8 @@ public class WalletService {
         if (contractSnap.exists()) {
             ContractDTO contractDTO = contractSnap.toObject(ContractDTO.class);
             if (contractDTO == null) return transaction;
-            AccountDTO employer = objectMapper.convertValue(contractDTO.getEmployer(), AccountDTO.class);
-            AccountDTO model = objectMapper.convertValue(contractDTO.getModel(), AccountDTO.class);
+            // AccountDTO employer = objectMapper.convertValue(contractDTO.getEmployer(), AccountDTO.class);
+            // AccountDTO model = objectMapper.convertValue(contractDTO.getModel(), AccountDTO.class);
 
 
         }

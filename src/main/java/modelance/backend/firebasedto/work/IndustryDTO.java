@@ -1,6 +1,5 @@
 package modelance.backend.firebasedto.work;
 
-import com.google.cloud.firestore.annotation.Exclude;
 import com.google.cloud.firestore.annotation.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
@@ -16,7 +15,6 @@ public class IndustryDTO {
     public IndustryDTO() {
     }
 
-    @Exclude
     public String getId() {
         return id;
     }

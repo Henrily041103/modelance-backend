@@ -1,11 +1,10 @@
 package modelance.backend.firebasedto.account;
 
 import java.util.Date;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.cloud.firestore.annotation.Exclude;
-import com.google.cloud.firestore.annotation.IgnoreExtraProperties;
 
-@IgnoreExtraProperties
+@JsonIgnoreProperties({"role", "createDate", "password"})
 public class AccountDTO {
     private String username;
     private String fullName;

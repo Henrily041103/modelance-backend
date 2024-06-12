@@ -2,6 +2,11 @@ package modelance.backend.model;
 
 import java.util.Date;
 
+import modelance.backend.firebasedto.account.AccountStatusDTO;
+import modelance.backend.firebasedto.account.GenderDTO;
+import modelance.backend.firebasedto.work.IndustryDTO;
+import modelance.backend.firebasedto.work.LocationDTO;
+
 public class ModelProfileModel {
     private String id;
     private String username;
@@ -9,28 +14,17 @@ public class ModelProfileModel {
     private String email;
     private String avatar;
     private Date dateOfBirth;
-    private String gender;
-    private String accountStatus;
-    private ModelBodyIndexModel bodyIndex;
-    private String industry;
-    private LocationModel location;
+    private GenderDTO gender;
+    private AccountStatusDTO status;
+    private int bust;
+    private int height;
+    private int hip;
+    private int waist;
+    private int weight;
+    private IndustryDTO industry;
+    private LocationDTO location;
 
     public ModelProfileModel() {
-    }
-
-    public ModelProfileModel(String id, String username, String fullName, String email, String avatar, Date dateOfBirth,
-            String gender, String accountStatus, ModelBodyIndexModel bodyIndex, String industry, LocationModel location) {
-        this.id = id;
-        this.username = username;
-        this.fullName = fullName;
-        this.email = email;
-        this.avatar = avatar;
-        this.dateOfBirth = dateOfBirth;
-        this.gender = gender;
-        this.accountStatus = accountStatus;
-        this.bodyIndex = bodyIndex;
-        this.industry = industry;
-        this.location = location;
     }
 
     public String getId() {
@@ -81,44 +75,77 @@ public class ModelProfileModel {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getGender() {
+    public GenderDTO getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(GenderDTO gender) {
         this.gender = gender;
     }
 
-    public String getAccountStatus() {
-        return accountStatus;
+    public AccountStatusDTO getStatus() {
+        return status;
     }
 
-    public void setAccountStatus(String accountStatus) {
-        this.accountStatus = accountStatus;
+    public void setStatus(AccountStatusDTO status) {
+        this.status = status;
     }
 
-    public ModelBodyIndexModel getBodyIndex() {
-        return bodyIndex;
+    public int getBust() {
+        return bust;
     }
 
-    public void setBodyIndex(ModelBodyIndexModel bodyIndex) {
-        this.bodyIndex = bodyIndex;
+    public void setBust(int bust) {
+        this.bust = bust;
     }
 
-    public String getIndustry() {
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getHip() {
+        return hip;
+    }
+
+    public void setHip(int hip) {
+        this.hip = hip;
+    }
+
+    public int getWaist() {
+        return waist;
+    }
+
+    public void setWaist(int waist) {
+        this.waist = waist;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public IndustryDTO getIndustry() {
         return industry;
     }
 
-    public void setIndustry(String industry) {
+    public void setIndustry(IndustryDTO industry) {
         this.industry = industry;
     }
 
-    public LocationModel getLocation() {
+    public LocationDTO getLocation() {
         return location;
     }
 
-    public void setLocation(LocationModel location) {
+    public void setLocation(LocationDTO location) {
         this.location = location;
     }
 
+    
 }

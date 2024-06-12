@@ -15,3 +15,11 @@ Change from DocRef to Map in Firebase.
 - contract {id}
 - reviewee (Account) {id, fullName}
 - reviewer (Account) {id, fullName}
+
+Reworks on URI
+/model/home
+/model/profile
+
+
+/employer/home
+/employer/profile
