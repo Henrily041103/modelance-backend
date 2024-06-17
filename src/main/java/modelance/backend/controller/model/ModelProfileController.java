@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -31,7 +30,7 @@ public class ModelProfileController {
         this.profileService = profileService;
     }
 
-    @PutMapping("update")
+    @PostMapping("update")
     public ModelProfileUpdateResponse updateModel(@RequestBody ModelProfileUpdateRequest updates,
             Authentication authentication)
             throws InterruptedException, ExecutionException {
@@ -48,7 +47,7 @@ public class ModelProfileController {
         return response;
     }
 
-    @PutMapping("social-media/update")
+    @PostMapping("social-media/update")
     public ModelSocialMediaUpdateResponse updateSocialMedia(@RequestBody List<SocialMediaModel> updates,
             Authentication authentication)
             throws InterruptedException, ExecutionException {
@@ -68,7 +67,7 @@ public class ModelProfileController {
         return response;
     }
 
-    @PutMapping("category/update")
+    @PostMapping("category/update")
     public ModelCategoryUpdateResponse updateCategory(@RequestBody List<String> updates,
             Authentication authentication)
             throws InterruptedException, ExecutionException {

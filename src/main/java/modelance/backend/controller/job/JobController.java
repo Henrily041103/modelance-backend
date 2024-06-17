@@ -3,8 +3,8 @@ package modelance.backend.controller.job;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import modelance.backend.model.JobModel;
 import modelance.backend.service.job.JobService;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
-@Controller
+@RestController
 @RequestMapping("/job")
 public class JobController {
     private JobService jobService;
