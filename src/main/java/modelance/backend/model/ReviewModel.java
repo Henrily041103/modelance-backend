@@ -7,14 +7,14 @@ public class ReviewModel {
     private String contract;
     private Date datetime;
     private int rating;
-    private EmployerModel reviewer;
-    private ModelModel reviewee;
+    private AccountModel reviewer;
+    private AccountModel reviewee;
 
     public ReviewModel() {
     }
 
-    public ReviewModel(String content, String contract, Date datetime, int rating, EmployerModel reviewer,
-            ModelModel reviewee) {
+    public ReviewModel(String content, String contract, Date datetime, int rating, AccountModel reviewer,
+            AccountModel reviewee) {
         this.content = content;
         this.contract = contract;
         this.datetime = datetime;
@@ -55,19 +55,19 @@ public class ReviewModel {
         this.rating = rating;
     }
 
-    public EmployerModel getReviewer() {
+    public AccountModel getReviewer() {
         return reviewer;
     }
 
-    public void setReviewer(EmployerModel reviewer) {
+    public void setReviewer(AccountModel reviewer) {
         this.reviewer = reviewer;
     }
 
-    public ModelModel getReviewee() {
+    public AccountModel getReviewee() {
         return reviewee;
     }
 
-    public void setReviewee(ModelModel reviewee) {
+    public void setReviewee(AccountModel reviewee) {
         this.reviewee = reviewee;
     }
 

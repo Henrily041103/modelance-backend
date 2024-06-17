@@ -3,17 +3,20 @@ package modelance.backend.service.account;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
@@ -28,15 +31,16 @@ import modelance.backend.firebasedto.account.AccountStatusDTO;
 import modelance.backend.firebasedto.account.EmployerDTO;
 import modelance.backend.firebasedto.account.ModelDTO;
 import modelance.backend.firebasedto.work.WalletDTO;
+import modelance.backend.model.ModelModel;
 
 @Service
 public class AccountService {
     private Firestore firestore;
     private StorageClient storageClient;
 
-    public AccountService() {
-        this.firestore = FirestoreClient.getFirestore();
-        this.storageClient = StorageClient.getInstance();
+    public AccountService(Firestore firestore, StorageClient storageClient) {
+        this.firestore = firestore;
+        this.storageClient = storageClient;
     }
 
     public List<AccountAuthority> getAuthorities(AccountDTO account) {
@@ -71,8 +75,10 @@ public class AccountService {
             if (accountDocument.exists()) {
                 try {
                     accountDTO = accountDocument.toObject(AccountDTO.class);
-                    if (accountDTO != null)
+                    if (accountDTO != null) {
                         accountDTO.setId(accountDocument.getId());
+                        accountDTO.setPassword("");
+                    }
                 } catch (ClassCastException | NullPointerException e) {
                     throw new NoAccountExistsException();
                 }
@@ -96,11 +102,19 @@ public class AccountService {
                 account = new AccountDTO(username, password);
                 account.setEmail(email);
                 account.setCreateDate(Calendar.getInstance().getTime());
-                account.setRole(new AccountRoleDTO("1", role));
+                account.setRole(new AccountRoleDTO(role));
                 account.setStatus(new AccountStatusDTO("1", "active"));
                 ApiFuture<DocumentReference> addQuery = firestore.collection("Account").add(account);
                 DocumentReference addDoc = addQuery.get();
                 account.setId(addDoc.getId());
+                account.setPassword("");
+
+                if (role.equals("model")) {
+                    firestore.collection("Model").document(addDoc.getId()).set(new ModelDTO());
+                }
+                if (role.equals("employer")) {
+                    firestore.collection("Employer").document(addDoc.getId()).set(new EmployerDTO());
+                }
 
                 WalletDTO wallet = new WalletDTO();
                 wallet.setAccount(account);
@@ -163,7 +177,7 @@ public class AccountService {
         return result;
     }
 
-    public ModelDTO loadModelModel(String id)
+    private ModelDTO loadModelModel(String id)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
         ModelDTO account = null;
         if (id.trim() != "") {
@@ -198,7 +212,7 @@ public class AccountService {
         return account;
     }
 
-    public EmployerDTO loadEmployerModel(String id)
+    private EmployerDTO loadEmployerModel(String id)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
         EmployerDTO employerModel = null;
         if (id.trim() != "") {
@@ -262,22 +276,118 @@ public class AccountService {
         return url;
     }
 
-    public AccountDTO getAccountById(String userId) throws InterruptedException, ExecutionException {
+    public AccountDTO getAccountByRoleId(String userId, String role)
+            throws InterruptedException, ExecutionException, NoAccountExistsException {
         AccountDTO account = null;
-
-        try {
-            DocumentSnapshot employerDoc = firestore.collection("Account").document(userId).get().get();
-            if (!employerDoc.exists())
-                throw new NoAccountExistsException();
-
-            AccountDTO employer = employerDoc.toObject(AccountDTO.class);
-            if (employer == null)
-                throw new NoAccountExistsException();
-            employer.setId(userId);
-        } catch (NoAccountExistsException e) {
-            e.printStackTrace();
+        String roleString = role.substring(5);
+        switch (roleString) {
+            case "role_model":
+                account = loadModelModel(userId);
+                break;
+            case "role_employer":
+                account = loadEmployerModel(userId);
+                break;
+            default:
+                account = firestore.collection("Account").document(userId).get().get().toObject(AccountDTO.class);
+                if (account != null) {
+                    account.setPassword("");
+                    account.setId(userId);
+                }
         }
 
         return account;
+    }
+
+    public List<AccountDTO> getAccountsByRole(String role, Integer limit)
+            throws InterruptedException, ExecutionException, QueryMismatchException {
+        List<AccountDTO> accounts = null;
+        String roleString = role.substring(5);
+        QuerySnapshot query = firestore.collection("Account")
+                .whereEqualTo("role.roleName", roleString)
+                .limit(limit.intValue()).get()
+                .get();
+        if (!query.isEmpty()) {
+            List<String> ids = new ArrayList<>();
+            accounts = new ArrayList<>();
+            List<QueryDocumentSnapshot> docs = query.getDocuments();
+            for (QueryDocumentSnapshot document : docs) {
+                ids.add(document.getId());
+            }
+            switch (roleString) {
+                case "model":
+                    QuerySnapshot modelQuery = firestore.collection("Model").whereIn(FieldPath.documentId(), ids)
+                            .get().get();
+                    List<QueryDocumentSnapshot> modelDocs = modelQuery.getDocuments();
+                    if (modelDocs.size() != docs.size())
+                        throw new QueryMismatchException();
+                    for (int i = 0; i < modelDocs.size(); i++) {
+                        AccountDTO account = docs.get(i).toObject(AccountDTO.class);
+                        ModelDTO model = modelDocs.get(i).toObject(ModelDTO.class);
+                        model.copyFrom(account);
+                        accounts.add(model);
+                    }
+                    break;
+                case "employer":
+                    QuerySnapshot employerQuery = firestore.collection("Model").whereIn(FieldPath.documentId(), ids)
+                            .get().get();
+                    List<QueryDocumentSnapshot> employerDocs = employerQuery.getDocuments();
+                    if (employerDocs.size() != docs.size())
+                        throw new QueryMismatchException();
+                    for (int i = 0; i < employerDocs.size(); i++) {
+                        AccountDTO account = docs.get(i).toObject(AccountDTO.class);
+                        EmployerDTO employer = employerDocs.get(i).toObject(EmployerDTO.class);
+                        employer.copyFrom(account);
+                        accounts.add(employer);
+                    }
+                    break;
+            }
+        }
+
+        return accounts;
+    }
+
+    public AccountDTO getCurrentAccount(Authentication authentication)
+            throws InterruptedException, ExecutionException, NoAccountExistsException {
+        // get userId
+        String userId = authentication.getName();
+        // get role
+        String role = "";
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        for (GrantedAuthority authority : authorities) {
+            role = authority.getAuthority().toLowerCase();
+        }
+
+        return getAccountByRoleId(userId, role);
+    }
+
+    public AccountDTO getAccountById(String userId)
+            throws InterruptedException, ExecutionException, NoAccountExistsException {
+        AccountDTO account = null;
+        account = firestore.collection("Account").document(userId).get().get().toObject(AccountDTO.class);
+        if (account != null) {
+            account.setPassword("");
+            account.setId(userId);
+        }
+
+        return account;
+    }
+
+    public List<ModelModel> getAllModels(List<String> category)
+            throws InterruptedException, ExecutionException {
+        List<ModelModel> modelList = new ArrayList<>();
+
+        QuerySnapshot modelQuery = firestore.collection("Model").whereArrayContainsAny("category", category)
+                .get().get();
+        List<QueryDocumentSnapshot> queryResult = modelQuery.getDocuments();
+        if (!queryResult.isEmpty()) {
+            for (QueryDocumentSnapshot document : queryResult) {
+                if (document.exists()) {
+                    ModelModel model = document.toObject(ModelModel.class);
+                    modelList.add(model);
+                }
+            }
+        }
+
+        return modelList;
     }
 }

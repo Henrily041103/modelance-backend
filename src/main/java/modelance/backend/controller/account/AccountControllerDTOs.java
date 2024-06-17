@@ -1,5 +1,8 @@
 package modelance.backend.controller.account;
 
+import java.util.Date;
+
+import modelance.backend.firebasedto.account.GenderDTO;
 import modelance.backend.model.AccountModel;
 
 class LoginRequest {
@@ -144,6 +147,55 @@ class ChangePasswordResponse {
     public void setResult(boolean result) {
         this.result = result;
     }
+}
+
+class ChangeAccountDataRequest {
+    private String username;
+    private String fullName;
+    private GenderDTO gender;
+    private Date dateOfBirth;
+    private String email;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public GenderDTO getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderDTO gender) {
+        this.gender = gender;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 }
 
 class ChangeAccountDataResponse {

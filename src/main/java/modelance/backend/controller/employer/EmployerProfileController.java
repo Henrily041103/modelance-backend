@@ -1,52 +1,59 @@
 package modelance.backend.controller.employer;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import modelance.backend.firebasedto.account.EmployerDTO;
 import modelance.backend.model.ReviewModel;
-import modelance.backend.service.account.AccountService;
 import modelance.backend.service.account.NoAccountExistsException;
-import modelance.backend.service.account.EmployerProfileService;
+import modelance.backend.service.employer.EmployerProfileService;
+
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/eprofile")
+@RequestMapping("/employer/profile")
 public class EmployerProfileController {
     private final EmployerProfileService profileService;
-    private final AccountService accountService;
+    private final ObjectMapper objectMapper;
 
-    public EmployerProfileController(EmployerProfileService profileService, AccountService accountService) {
+    public EmployerProfileController(EmployerProfileService profileService, ObjectMapper objectMapper) {
         this.profileService = profileService;
-        this.accountService = accountService;
+        this.objectMapper = objectMapper;
     }
 
-    @GetMapping("/{id}")
-    public EmployerDTO getEmployer(@PathVariable String id) {
-        EmployerDTO employerAccount = null;
+    @PutMapping("update")
+    public EmployerProfileUpdateResponse updateEmployer(@RequestBody EmployerDTO updates,
+            Authentication authentication)
+            throws InterruptedException, ExecutionException {
+        EmployerProfileUpdateResponse response = new EmployerProfileUpdateResponse();
+        response.setResult(false);
+
         try {
-            employerAccount = accountService.loadEmployerModel(id);
+            Map<String, Object> updatesMap = objectMapper.convertValue(updates,
+                    new TypeReference<Map<String, Object>>() {
+                    });
+            response.setResult(profileService.updateEmployerProfile(updatesMap, authentication));
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
         }
-        return employerAccount;
+
+        return response;
     }
 
-    @PutMapping("/update")
-    public String updateEmployer(@RequestBody EmployerDTO employerModel)
+    @GetMapping("review")
+    public List<ReviewModel> getAllReview(Authentication authentication)
             throws InterruptedException, ExecutionException {
-        return profileService.updateEmployerProfile(employerModel);
-    }
-
-    @GetMapping("/review/{id}")
-    public ArrayList<ReviewModel> getAllReview(@PathVariable String id) throws InterruptedException, ExecutionException {
-        return profileService.getAllReview(id);
+        return profileService.getAllReview(authentication);
     }
 
 }

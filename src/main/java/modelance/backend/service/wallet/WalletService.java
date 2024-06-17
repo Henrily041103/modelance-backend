@@ -24,6 +24,7 @@ import modelance.backend.firebasedto.work.TransactionDTO;
 import modelance.backend.firebasedto.work.WalletDTO;
 import modelance.backend.model.TransactionModel;
 import modelance.backend.service.account.AccountService;
+import modelance.backend.service.account.NoAccountExistsException;
 
 @Service
 public class WalletService {
@@ -40,13 +41,12 @@ public class WalletService {
         this.accountService = accountService;
     }
 
-    public WalletDTO getWallet(Authentication authentication)
-            throws InterruptedException, ExecutionException {
+    public WalletDTO getOwnWallet(Authentication authentication)
+            throws InterruptedException, ExecutionException, NoAccountExistsException {
         WalletDTO result = null;
 
         try {
-            String userId = authentication.getName();
-            AccountDTO account = accountService.getAccountById(userId);
+            AccountDTO account = accountService.getCurrentAccount(authentication);
 
             QuerySnapshot walletQuery = firestore.collection("Wallet").whereEqualTo("account.id", account.getId()).get()
                     .get();
@@ -56,7 +56,7 @@ public class WalletService {
             if (!walletDoc.exists())
                 throw new NoWalletExistsException();
             WalletDTO walletModel = walletDoc.toObject(WalletDTO.class);
-            // walletModel.setAccount(account);
+            walletModel.setAccount(account);
 
             result = walletModel;
 
@@ -67,8 +67,8 @@ public class WalletService {
         return result;
     }
 
-    public WalletDTO getWallet(String userId)
-            throws InterruptedException, ExecutionException {
+    private WalletDTO getWallet(String userId)
+            throws InterruptedException, ExecutionException, NoAccountExistsException {
         WalletDTO result = null;
 
         try {
@@ -94,14 +94,13 @@ public class WalletService {
     }
 
     public List<TransactionDTO> getTransactions(Authentication authentication)
-            throws InterruptedException, ExecutionException {
+            throws InterruptedException, ExecutionException, NoAccountExistsException {
         List<TransactionDTO> transactions = new ArrayList<>();
 
         String userId = authentication.getName();
-        AccountDTO account = accountService.getAccountById(userId);
 
         QuerySnapshot TransactionDTOQuery = firestore.collection("TransactionDTO")
-                .whereEqualTo("wallet.account.id", account.getId()).get().get();
+                .whereEqualTo("wallet.account.id", userId).get().get();
         if (TransactionDTOQuery.isEmpty())
             return transactions;
         List<QueryDocumentSnapshot> TransactionDTODocs = TransactionDTOQuery.getDocuments();
@@ -114,13 +113,13 @@ public class WalletService {
     }
 
     public List<TransactionDTO> endOfContractMoneyTransfer(String contractId)
-            throws InterruptedException, ExecutionException {
+            throws InterruptedException, ExecutionException, NoAccountExistsException {
         List<TransactionDTO> transactions = null;
 
         DocumentSnapshot contractSnap = firestore.collection("Contract").document(contractId).get().get();
 
         if (contractSnap.exists()) {
-            //initialize data
+            // initialize data
             ContractDTO contractDTO = contractSnap.toObject(ContractDTO.class);
             if (contractDTO == null)
                 return transactions;
@@ -136,7 +135,7 @@ public class WalletService {
                 return transactions;
             }
 
-            //create wallet transactions
+            // create wallet transactions
             TransactionDTO employerTransaction = new TransactionDTO("", "approved", date, false,
                     (long) (-contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER), employerWallet);
             TransactionDTO modelTransaction = new TransactionDTO("", "approved", date, false,
@@ -146,15 +145,17 @@ public class WalletService {
             firestore.collection("Transaction").add(eTransactionModel);
             firestore.collection("Transaction").add(mTransactionModel);
 
-            //update wallet
+            // update wallet
             Map<String, Object> employerWalletUpdate = new HashMap<>();
             Map<String, Object> modelWalletUpdate = new HashMap<>();
-            employerWalletUpdate.put("balance", employerWallet.getBalance() - contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER);
-            modelWalletUpdate.put("balance", modelWallet.getBalance() + contractDTO.getPayment() * MODEL_CONTRACT_MULTIPLIER);
+            employerWalletUpdate.put("balance",
+                    employerWallet.getBalance() - contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER);
+            modelWalletUpdate.put("balance",
+                    modelWallet.getBalance() + contractDTO.getPayment() * MODEL_CONTRACT_MULTIPLIER);
             firestore.collection("Wallet").document(employerWallet.getId()).update(employerWalletUpdate);
             firestore.collection("Wallet").document(modelWallet.getId()).update(modelWalletUpdate);
 
-            //add to results
+            // add to results
             transactions.add(modelTransaction);
             transactions.add(employerTransaction);
         }

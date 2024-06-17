@@ -1,5 +1,9 @@
-package modelance.backend.service.account;
+package modelance.backend.service.employer;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.springframework.stereotype.Service;
 
@@ -12,33 +16,32 @@ import modelance.backend.firebasedto.work.JobDTO;
 import modelance.backend.model.ContractModel;
 
 @Service
-public class EmployerContractManagementService {
+public class EmployerContractService {
     private Firestore firestore;
     private ObjectMapper objectMapper;
 
-    public EmployerContractManagementService(ObjectMapper objectMapper) {
+    public EmployerContractService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
         this.firestore = FirestoreClient.getFirestore();
     }
 
-    public String addContract(ContractModel contractModel) throws InterruptedException, ExecutionException {
+    ContractDTO addContract(ContractModel contractModel) throws InterruptedException, ExecutionException {
         // Check duplicated jobs
         DocumentReference jobRef = firestore.collection("Job").document(contractModel.getJob().getId());
+        ContractDTO contractDTO = null;
         JobDTO jobDTO = jobRef.get().get().toObject(JobDTO.class);
-        if (jobDTO == null) return "Contract formatted wrongly!";
-        String jobStatusDoc = jobDTO.getStatus().getId();
-        if (!jobStatusDoc.equals("1")) return "duplicated job";
+        if (jobDTO == null)
+            return contractDTO;
 
         // Contract Model
-        ContractDTO contractDTO = objectMapper.convertValue(contractModel, ContractDTO.class);
+        contractDTO = objectMapper.convertValue(contractModel, ContractDTO.class);
 
-        //Update job status
+        // Update job status
         DocumentReference jobStatusRef = firestore.collection("JobStatus").document("2");
         jobRef.update("status", jobStatusRef);
-        System.out.println(jobStatusRef + "2");
 
         firestore.collection("Contract").add(contractDTO);
-        return "Added contract";
+        return contractDTO;
     }
 
     public ContractModel viewContract(String id) throws InterruptedException, ExecutionException {
@@ -50,5 +53,17 @@ public class EmployerContractManagementService {
         ContractModel contractModel = objectMapper.convertValue(contractDTO, ContractModel.class);
 
         return contractModel;
+    }
+
+    public String changeContract(String id, List<String> employerTerms, long payment, Date startDate, Date endDate)
+            throws InterruptedException, ExecutionException {
+        Map<String, Object> changeMap = new HashMap<>();
+        changeMap.put("employerTerms", employerTerms);
+        changeMap.put("payment", payment);
+        changeMap.put("startDate", startDate);
+        changeMap.put("endDate", endDate);
+
+        firestore.collection("Contract").document(id).update(changeMap);
+        return "Success";
     }
 }

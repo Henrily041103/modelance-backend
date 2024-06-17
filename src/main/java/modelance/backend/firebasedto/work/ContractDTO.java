@@ -1,20 +1,20 @@
 package modelance.backend.firebasedto.work;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 
 public class ContractDTO {
-    private ArrayList<String> employerTerms;
-    private ArrayList<String> modelTerms;
+    private List<String> employerTerms;
+    private List<String> modelTerms;
     private Long payment;
-    private Date startTime;
-    private Date endTime;
+    private Date startDate;
+    private Date endDate;
     private JobDTO job;
     private ModelDTO model;
     private EmployerDTO employer;
     private StatusDTO status;
 
-    public class JobDTO {
+    class JobDTO {
         private String id;
         private String title;
 
@@ -44,13 +44,15 @@ public class ContractDTO {
 
     }
 
-    public class ModelDTO {
+    class ModelDTO {
         private String id;
         private String fullName;
+        private String avatar;
 
-        public ModelDTO(String id, String fullName) {
+        public ModelDTO(String id, String fullName, String avatar) {
             this.id = id;
             this.fullName = fullName;
+            this.avatar = avatar;
         }
 
         public ModelDTO() {
@@ -72,15 +74,21 @@ public class ContractDTO {
             this.fullName = fullName;
         }
 
+        public String getAvatar() {
+            return avatar;
+        }
+
     }
 
-    public class EmployerDTO {
+    class EmployerDTO {
         private String id;
         private String fullName;
+        private String avatar;
 
-        public EmployerDTO(String id, String fullName) {
+        public EmployerDTO(String id, String fullName, String avatar) {
             this.id = id;
             this.fullName = fullName;
+            this.avatar = avatar;
         }
 
         public EmployerDTO() {
@@ -102,9 +110,17 @@ public class ContractDTO {
             this.fullName = fullName;
         }
 
+        public String getAvatar() {
+            return avatar;
+        }
+
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
+        }
+
     }
 
-    public class StatusDTO {
+    class StatusDTO {
         private String id;
         private String statusName;
 
@@ -134,35 +150,19 @@ public class ContractDTO {
 
     }
 
-    public ContractDTO() {
-    }
-
-    public ContractDTO(ArrayList<String> employerTerms, ArrayList<String> modelTerms, Long payment, Date startTime,
-            Date endTime, JobDTO job, ModelDTO model, EmployerDTO employer, StatusDTO status) {
-        this.employerTerms = employerTerms;
-        this.modelTerms = modelTerms;
-        this.payment = payment;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.job = job;
-        this.model = model;
-        this.employer = employer;
-        this.status = status;
-    }
-
-    public ArrayList<String> getEmployerTerms() {
+    public List<String> getEmployerTerms() {
         return employerTerms;
     }
 
-    public void setEmployerTerms(ArrayList<String> employerTerms) {
+    public void setEmployerTerms(List<String> employerTerms) {
         this.employerTerms = employerTerms;
     }
 
-    public ArrayList<String> getModelTerms() {
+    public List<String> getModelTerms() {
         return modelTerms;
     }
 
-    public void setModelTerms(ArrayList<String> modelTerms) {
+    public void setModelTerms(List<String> modelTerms) {
         this.modelTerms = modelTerms;
     }
 
@@ -174,20 +174,20 @@ public class ContractDTO {
         this.payment = payment;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setStartDate(Date startTime) {
+        this.startDate = startTime;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setEndDate(Date endTime) {
+        this.endDate = endTime;
     }
 
     public JobDTO getJob() {
@@ -198,12 +198,20 @@ public class ContractDTO {
         this.job = job;
     }
 
+    public void setJob(String id, String title) {
+        this.job = new JobDTO(id, title);
+    }
+
     public ModelDTO getModel() {
         return model;
     }
 
     public void setModel(ModelDTO model) {
         this.model = model;
+    }
+
+    public void setModel(String id, String fullName, String avatar) {
+        this.model = new ModelDTO(id, fullName, avatar);
     }
 
     public EmployerDTO getEmployer() {
@@ -214,12 +222,20 @@ public class ContractDTO {
         this.employer = employer;
     }
 
+    public void setEmployer(String fullName, String id, String avatar) {
+        this.employer = new EmployerDTO(id, fullName, avatar);
+    }
+
     public StatusDTO getStatus() {
         return status;
     }
 
     public void setStatus(StatusDTO status) {
         this.status = status;
+    }
+
+    public void setStatus(String id, String statusName) {
+        this.status = new StatusDTO(id, statusName);
     }
 
 }

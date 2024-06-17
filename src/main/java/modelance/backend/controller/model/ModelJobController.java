@@ -3,7 +3,8 @@ package modelance.backend.controller.model;
 import org.springframework.web.bind.annotation.RestController;
 
 import modelance.backend.model.JobModel;
-import modelance.backend.service.account.ModelJobService;
+import modelance.backend.service.model.ModelJobService;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
-@RequestMapping("/job")
+@RequestMapping("/model/job")
 public class ModelJobController {
     private final ModelJobService jobService;
 
@@ -20,12 +21,12 @@ public class ModelJobController {
         this.jobService = jobService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("")
     public ArrayList<JobModel> getAllJobs() throws ExecutionException, InterruptedException {
-        return jobService.getJobListService();
+        return jobService.getAllJobs();
     }
 
-    @GetMapping("/details/{id}")
+    @GetMapping("{id}")
     public JobModel getJobDetails(@PathVariable String id) throws InterruptedException, ExecutionException {
         return jobService.getJobsById(id);
     }

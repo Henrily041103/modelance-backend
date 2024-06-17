@@ -1,35 +1,27 @@
 package modelance.backend.model;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class JobModel {
     private String id;
     private String title;
     private Long payment;
-    private ArrayList<String> imageURL;
+    private List<String> imageURL;
     private String category;
     private EmployerModel employer;
     private Date startDate;
     private Date endDate;
     private String jobDescription;
-    private String status;
+    private JobStatusModel status;
+    private List<ModelModel> applicants;
 
-    public JobModel(String id, String title, Long payment, ArrayList<String> imageURL, String category, EmployerModel employer,
-            Date startDate, Date endDate, String jobDescription, String status) {
-        this.id = id;
-        this.title = title;
-        this.payment = payment;
-        this.imageURL = imageURL;
-        this.category = category;
-        this.employer = employer;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.jobDescription = jobDescription;
-        this.status = status;
+    public List<ModelModel> getApplicants() {
+        return applicants;
     }
 
-    public JobModel() {
+    public void setApplicants(List<ModelModel> applicants) {
+        this.applicants = applicants;
     }
 
     public String getId() {
@@ -56,11 +48,11 @@ public class JobModel {
         this.payment = payment;
     }
 
-    public ArrayList<String> getImageURL() {
+    public List<String> getImageURL() {
         return imageURL;
     }
 
-    public void setImageURL(ArrayList<String> imageURL) {
+    public void setImageURL(List<String> imageURL) {
         this.imageURL = imageURL;
     }
 
@@ -104,27 +96,14 @@ public class JobModel {
         this.jobDescription = jobDescription;
     }
 
-    public String getStatus() {
+    public JobStatusModel getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(JobStatusModel status) {
         this.status = status;
     }
-
-    // {
-    //     "title": "Hand model job",
-    //     "payment": 50000000,
-    //     "imageURL": [
-    //         ""
-    //     ],
-    //     "category": "2",
-    //     "employer": {
-    //         "id": "YIkgMPNSJoecrgOo3tsn"
-    //     },
-    //     "startDate": "2024-07-24T17:00:00.912+00:00",
-    //     "endDate": "2024-07-25T17:00:00.436+00:00",
-    //     "jobDescription": " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio."
-    // }
-
+    public void setStatus(String id, String statusName) {
+        this.status = new JobStatusModel(id, statusName);
+    }
 }

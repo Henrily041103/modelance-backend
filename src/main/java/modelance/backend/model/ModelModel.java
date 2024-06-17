@@ -3,20 +3,12 @@ package modelance.backend.model;
 import modelance.backend.firebasedto.account.AccountRoleDTO;
 
 public class ModelModel {
-    //{id:"",username:''}
+    // {id:"",username:''}
     private String id;
     private String username;
     private String fullName;
     private AccountRoleDTO role;
     private String avatar;
-
-    public ModelModel(String id, String username, String fullName, AccountRoleDTO role, String avatar) {
-        this.id = id;
-        this.username = username;
-        this.fullName = fullName;
-        this.role = role;
-        this.avatar = avatar;
-    }
 
     public ModelModel() {
     }
@@ -59,5 +51,6 @@ public class ModelModel {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }    
+    }
+
 }

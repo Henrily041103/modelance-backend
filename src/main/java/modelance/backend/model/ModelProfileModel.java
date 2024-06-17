@@ -1,6 +1,29 @@
 package modelance.backend.model;
 
 import java.util.Date;
+import java.util.List;
+
+class AccountStatusModelProfileModel {
+    private String id;
+    private String statusName;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
+}
 
 public class ModelProfileModel {
     private String id;
@@ -10,28 +33,14 @@ public class ModelProfileModel {
     private String avatar;
     private Date dateOfBirth;
     private String gender;
-    private String accountStatus;
+    private AccountStatusModelProfileModel status;
+    private String description;
     private ModelBodyIndexModel bodyIndex;
-    private String industry;
+    private IndustryModel industry;
     private LocationModel location;
-
-    public ModelProfileModel() {
-    }
-
-    public ModelProfileModel(String id, String username, String fullName, String email, String avatar, Date dateOfBirth,
-            String gender, String accountStatus, ModelBodyIndexModel bodyIndex, String industry, LocationModel location) {
-        this.id = id;
-        this.username = username;
-        this.fullName = fullName;
-        this.email = email;
-        this.avatar = avatar;
-        this.dateOfBirth = dateOfBirth;
-        this.gender = gender;
-        this.accountStatus = accountStatus;
-        this.bodyIndex = bodyIndex;
-        this.industry = industry;
-        this.location = location;
-    }
+    private List<String> compCard;
+    private List<SocialMediaModel> socialMedia;
+    private List<PortfolioModel> portfolio;
 
     public String getId() {
         return id;
@@ -89,12 +98,12 @@ public class ModelProfileModel {
         this.gender = gender;
     }
 
-    public String getAccountStatus() {
-        return accountStatus;
+    public AccountStatusModelProfileModel getStatus() {
+        return status;
     }
 
-    public void setAccountStatus(String accountStatus) {
-        this.accountStatus = accountStatus;
+    public void setStatus(AccountStatusModelProfileModel accountStatus) {
+        this.status = accountStatus;
     }
 
     public ModelBodyIndexModel getBodyIndex() {
@@ -105,11 +114,11 @@ public class ModelProfileModel {
         this.bodyIndex = bodyIndex;
     }
 
-    public String getIndustry() {
+    public IndustryModel getIndustry() {
         return industry;
     }
 
-    public void setIndustry(String industry) {
+    public void setIndustry(IndustryModel industry) {
         this.industry = industry;
     }
 
@@ -119,6 +128,38 @@ public class ModelProfileModel {
 
     public void setLocation(LocationModel location) {
         this.location = location;
+    }
+
+    public List<String> getCompCard() {
+        return compCard;
+    }
+
+    public void setCompCard(List<String> compCard) {
+        this.compCard = compCard;
+    }
+
+    public List<PortfolioModel> getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(List<PortfolioModel> portfolio) {
+        this.portfolio = portfolio;
+    }
+
+    public List<SocialMediaModel> getSocialMedia() {
+        return socialMedia;
+    }
+
+    public void setSocialMedia(List<SocialMediaModel> socialMedia) {
+        this.socialMedia = socialMedia;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

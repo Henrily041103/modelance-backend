@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -148,20 +147,15 @@ public class ApplicationConfig {
                         .jwt(Customizer.withDefaults()))
                 // account controller
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.POST, "/account/login").permitAll()
+                        .requestMatchers("/account/login").permitAll()
                         .requestMatchers("/account/register").permitAll()
-                        .requestMatchers("/account/model/**").authenticated()
-                        .requestMatchers("/account/employer/**").authenticated()
-                        .requestMatchers("/account/password/change").authenticated()
-                        .requestMatchers("/account/avatar").authenticated())
-                // model profile controller
+                        .requestMatchers("/account/**").authenticated())
+                // model controller
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/mprofile/**").authenticated())
-                // employer profile controller
+                        .requestMatchers("/model/**").hasAuthority("ROLE_MODEL"))
+                // employer controller
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/eprofile/details/**").authenticated()
-                        .requestMatchers("/eprofile/edit").authenticated()
-                        .requestMatchers("/eprofile/review/**").authenticated())
+                        .requestMatchers("/employer/**").authenticated())
                 // model's view job controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/job/all").authenticated()
@@ -181,8 +175,12 @@ public class ApplicationConfig {
                 // logout
                 .logout((logout) -> logout
                         .logoutUrl("/account/logout")
-                        .logoutSuccessUrl("/"));
-
+                        .logoutSuccessUrl("/"))
+                // swaggerUI
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/swagger-ui.html").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll());
         return http.build();
     }
 }

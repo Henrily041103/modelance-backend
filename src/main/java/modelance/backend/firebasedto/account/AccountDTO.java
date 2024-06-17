@@ -2,10 +2,17 @@ package modelance.backend.firebasedto.account;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.cloud.firestore.annotation.Exclude;
 import com.google.cloud.firestore.annotation.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ModelDTO.class, name = "model"),
+        @JsonSubTypes.Type(value = EmployerDTO.class, name = "employer"),
+})
+@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 public class AccountDTO {
     private String username;
     private String fullName;
@@ -172,5 +179,41 @@ public class AccountDTO {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void copyFrom(AccountDTO other) {
+        if (other.getUsername() != null) {
+            this.setUsername(other.getUsername());
+        }
+        if (other.getFullName() != null) {
+            this.setFullName(other.getFullName());
+        }
+        if (other.getGender() != null) {
+            this.setGender(other.getGender());
+        }
+        if (other.getRole() != null) {
+            this.setRole(other.getRole());
+        }
+        if (other.getStatus() != null) {
+            this.setStatus(other.getStatus());
+        }
+        if (other.getAvatar() != null) {
+            this.setAvatar(other.getAvatar());
+        }
+        if (other.getCreateDate() != null) {
+            this.setCreateDate(other.getCreateDate());
+        }
+        if (other.getDateOfBirth() != null) {
+            this.setDateOfBirth(other.getDateOfBirth());
+        }
+        if (other.getPassword() != null) {
+            this.setPassword(other.getPassword());
+        }
+        if (other.getId() != null) {
+            this.setId(other.getId());
+        }
+        if (other.getEmail() != null) {
+            this.setEmail(other.getEmail());
+        }
     }
 }

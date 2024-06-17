@@ -1,36 +1,45 @@
 package modelance.backend.firebasedto.account;
 
-import java.util.Date;
+import java.util.List;
 
 import modelance.backend.firebasedto.work.IndustryDTO;
 import modelance.backend.firebasedto.work.LocationDTO;
 
-public class ModelDTO extends AccountDTO{
+class SocialMediaModelDTO {
+    private String name;
+    private String url;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+}
+
+
+public class ModelDTO extends AccountDTO {
     private IndustryDTO industry;
     private LocationDTO location;
+    private List<PortfolioDTO> portfolio;
+    private List<String> compCard;
+    private List<SocialMediaModelDTO> socialMedia;
+    private String description;
     private int bust;
     private int hip;
     private int waist;
     private int weight;
     private int height;
-
-    public ModelDTO() {
-    }
-
-    
-
-    public ModelDTO(String username, String fullName, GenderDTO gender, AccountRoleDTO role, AccountStatusDTO status,
-            String avatar, Date createDate, Date dateOfBirth, String password, String id, String email,
-            IndustryDTO industry, LocationDTO location, int bust, int hip, int waist, int weight, int height) {
-        super(username, fullName, gender, role, status, avatar, createDate, dateOfBirth, password, id, email);
-        this.industry = industry;
-        this.location = location;
-        this.bust = bust;
-        this.hip = hip;
-        this.waist = waist;
-        this.weight = weight;
-        this.height = height;
-    }
 
     public IndustryDTO getIndustry() {
         return industry;
@@ -87,4 +96,37 @@ public class ModelDTO extends AccountDTO{
     public void setHeight(int height) {
         this.height = height;
     }
+
+    public List<PortfolioDTO> getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(List<PortfolioDTO> portfolio) {
+        this.portfolio = portfolio;
+    }
+
+    public List<String> getCompCard() {
+        return compCard;
+    }
+
+    public void setCompCard(List<String> compCard) {
+        this.compCard = compCard;
+    }
+
+    public List<SocialMediaModelDTO> getSocialMedia() {
+        return socialMedia;
+    }
+
+    public void setSocialMedia(List<SocialMediaModelDTO> socialMedia) {
+        this.socialMedia = socialMedia;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }

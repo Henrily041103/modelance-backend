@@ -1,46 +1,61 @@
 package modelance.backend.model;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ContractModel {
-    private ArrayList<String> employerTerms;
-    private ArrayList<String> modelTerms;
+    private List<String> employerTerms;
+    private List<String> modelTerms;
     private ModelModel model;
     private long payment;
-    private Date startTime;
-    private Date endTime;
+    private Date startDate;
+    private Date endDate;
     private JobModel job;
-    private String status;
+    private StatusDTO status;
 
-    public ContractModel() {
+    class StatusDTO {
+        private String id;
+        private String statusName;
+
+        public StatusDTO(String id, String statusName) {
+            this.id = id;
+            this.statusName = statusName;
+        }
+
+        public StatusDTO() {
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getStatusName() {
+            return statusName;
+        }
+
+        public void setStatusName(String statusName) {
+            this.statusName = statusName;
+        }
+
     }
 
-    public ContractModel(ArrayList<String> employerTerms, ArrayList<String> modelTerms, ModelModel model, long payment,
-            Date startTime, Date endTime, JobModel job, String status) {
-        this.employerTerms = employerTerms;
-        this.modelTerms = modelTerms;
-        this.model = model;
-        this.payment = payment;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.job = job;
-        this.status = status;
-    }
-
-    public ArrayList<String> getEmployerTerms() {
+    public List<String> getEmployerTerms() {
         return employerTerms;
     }
 
-    public void setEmployerTerms(ArrayList<String> employerTerms) {
+    public void setEmployerTerms(List<String> employerTerms) {
         this.employerTerms = employerTerms;
     }
 
-    public ArrayList<String> getModelTerms() {
+    public List<String> getModelTerms() {
         return modelTerms;
     }
 
-    public void setModelTerms(ArrayList<String> modelTerms) {
+    public void setModelTerms(List<String> modelTerms) {
         this.modelTerms = modelTerms;
     }
 
@@ -60,20 +75,20 @@ public class ContractModel {
         this.payment = payment;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setStartDate(Date startTime) {
+        this.startDate = startTime;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setEndDate(Date endTime) {
+        this.endDate = endTime;
     }
 
     public JobModel getJob() {
@@ -84,12 +99,16 @@ public class ContractModel {
         this.job = job;
     }
 
-    public String getStatus() {
+    public StatusDTO getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusDTO status) {
         this.status = status;
+    }
+
+    public void setStatus(String id, String statusName) {
+        this.status = new StatusDTO(id, statusName);
     }
 
 }

@@ -1,13 +1,14 @@
 package modelance.backend.firebasedto.work;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import com.google.cloud.firestore.annotation.Exclude;
 
 public class JobDTO {
     private String id;
     private String title;
-    private ArrayList<String> imageURL;
+    private List<String> imageURL;
     private String jobDescription;
     private Long payment;
     private Date startDate;
@@ -15,8 +16,40 @@ public class JobDTO {
     private StatusDTO status;
     private CategoryDTO category;
     private EmployerDTO employer;
+    private List<ModelDTO> applicants;
 
-    public class StatusDTO {
+    class ModelDTO {
+        private String id;
+        private String fullName;
+        private String avatar;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getFullName() {
+            return fullName;
+        }
+
+        public void setFullName(String fullName) {
+            this.fullName = fullName;
+        }
+
+        public String getAvatar() {
+            return avatar;
+        }
+
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
+        }
+
+    }
+
+    class StatusDTO {
         private String id;
         private String statusName;
 
@@ -46,7 +79,7 @@ public class JobDTO {
 
     }
 
-    public class CategoryDTO {
+    class CategoryDTO {
         private String id;
         private String categoryName;
 
@@ -76,13 +109,15 @@ public class JobDTO {
 
     }
 
-    public class EmployerDTO {
+    class EmployerDTO {
         private String id;
         private String fullName;
+        private String avatar;
 
-        public EmployerDTO(String id, String fullName) {
+        public EmployerDTO(String id, String fullName, String avatar) {
             this.id = id;
             this.fullName = fullName;
+            this.avatar = avatar;
         }
 
         public EmployerDTO() {
@@ -104,23 +139,14 @@ public class JobDTO {
             this.fullName = fullName;
         }
 
-    }
+        public String getAvatar() {
+            return avatar;
+        }
 
-    public JobDTO() {
-    }
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
+        }
 
-    public JobDTO(String id, String title, ArrayList<String> imageURL, String jobDescription, Long payment,
-            Date startDate, Date endDate, StatusDTO status, CategoryDTO category, EmployerDTO employer) {
-        this.id = id;
-        this.title = title;
-        this.imageURL = imageURL;
-        this.jobDescription = jobDescription;
-        this.payment = payment;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.status = status;
-        this.category = category;
-        this.employer = employer;
     }
 
     @Exclude
@@ -140,11 +166,11 @@ public class JobDTO {
         this.title = title;
     }
 
-    public ArrayList<String> getImageURL() {
+    public List<String> getImageURL() {
         return imageURL;
     }
 
-    public void setImageURL(ArrayList<String> imageURL) {
+    public void setImageURL(List<String> imageURL) {
         this.imageURL = imageURL;
     }
 
@@ -188,6 +214,10 @@ public class JobDTO {
         this.status = status;
     }
 
+    public void setStatus(String id, String statusName) {
+        this.status = new StatusDTO(id, statusName);
+    }
+
     public CategoryDTO getCategory() {
         return category;
     }
@@ -202,6 +232,14 @@ public class JobDTO {
 
     public void setEmployer(EmployerDTO employer) {
         this.employer = employer;
+    }
+
+    public List<ModelDTO> getApplicants() {
+        return applicants;
+    }
+
+    public void setApplicants(List<ModelDTO> applicants) {
+        this.applicants = applicants;
     }
 
 }

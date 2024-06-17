@@ -13,6 +13,21 @@ public class AccountRoleDTO {
         this.roleName = roleName;
     }
 
+    public AccountRoleDTO(String roleName) {
+        this.roleName = roleName;
+        switch (roleName) {
+            case "admin":
+                this.id = "1";
+                break;
+            case "model":
+                this.id = "2";
+                break;
+            case "employer":
+                this.id = "3";
+                break;
+        }
+    }
+
     public String getId() {
         return id;
     }
