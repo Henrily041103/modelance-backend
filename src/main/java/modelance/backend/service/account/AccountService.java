@@ -38,9 +38,9 @@ public class AccountService {
     private Firestore firestore;
     private StorageClient storageClient;
 
-    public AccountService(Firestore firestore, StorageClient storageClient) {
-        this.firestore = firestore;
-        this.storageClient = storageClient;
+    public AccountService() {
+        this.firestore = FirestoreClient.getFirestore();
+        this.storageClient = StorageClient.getInstance();
     }
 
     public List<AccountAuthority> getAuthorities(AccountDTO account) {
