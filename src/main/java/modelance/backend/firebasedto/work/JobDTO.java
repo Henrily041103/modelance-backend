@@ -23,6 +23,15 @@ public class JobDTO {
         private String fullName;
         private String avatar;
 
+        public ModelDTO(String id, String fullName, String avatar) {
+            this.id = id;
+            this.fullName = fullName;
+            this.avatar = avatar;
+        }
+
+        public ModelDTO() {
+        }
+
         public String getId() {
             return id;
         }
@@ -242,4 +251,11 @@ public class JobDTO {
         this.applicants = applicants;
     }
 
+    public void addApplicants(String id, String fullName, String avatar) {
+        this.applicants.add(new ModelDTO(id, fullName, avatar));
+    }
+
+    public void removeApplicants(String id) {
+        this.applicants.removeIf(applicant -> applicant.getId().equals(id));
+    }
 }

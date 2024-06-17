@@ -16,6 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import modelance.backend.config.security.TokenGenerator;
 import modelance.backend.firebasedto.account.AccountDTO;
+import modelance.backend.firebasedto.account.EmployerDTO;
+import modelance.backend.firebasedto.account.ModelDTO;
 import modelance.backend.model.AccountModel;
 import modelance.backend.service.account.AccountService;
 import modelance.backend.service.account.NoAccountExistsException;
@@ -99,10 +101,10 @@ public class AccountController {
     }
 
     @GetMapping("model/{id}")
-    public AccountDTO getModel(@PathVariable String id) {
-        AccountDTO modelAccount = null;
+    public ModelDTO getModel(@PathVariable String id) {
+        ModelDTO modelAccount = null;
         try {
-            modelAccount = accountService.getAccountByRoleId(id, "role_model");
+            modelAccount = (ModelDTO) accountService.getAccountByRoleId(id, "role_model");
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
             e.printStackTrace();
         }
@@ -110,10 +112,10 @@ public class AccountController {
     }
 
     @GetMapping("model")
-    public List<AccountDTO> getModelList(@RequestParam(required = false, defaultValue = "50") Integer limit) {
-        List<AccountDTO> modelList = null;
+    public List<ModelDTO> getModelList(@RequestParam(required = false, defaultValue = "50") Integer limit) {
+        List<ModelDTO> modelList = null;
         try {
-            modelList = accountService.getAccountsByRole("model", limit);
+            modelList = accountService.getModelList(limit);
         } catch (InterruptedException | ExecutionException | QueryMismatchException e) {
             e.printStackTrace();
         }
@@ -121,10 +123,10 @@ public class AccountController {
     }
 
     @GetMapping("employer/{id}")
-    public AccountDTO getEmployer(@PathVariable String id) {
-        AccountDTO employerAccount = null;
+    public EmployerDTO getEmployer(@PathVariable String id) {
+        EmployerDTO employerAccount = null;
         try {
-            employerAccount = accountService.getAccountByRoleId(id, "role_employer");
+            employerAccount = (EmployerDTO) accountService.getAccountByRoleId(id, "role_employer");
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
             e.printStackTrace();
         }
@@ -132,10 +134,10 @@ public class AccountController {
     }
 
     @GetMapping("employer")
-    public List<AccountDTO> getEmployerList(@RequestParam(required = false, defaultValue = "50") Integer limit) {
-        List<AccountDTO> employerList = null;
+    public List<EmployerDTO> getEmployerList(@RequestParam(required = false, defaultValue = "50") Integer limit) {
+        List<EmployerDTO> employerList = null;
         try {
-            employerList = accountService.getAccountsByRole("employer", limit);
+            employerList = accountService.getEmployerList(limit);
         } catch (InterruptedException | ExecutionException | QueryMismatchException e) {
             e.printStackTrace();
         }

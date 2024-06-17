@@ -281,10 +281,10 @@ public class AccountService {
         AccountDTO account = null;
         String roleString = role.substring(5);
         switch (roleString) {
-            case "role_model":
+            case "model":
                 account = loadModelModel(userId);
                 break;
-            case "role_employer":
+            case "employer":
                 account = loadEmployerModel(userId);
                 break;
             default:
@@ -298,9 +298,10 @@ public class AccountService {
         return account;
     }
 
-    public List<AccountDTO> getAccountsByRole(String role, Integer limit)
+    public List<ModelDTO> getModelList(Integer limit)
             throws InterruptedException, ExecutionException, QueryMismatchException {
-        List<AccountDTO> accounts = null;
+        List<ModelDTO> accounts = null;
+        String role = "role_model";
         String roleString = role.substring(5);
         QuerySnapshot query = firestore.collection("Account")
                 .whereEqualTo("role.roleName", roleString)
@@ -313,34 +314,50 @@ public class AccountService {
             for (QueryDocumentSnapshot document : docs) {
                 ids.add(document.getId());
             }
-            switch (roleString) {
-                case "model":
-                    QuerySnapshot modelQuery = firestore.collection("Model").whereIn(FieldPath.documentId(), ids)
-                            .get().get();
-                    List<QueryDocumentSnapshot> modelDocs = modelQuery.getDocuments();
-                    if (modelDocs.size() != docs.size())
-                        throw new QueryMismatchException();
-                    for (int i = 0; i < modelDocs.size(); i++) {
-                        AccountDTO account = docs.get(i).toObject(AccountDTO.class);
-                        ModelDTO model = modelDocs.get(i).toObject(ModelDTO.class);
-                        model.copyFrom(account);
-                        accounts.add(model);
-                    }
-                    break;
-                case "employer":
-                    QuerySnapshot employerQuery = firestore.collection("Model").whereIn(FieldPath.documentId(), ids)
-                            .get().get();
-                    List<QueryDocumentSnapshot> employerDocs = employerQuery.getDocuments();
-                    if (employerDocs.size() != docs.size())
-                        throw new QueryMismatchException();
-                    for (int i = 0; i < employerDocs.size(); i++) {
-                        AccountDTO account = docs.get(i).toObject(AccountDTO.class);
-                        EmployerDTO employer = employerDocs.get(i).toObject(EmployerDTO.class);
-                        employer.copyFrom(account);
-                        accounts.add(employer);
-                    }
-                    break;
+            QuerySnapshot modelQuery = firestore.collection("Model").whereIn(FieldPath.documentId(), ids)
+                    .get().get();
+            List<QueryDocumentSnapshot> modelDocs = modelQuery.getDocuments();
+            if (modelDocs.size() != docs.size())
+                throw new QueryMismatchException();
+            for (int i = 0; i < modelDocs.size(); i++) {
+                AccountDTO account = docs.get(i).toObject(AccountDTO.class);
+                ModelDTO model = modelDocs.get(i).toObject(ModelDTO.class);
+                model.copyFrom(account);
+                accounts.add(model);
             }
+        }
+
+        return accounts;
+    }
+
+    public List<EmployerDTO> getEmployerList(Integer limit)
+            throws InterruptedException, ExecutionException, QueryMismatchException {
+        String role = "role_employer";
+        List<EmployerDTO> accounts = null;
+        String roleString = role.substring(5);
+        QuerySnapshot query = firestore.collection("Account")
+                .whereEqualTo("role.roleName", roleString)
+                .limit(limit.intValue()).get()
+                .get();
+        if (!query.isEmpty()) {
+            List<String> ids = new ArrayList<>();
+            accounts = new ArrayList<>();
+            List<QueryDocumentSnapshot> docs = query.getDocuments();
+            for (QueryDocumentSnapshot document : docs) {
+                ids.add(document.getId());
+            }
+            QuerySnapshot employerQuery = firestore.collection("Employer").whereIn(FieldPath.documentId(), ids)
+                    .get().get();
+            List<QueryDocumentSnapshot> employerDocs = employerQuery.getDocuments();
+            if (employerDocs.size() != docs.size())
+                throw new QueryMismatchException();
+            for (int i = 0; i < employerDocs.size(); i++) {
+                AccountDTO account = docs.get(i).toObject(AccountDTO.class);
+                EmployerDTO employer = employerDocs.get(i).toObject(EmployerDTO.class);
+                employer.copyFrom(account);
+                accounts.add(employer);
+            }
+
         }
 
         return accounts;

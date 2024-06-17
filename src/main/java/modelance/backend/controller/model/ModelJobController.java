@@ -5,12 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 import modelance.backend.model.JobModel;
 import modelance.backend.service.model.ModelJobService;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/model/job")
@@ -22,13 +24,41 @@ public class ModelJobController {
     }
 
     @GetMapping("")
-    public ArrayList<JobModel> getAllJobs() throws ExecutionException, InterruptedException {
-        return jobService.getAllJobs();
+    public List<JobModel> getAppliedJobs(Authentication authentication) {
+        List<JobModel> result = null;
+
+        try {
+            result = jobService.getAppliedJobs(authentication);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
-    @GetMapping("{id}")
-    public JobModel getJobDetails(@PathVariable String id) throws InterruptedException, ExecutionException {
-        return jobService.getJobsById(id);
+    @PostMapping("apply/{id}")
+    public JobModel applyForJob(Authentication authentication, @RequestBody String jobId) {
+        JobModel result = null;
+
+        try {
+            result = jobService.applyForJob(authentication, jobId);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
+    @PostMapping("unapply/{id}")
+    public JobModel unapplyForJob(Authentication authentication, @RequestBody String jobId) {
+        JobModel result = null;
+
+        try {
+            result = jobService.unapplyJob(authentication, jobId);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
 }
