@@ -16,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
@@ -39,18 +38,7 @@ public class EmployerJobController {
         return jobService.createNewJob(jobDTO);
     }
 
-    @GetMapping("{id}")
-    public JobModel getPostedJobDetails(@PathVariable String id) {
-        JobModel job = null;
-        try {
-            job = jobService.getPostedJobDetails(id);
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return job;
-    }
-
-    @PutMapping("{id}/finish")
+    @PostMapping("{id}/finish")
     public JobModel finishJob(@PathVariable String id) {
         JobModel job = null;
         try {
@@ -61,7 +49,7 @@ public class EmployerJobController {
         return job;
     }
 
-    @PutMapping("{id}/cancel")
+    @PostMapping("{id}/cancel")
     public JobModel cancelJob(@PathVariable String id) {
         JobModel job = null;
         try {
@@ -72,7 +60,7 @@ public class EmployerJobController {
         return job;
     }
 
-    @PutMapping("{id}/close")
+    @PostMapping("{id}/close")
     public JobModel closeJob(@PathVariable String id) {
         JobModel job = null;
         try {

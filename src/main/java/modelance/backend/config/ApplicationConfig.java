@@ -155,23 +155,18 @@ public class ApplicationConfig {
                         .requestMatchers("/model/**").hasAuthority("ROLE_MODEL"))
                 // employer controller
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/employer/**").authenticated())
-                // model's view job controller
+                        .requestMatchers("/employer/**").hasAuthority("ROLE_EMPLOYER"))
+                // job controller
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/job/all").authenticated()
-                        .requestMatchers("/job/details/**").authenticated())
-                // employer job management controller
+                        .requestMatchers("/job").authenticated()
+                        .requestMatchers("/job/**").authenticated())
+                // contract controller
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/jobmanager/create").authenticated()
-                        .requestMatchers("/jobmanager/**").authenticated()
-                        .requestMatchers("/jobmanager/details/**").authenticated()
-                        .requestMatchers("/jobmanager/finish/**").authenticated()
-                        .requestMatchers("/jobmanager/cancel/**").authenticated()
-                        .requestMatchers("/jobmanager/close/**").authenticated())
-                // employer contract management controller
+                        .requestMatchers("/contract/**").authenticated())
+                // wallet controller
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/contract/**").authenticated()
-                        .requestMatchers("/contract/add").authenticated())
+                        .requestMatchers("/wallet").authenticated()
+                        .requestMatchers("/wallet/**").authenticated())
                 // logout
                 .logout((logout) -> logout
                         .logoutUrl("/account/logout")

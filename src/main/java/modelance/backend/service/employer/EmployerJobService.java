@@ -64,17 +64,6 @@ public class EmployerJobService {
         return jobList;
     }
 
-    public JobModel getPostedJobDetails(String jobId) throws InterruptedException, ExecutionException {
-        JobModel jobDTO = null;
-        DocumentReference docRef = firestore.collection("Job").document(jobId.trim());
-        ApiFuture<DocumentSnapshot> future = docRef.get();
-        DocumentSnapshot docSnap = future.get();
-        if (docSnap.exists()) {
-            jobDTO = docSnap.toObject(JobModel.class);
-        }
-        return jobDTO;
-    }
-
     public JobModel updateJobStatus(String id, String statusId)
             throws InterruptedException, ExecutionException, NoJobExistsException {
         DocumentReference jobRef = firestore.collection("Job").document(id);
@@ -112,7 +101,14 @@ public class EmployerJobService {
     }
 
     public List<ModelModel> getApplicants(String jobId) throws InterruptedException, ExecutionException {
-        return getPostedJobDetails(jobId).getApplicants();
+        List<ModelModel> applicants = null;
+        DocumentReference docRef = firestore.collection("Job").document(jobId.trim());
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        JobModel jobDTO = future.get().toObject(JobModel.class);
+        if (jobDTO != null) {
+            applicants = jobDTO.getApplicants();
+        }
+        return applicants;
     }
 
     public ContractDTO approveApplicant(String modelId, JobDTO jobDTO)
