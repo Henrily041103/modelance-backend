@@ -44,7 +44,7 @@ public class JobService {
         return jobList;
     }
 
-    public JobModel getJobsById(String id) throws ExecutionException, InterruptedException {
+    public JobModel getJobById(String id) throws ExecutionException, InterruptedException {
         JobModel jobModel = null;
         DocumentReference docRef = firestore.collection("Job").document(id.trim());
         ApiFuture<DocumentSnapshot> future = docRef.get();
@@ -56,4 +56,5 @@ public class JobService {
         }
         return jobModel;
     }
+    
 }

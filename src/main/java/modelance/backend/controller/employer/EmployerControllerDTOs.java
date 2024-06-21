@@ -2,6 +2,9 @@ package modelance.backend.controller.employer;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import modelance.backend.firebasedto.work.TransactionDTO;
 
 class EmployerContractCreateRequest {
     private ArrayList<String> employerTerms;
@@ -209,5 +212,27 @@ class EmployerProfileUpdateResponse {
     public void setResult(boolean result) {
         this.result = result;
     }
-    
+
+}
+
+class EmployerContractFinishResponse {
+    private String message;
+    private List<TransactionDTO> transactions;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public List<TransactionDTO> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<TransactionDTO> transactions) {
+        this.transactions = transactions;
+    }
+
 }

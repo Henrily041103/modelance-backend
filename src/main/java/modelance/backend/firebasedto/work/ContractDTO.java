@@ -14,7 +14,7 @@ public class ContractDTO {
     private EmployerDTO employer;
     private StatusDTO status;
 
-    class JobDTO {
+    public class JobDTO {
         private String id;
         private String title;
 
@@ -120,7 +120,7 @@ public class ContractDTO {
 
     }
 
-    class StatusDTO {
+    public class StatusDTO {
         private String id;
         private String statusName;
 
@@ -238,4 +238,45 @@ public class ContractDTO {
         this.status = new StatusDTO(id, statusName);
     }
 
+    public void setStatus(String id) {
+        String statusName = "";
+
+        switch (id) {
+            case "1":
+                statusName = "Pending";
+                break;
+            case "2":
+                statusName = "Approved";
+                break;
+            case "3":
+                statusName = "Rejected";
+                break;
+            case "4":
+                statusName = "Finished";
+                break;
+        }
+
+        this.status = new StatusDTO(id, statusName);
+    }
+
+    public void setStatusName(String statusName) {
+        String id = "";
+
+        switch (statusName) {
+            case "Pending":
+                id = "1";
+                break;
+            case "Approved":
+                id = "2";
+                break;
+            case "Rejected":
+                id = "3";
+                break;
+            case "Finished":
+                id = "4";
+                break;
+        }
+
+        this.status = new StatusDTO(id, statusName);
+    }
 }

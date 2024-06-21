@@ -1,69 +1,75 @@
 package modelance.backend.service.employer;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 import modelance.backend.firebasedto.work.ContractDTO;
-import modelance.backend.firebasedto.work.JobDTO;
-import modelance.backend.model.ContractModel;
+import modelance.backend.firebasedto.work.TransactionDTO;
+import modelance.backend.service.account.NoAccountExistsException;
+import modelance.backend.service.job.ContractService;
+import modelance.backend.service.wallet.WalletService;
 
 @Service
 public class EmployerContractService {
     private Firestore firestore;
-    private ObjectMapper objectMapper;
+    private ContractService contractService;
+    private WalletService walletService;
+    private EmployerJobService jobService;
 
-    public EmployerContractService(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public EmployerContractService(ContractService contractService, WalletService walletService, EmployerJobService jobService) {
         this.firestore = FirestoreClient.getFirestore();
+        this.contractService = contractService;
+        this.walletService = walletService;
+        this.jobService = jobService;
     }
 
-    ContractDTO addContract(ContractModel contractModel) throws InterruptedException, ExecutionException {
-        // Check duplicated jobs
-        DocumentReference jobRef = firestore.collection("Job").document(contractModel.getJob().getId());
-        ContractDTO contractDTO = null;
-        JobDTO jobDTO = jobRef.get().get().toObject(JobDTO.class);
-        if (jobDTO == null)
-            return contractDTO;
-
-        // Contract Model
-        contractDTO = objectMapper.convertValue(contractModel, ContractDTO.class);
-
-        // Update job status
-        DocumentReference jobStatusRef = firestore.collection("JobStatus").document("2");
-        jobRef.update("status", jobStatusRef);
-
-        firestore.collection("Contract").add(contractDTO);
-        return contractDTO;
-    }
-
-    public ContractModel viewContract(String id) throws InterruptedException, ExecutionException {
-        // Get contract DTO
-        DocumentReference contractRef = firestore.collection("Contract").document(id);
-        ContractDTO contractDTO = contractRef.get().get().toObject(ContractDTO.class);
-
-        // Generate contract model to send to controller
-        ContractModel contractModel = objectMapper.convertValue(contractDTO, ContractModel.class);
-
-        return contractModel;
-    }
-
-    public String changeContract(String id, List<String> employerTerms, long payment, Date startDate, Date endDate)
+    public List<ContractDTO> getCurrentContracts(Authentication authentication)
             throws InterruptedException, ExecutionException {
-        Map<String, Object> changeMap = new HashMap<>();
-        changeMap.put("employerTerms", employerTerms);
-        changeMap.put("payment", payment);
-        changeMap.put("startDate", startDate);
-        changeMap.put("endDate", endDate);
+        String userId = authentication.getName();
+        List<ContractDTO> contracts = null;
 
-        firestore.collection("Contract").document(id).update(changeMap);
-        return "Success";
+        QuerySnapshot contractQuery = firestore.collection("Contract").whereEqualTo("employer.id", userId).get().get();
+        if (!contractQuery.isEmpty()) {
+            List<QueryDocumentSnapshot> contractDocuments = contractQuery.getDocuments();
+            if (contractDocuments != null && !contractDocuments.isEmpty()) {
+                contracts = new ArrayList<>();
+                for (QueryDocumentSnapshot contractDoc : contractDocuments) {
+                    ContractDTO contract = contractDoc.toObject(ContractDTO.class);
+                    contracts.add(contract);
+                }
+            }
+        }
+
+        return contracts;
+    }
+
+    public Map<String, Object> finishContract(String contractId) throws ExecutionException, InterruptedException, NoJobExistsException, NoAccountExistsException {
+        Map<String, Object> result = null;
+
+        ContractDTO contract = contractService.getContract(contractId);
+
+        result = new HashMap<>();
+        result.put("message", "Failed");
+
+        if (contract != null) {
+            contract.setStatus("4");
+            contractService.changeContractStatus("Finished", contractId);
+            jobService.updateJobStatus(contract.getJob().getId(), "5");
+            List<TransactionDTO> transactions = walletService.endOfContractMoneyTransfer(contract);
+            result.put("message", "Success");
+            result.put("transactions", transactions);
+        }
+
+        return result;
     }
 }

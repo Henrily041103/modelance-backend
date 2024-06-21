@@ -12,10 +12,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.WriteBatch;
 import com.google.firebase.cloud.FirestoreClient;
 
 import modelance.backend.firebasedto.account.AccountDTO;
@@ -112,53 +113,53 @@ public class WalletService {
         return transactions;
     }
 
-    public List<TransactionDTO> endOfContractMoneyTransfer(String contractId)
+    public List<TransactionDTO> endOfContractMoneyTransfer(ContractDTO contractDTO)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
         List<TransactionDTO> transactions = null;
 
-        DocumentSnapshot contractSnap = firestore.collection("Contract").document(contractId).get().get();
+        AccountDTO employer = objectMapper.convertValue(contractDTO.getEmployer(), AccountDTO.class);
+        AccountDTO model = objectMapper.convertValue(contractDTO.getModel(), AccountDTO.class);
+        WalletDTO employerWalletDTO = getWallet(employer.getId());
+        WalletDTO modelWalletDTO = getWallet(model.getId());
+        Calendar currentTime = Calendar.getInstance();
+        Date date = currentTime.getTime();
+        WriteBatch batch = firestore.batch();
 
-        if (contractSnap.exists()) {
-            // initialize data
-            ContractDTO contractDTO = contractSnap.toObject(ContractDTO.class);
-            if (contractDTO == null)
-                return transactions;
-            transactions = new ArrayList<TransactionDTO>();
-            AccountDTO employer = objectMapper.convertValue(contractDTO.getEmployer(), AccountDTO.class);
-            AccountDTO model = objectMapper.convertValue(contractDTO.getModel(), AccountDTO.class);
-            WalletDTO employerWallet = getWallet(employer.getId());
-            WalletDTO modelWallet = getWallet(model.getId());
-            Calendar currentTime = Calendar.getInstance();
-            Date date = currentTime.getTime();
-
-            if (employerWallet.getBalance() < contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER) {
-                return transactions;
-            }
-
-            // create wallet transactions
-            TransactionDTO employerTransaction = new TransactionDTO("", "approved", date, false,
-                    (long) (-contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER), employerWallet);
-            TransactionDTO modelTransaction = new TransactionDTO("", "approved", date, false,
-                    (long) (contractDTO.getPayment() * MODEL_CONTRACT_MULTIPLIER), modelWallet);
-            TransactionModel eTransactionModel = objectMapper.convertValue(employerTransaction, TransactionModel.class);
-            TransactionModel mTransactionModel = objectMapper.convertValue(modelTransaction, TransactionModel.class);
-            firestore.collection("Transaction").add(eTransactionModel);
-            firestore.collection("Transaction").add(mTransactionModel);
-
-            // update wallet
-            Map<String, Object> employerWalletUpdate = new HashMap<>();
-            Map<String, Object> modelWalletUpdate = new HashMap<>();
-            employerWalletUpdate.put("balance",
-                    employerWallet.getBalance() - contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER);
-            modelWalletUpdate.put("balance",
-                    modelWallet.getBalance() + contractDTO.getPayment() * MODEL_CONTRACT_MULTIPLIER);
-            firestore.collection("Wallet").document(employerWallet.getId()).update(employerWalletUpdate);
-            firestore.collection("Wallet").document(modelWallet.getId()).update(modelWalletUpdate);
-
-            // add to results
-            transactions.add(modelTransaction);
-            transactions.add(employerTransaction);
+        if (employerWalletDTO.getBalance() < contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER) {
+            return transactions;
         }
+
+        transactions = new ArrayList<TransactionDTO>();
+        // create wallet transactions
+        TransactionDTO employerTransactionDTO = new TransactionDTO("", "approved", date, false,
+                (long) (-contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER), employerWalletDTO);
+        TransactionDTO modelTransactionDTO = new TransactionDTO("", "approved", date, false,
+                (long) (contractDTO.getPayment() * MODEL_CONTRACT_MULTIPLIER), modelWalletDTO);
+        TransactionModel eTransactionModel = objectMapper.convertValue(employerTransactionDTO, TransactionModel.class);
+        TransactionModel mTransactionModel = objectMapper.convertValue(modelTransactionDTO, TransactionModel.class);
+        DocumentReference employerTransaction = firestore.collection("Transaction").document();
+        DocumentReference modelTransaction = firestore.collection("Transaction").document();
+        batch.set(employerTransaction, eTransactionModel);
+        batch.set(modelTransaction, mTransactionModel);
+
+        // update wallet
+        Map<String, Object> employerWalletUpdate = new HashMap<>();
+        Map<String, Object> modelWalletUpdate = new HashMap<>();
+        employerWalletUpdate.put("balance",
+                employerWalletDTO.getBalance() - contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER);
+        modelWalletUpdate.put("balance",
+                modelWalletDTO.getBalance() + contractDTO.getPayment() * MODEL_CONTRACT_MULTIPLIER);
+        DocumentReference employerWallet = firestore.collection("Wallet").document(employerWalletDTO.getId());
+        DocumentReference modelWallet = firestore.collection("Wallet").document(modelWalletDTO.getId());
+        batch.update(modelWallet, modelWalletUpdate);
+        batch.update(employerWallet, employerWalletUpdate);
+
+        //update everything
+        batch.commit();
+        
+        // add to results
+        transactions.add(modelTransactionDTO);
+        transactions.add(employerTransactionDTO);
 
         return transactions;
     }

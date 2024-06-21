@@ -11,7 +11,6 @@ import modelance.backend.service.job.JobService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
 @RestController
 @RequestMapping("/job")
 public class JobController {
@@ -20,7 +19,7 @@ public class JobController {
     public JobController(JobService jobService) {
         this.jobService = jobService;
     }
-    
+
     @GetMapping("")
     public List<JobModel> getAllJobs() {
         List<JobModel> result = null;
@@ -39,13 +38,12 @@ public class JobController {
         JobModel result = null;
 
         try {
-            result = jobService.getJobsById(id);
+            result = jobService.getJobById(id);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
         return result;
     }
-    
-    
+
 }

@@ -5,10 +5,13 @@ import org.springframework.web.bind.annotation.RestController;
 import modelance.backend.firebasedto.work.ContractDTO;
 import modelance.backend.firebasedto.work.JobDTO;
 import modelance.backend.model.JobModel;
+import modelance.backend.model.ModelModel;
 import modelance.backend.service.employer.EmployerJobService;
 import modelance.backend.service.employer.NoJobExistsException;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -72,7 +75,8 @@ public class EmployerJobController {
     }
 
     @PostMapping("{id}/approve")
-    public ContractDTO approveApplicant(@PathVariable String id, @RequestBody String applicantId, @RequestBody JobDTO jobDTO) {
+    public ContractDTO approveApplicant(@PathVariable String id, @RequestBody String applicantId,
+            @RequestBody JobDTO jobDTO) {
         ContractDTO contract = null;
         try {
             contract = jobService.approveApplicant(id, jobDTO);
@@ -80,6 +84,19 @@ public class EmployerJobController {
             e.printStackTrace();
         }
         return contract;
+    }
+
+    @GetMapping("{id}/applicants")
+    public List<ModelModel> getApplicants(@PathVariable String id) {
+        List<ModelModel> models = new ArrayList<>();
+
+        try {
+            models = jobService.getApplicants(id);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return models;
     }
 
 }

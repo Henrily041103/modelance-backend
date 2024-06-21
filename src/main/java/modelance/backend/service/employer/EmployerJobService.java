@@ -24,18 +24,20 @@ import modelance.backend.firebasedto.work.JobDTO;
 import modelance.backend.model.ContractModel;
 import modelance.backend.model.JobModel;
 import modelance.backend.model.ModelModel;
+import modelance.backend.service.job.ContractService;
+import modelance.backend.service.wallet.WalletService;
 
 @Service
 public class EmployerJobService {
     private Firestore firestore;
     private ObjectMapper objectMapper;
-    private EmployerContractService contractService;
-
+    private ContractService contractService;
     private static final List<String> DEFAULT_EMPLOYER_TERMS = new ArrayList<>(Arrays.asList("Lorem ipsum"));
     private static final List<String> DEFAULT_MODEL_TERMS = new ArrayList<>(Arrays.asList("Lorem ipsum"));
 
-    public EmployerJobService(ObjectMapper objectMapper) {
+    public EmployerJobService(ObjectMapper objectMapper, ContractService contractService, WalletService walletService) {
         this.objectMapper = objectMapper;
+        this.contractService = contractService;
         this.firestore = FirestoreClient.getFirestore();
     }
 
@@ -99,7 +101,7 @@ public class EmployerJobService {
 
         return job;
     }
-
+    
     public List<ModelModel> getApplicants(String jobId) throws InterruptedException, ExecutionException {
         List<ModelModel> applicants = null;
         DocumentReference docRef = firestore.collection("Job").document(jobId.trim());
@@ -144,4 +146,5 @@ public class EmployerJobService {
 
         return contractDTO;
     }
+
 }

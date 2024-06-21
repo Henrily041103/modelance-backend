@@ -11,18 +11,18 @@ public class ContractModel {
     private Date startDate;
     private Date endDate;
     private JobModel job;
-    private StatusDTO status;
+    private StatusModel status;
 
-    class StatusDTO {
+    class StatusModel {
         private String id;
         private String statusName;
 
-        public StatusDTO(String id, String statusName) {
+        public StatusModel(String id, String statusName) {
             this.id = id;
             this.statusName = statusName;
         }
 
-        public StatusDTO() {
+        public StatusModel() {
         }
 
         public String getId() {
@@ -99,16 +99,16 @@ public class ContractModel {
         this.job = job;
     }
 
-    public StatusDTO getStatus() {
+    public StatusModel getStatus() {
         return status;
     }
 
-    public void setStatus(StatusDTO status) {
+    public void setStatus(StatusModel status) {
         this.status = status;
     }
 
     public void setStatus(String id, String statusName) {
-        this.status = new StatusDTO(id, statusName);
+        this.status = new StatusModel(id, statusName);
     }
 
 }
