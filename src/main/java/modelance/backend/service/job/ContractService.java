@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
@@ -18,6 +20,7 @@ import modelance.backend.firebasedto.work.ContractDTO;
 import modelance.backend.firebasedto.work.JobDTO;
 import modelance.backend.model.ContractModel;
 
+@Service
 public class ContractService {
 
     private Firestore firestore;
