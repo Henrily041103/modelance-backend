@@ -86,36 +86,67 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+					  <goals>
+						<goal>repackage</goal>
+					  </goals>
+					  <configuration>
+						<loaderImplementation>CLASSIC</loaderImplementation>
+					  </configuration>
+					</execution>
+				  </executions>			
 			</plugin>
-		    <plugin>
-		        <groupId>com.microsoft.azure</groupId>
-		        <artifactId>azure-spring-apps-maven-plugin</artifactId>
-		        <version>1.18.0</version>
-		        <configuration>
-		            <subscriptionId>e5b44a85-2c79-4eeb-8862-db7e724f0c8c</subscriptionId>
-		            <resourceGroup>modelance-resources</resourceGroup>
-		            <clusterName>modelance</clusterName>
-		            <appName>modelance-app</appName>
-		            <isPublic>true</isPublic>
-		            <deployment>
-		                <cpu>1</cpu>
-		                <memoryInGB>2</memoryInGB>
-		                <instanceCount>1</instanceCount>
-		                <runtimeVersion>Java 17</runtimeVersion>
-		                <resources>
-		                    <resource>
-		                        <filtering/>
-		                        <mergeId/>
-		                        <targetPath/>
-		                        <directory>${project.basedir}/target</directory>
-		                        <includes>
-		                            <include>*.jar</include>
-		                        </includes>
-		                    </resource>
-		                </resources>
-		            </deployment>
-		        </configuration>
-		    </plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+				  <archive>
+					<manifest>
+					  <addClasspath>true</addClasspath>
+					  <classpathPrefix>libs/</classpathPrefix>
+					</manifest>
+				  </archive>
+				</configuration>
+			  </plugin>
+			  <plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+				  <execution>
+					<phase>package</phase>
+					<goals>
+					  <goal>copy-dependencies</goal>
+					</goals>
+					<configuration>
+					  <overWriteReleases>false</overWriteReleases>
+					  <includeScope>runtime</includeScope>
+					  <outputDirectory>${project.build.directory}/libs</outputDirectory>
+					</configuration>
+				  </execution>
+				</executions>
+			  </plugin>
+			  <plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+				  <execution>
+					<id>copy-resources</id>
+					<phase>package</phase>
+					<goals><goal>copy-resources</goal></goals>
+					<configuration>
+					  <outputDirectory>${project.build.directory}/deployment</outputDirectory>
+					  <resources>
+						<resource>
+						  <directory>${project.build.directory}</directory>
+						  <includes>
+							<include>${build.finalName}.jar</include>
+							<include>libs/**</include>
+						  </includes>
+						  <filtering>false</filtering>
+						</resource>
+					  </resources>
+					</configuration>
+				  </execution>
+				</executions>
+			  </plugin>
 		</plugins>
 	</build>
 </project>
