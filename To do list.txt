@@ -1,17 +1,2 @@
-Change from DocRef to Map in Firebase.
-
-*Contract:
-- job {id, title }
-- model {id, fullname}
-- status (ContractStatus) {id, statusName}
-- employer {id, fullName}
-
-*Job:
-- category {id, categoryName}
-- employer {id, fullName}
-- status (JobStatus) {id, statusName}
-
-*Review:
-- contract {id}
-- reviewee (Account) {id, fullName}
-- reviewer (Account) {id, fullName}
+admin functions
+payos integration
