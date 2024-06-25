@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,15 +31,17 @@ import modelance.backend.firebasedto.account.AccountRoleDTO;
 import modelance.backend.firebasedto.account.AccountStatusDTO;
 import modelance.backend.firebasedto.account.EmployerDTO;
 import modelance.backend.firebasedto.account.ModelDTO;
-import modelance.backend.firebasedto.work.WalletDTO;
+import modelance.backend.firebasedto.wallet.WalletDTO;
 import modelance.backend.model.ModelModel;
 
 @Service
 public class AccountService {
     private Firestore firestore;
     private StorageClient storageClient;
+    private PasswordEncoder passwordEncoder;
 
-    public AccountService() {
+    public AccountService(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
         this.firestore = FirestoreClient.getFirestore();
         this.storageClient = StorageClient.getInstance();
     }
@@ -65,7 +68,7 @@ public class AccountService {
         AccountDTO accountDTO = null;
         if (username.trim() != "" && password.trim() != "") {
             ApiFuture<QuerySnapshot> readAccountQuery = firestore.collection("Account")
-                    .whereEqualTo("username", username).whereEqualTo("password", password)
+                    .whereEqualTo("username", username)
                     .get();
             List<QueryDocumentSnapshot> matchedAccount = readAccountQuery.get().getDocuments();
             if (matchedAccount.size() == 0) {
@@ -75,7 +78,7 @@ public class AccountService {
             if (accountDocument.exists()) {
                 try {
                     accountDTO = accountDocument.toObject(AccountDTO.class);
-                    if (accountDTO != null) {
+                    if (accountDTO != null && passwordEncoder.matches(password, accountDTO.getPassword())) {
                         accountDTO.setId(accountDocument.getId());
                         accountDTO.setPassword("");
                     }
@@ -99,7 +102,8 @@ public class AccountService {
             List<QueryDocumentSnapshot> matchedAccount = readAccountQuery.get().getDocuments();
 
             if (matchedAccount.size() == 0) {
-                account = new AccountDTO(username, password);
+                String safePassword = passwordEncoder.encode(password);
+                account = new AccountDTO(username, safePassword);
                 account.setEmail(email);
                 account.setCreateDate(Calendar.getInstance().getTime());
                 account.setRole(new AccountRoleDTO(role));

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import modelance.backend.firebasedto.work.TransactionDTO;
+import modelance.backend.firebasedto.wallet.TransactionDTO;
 
 class EmployerContractCreateRequest {
     private ArrayList<String> employerTerms;

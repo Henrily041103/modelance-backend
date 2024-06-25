@@ -13,8 +13,9 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
+
+import modelance.backend.firebasedto.wallet.TransactionDTO;
 import modelance.backend.firebasedto.work.ContractDTO;
-import modelance.backend.firebasedto.work.TransactionDTO;
 import modelance.backend.service.account.NoAccountExistsException;
 import modelance.backend.service.job.ContractService;
 import modelance.backend.service.wallet.WalletService;

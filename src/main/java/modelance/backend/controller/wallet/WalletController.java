@@ -3,8 +3,8 @@ package modelance.backend.controller.wallet;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import modelance.backend.firebasedto.work.TransactionDTO;
-import modelance.backend.firebasedto.work.WalletDTO;
+import modelance.backend.firebasedto.wallet.TransactionDTO;
+import modelance.backend.firebasedto.wallet.WalletDTO;
 import modelance.backend.service.account.NoAccountExistsException;
 import modelance.backend.service.wallet.WalletService;
 

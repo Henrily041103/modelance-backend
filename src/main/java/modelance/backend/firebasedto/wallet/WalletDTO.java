@@ -1,4 +1,4 @@
-package modelance.backend.firebasedto.work;
+package modelance.backend.firebasedto.wallet;
 
 import com.google.firebase.database.Exclude;
 

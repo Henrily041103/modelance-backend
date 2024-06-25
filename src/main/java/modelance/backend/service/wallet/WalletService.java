@@ -20,9 +20,10 @@ import com.google.cloud.firestore.WriteBatch;
 import com.google.firebase.cloud.FirestoreClient;
 
 import modelance.backend.firebasedto.account.AccountDTO;
+// import modelance.backend.firebasedto.wallet.CheckoutResponseDTO;
+import modelance.backend.firebasedto.wallet.TransactionDTO;
+import modelance.backend.firebasedto.wallet.WalletDTO;
 import modelance.backend.firebasedto.work.ContractDTO;
-import modelance.backend.firebasedto.work.TransactionDTO;
-import modelance.backend.firebasedto.work.WalletDTO;
 import modelance.backend.model.TransactionModel;
 import modelance.backend.service.account.AccountService;
 import modelance.backend.service.account.NoAccountExistsException;
@@ -163,4 +164,6 @@ public class WalletService {
 
         return transactions;
     }
+
+    // public CheckoutResponseDTO input
 }

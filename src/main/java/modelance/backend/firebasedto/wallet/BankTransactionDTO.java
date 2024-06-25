@@ -1,6 +1,6 @@
 package modelance.backend.firebasedto.wallet;
 
-public class BankTransaction {
+public class BankTransactionDTO {
     private long orderCode; // Mã đơn hàng từ cửa hàng
     private int amount; // Số tiền thanh toán
     private String description; // Mô tả thanh toán

@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -108,9 +110,10 @@ public class ApplicationConfig {
     }
 
     @Bean
-    AuthenticationManager accountAuthenticationManager(UserDetailsService userDetailsService) {
+    AuthenticationManager accountAuthenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
         return new ProviderManager(authenticationProvider);
     }
 
@@ -133,6 +136,11 @@ public class ApplicationConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -175,7 +183,10 @@ public class ApplicationConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/swagger-ui.html").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll());
+                        .requestMatchers("/v3/api-docs/**").permitAll())
+                // payos
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/payos/**").permitAll());
         return http.build();
     }
 }

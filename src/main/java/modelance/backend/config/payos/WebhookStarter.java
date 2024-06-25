@@ -16,8 +16,8 @@
 
 //     @EventListener
 //     public void registerWebhook(ApplicationReadyEvent event) {
-//         String url = "https://modelance-modelance-app.azuremicroservices.io/";
-//         String path = "/wallet/transaction/webhook";
+//         String url = "https://modelance-backend-rfh7esctoa-uc.a.run.app/";
+//         String path = "/payos/webhook";
 //         try {
 //             payOS.confirmWebhook(url + path);
 //         } catch (Exception e) {
