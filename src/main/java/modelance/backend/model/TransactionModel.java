@@ -66,7 +66,7 @@ public class TransactionModel {
     private TransactionWalletModel wallet;
     private String status;
     private Date datetime;
-    private int amount;
+    private long amount;
     private boolean isBank;
 
     public TransactionWalletModel getWallet() {
@@ -93,11 +93,11 @@ public class TransactionModel {
         this.datetime = datetime;
     }
 
-    public int getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 
