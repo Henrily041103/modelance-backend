@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @RestController
 @RequestMapping(path = "/wallet")
 public class WalletController {
@@ -62,15 +60,15 @@ public class WalletController {
     }
 
     @PostMapping("topup")
-    public CheckoutResponseDTO createLink(@RequestBody int amount, Authentication authentication) {
+    public CheckoutResponseDTO createLink(@RequestBody CreateLinkRequest request, Authentication authentication) {
         CheckoutResponseDTO response = null;
 
         try {
-            response = walletService.createBankTransaction(amount, authentication);
+            response = walletService.createBankTransaction(request.getAmount(), authentication);
         } catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
         }
-        
+
         return response;
     }
 
@@ -83,9 +81,8 @@ public class WalletController {
         } catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
         }
-        
+
         return response;
     }
-    
-    
+
 }

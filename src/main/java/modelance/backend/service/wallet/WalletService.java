@@ -37,6 +37,7 @@ import modelance.backend.firebasedto.wallet.TransactionDTO;
 import modelance.backend.firebasedto.wallet.WalletDTO;
 import modelance.backend.firebasedto.work.ContractDTO;
 import modelance.backend.model.TransactionModel;
+import modelance.backend.model.WalletModel;
 import modelance.backend.service.account.AccountService;
 import modelance.backend.service.account.NoAccountExistsException;
 
@@ -72,9 +73,8 @@ public class WalletService {
             QueryDocumentSnapshot walletDoc = walletQuery.getDocuments().get(0);
             if (!walletDoc.exists())
                 throw new NoWalletExistsException();
-            WalletDTO walletModel = walletDoc.toObject(WalletDTO.class);
-            walletModel.setAccount(account);
-            walletModel.setId(walletDoc.getId());
+            WalletModel wallet = walletDoc.toObject(WalletModel.class);
+            WalletDTO walletModel = new WalletDTO(walletDoc.getId(), account, wallet.getBalance());
 
             result = walletModel;
 
@@ -215,7 +215,7 @@ public class WalletService {
             // add to bank transaction
             BankTransactionDTO bankTransaction = data;
             DocumentReference bankTransactionRef = firestore.collection("BankTransaction").document();
-            batch.create(bankTransactionRef, bankTransaction);
+            batch.set(bankTransactionRef, bankTransaction);
 
             // update wallet
             DocumentReference walletDocRef = firestore.collection("Wallet")
@@ -236,7 +236,7 @@ public class WalletService {
         // create new payment data
         int orderCode = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
         String description = "MODELANCE";
-        String baseUrl = "https://modelancefe.vercel.app/";
+        String baseUrl = "https://modelancefe.vercel.app";
         String topUpUrl = baseUrl + "/wallet" + "/topup" + "/";
         String confirmUrl = topUpUrl + "success";
         String cancelUrl = topUpUrl + "cancelled";
@@ -246,9 +246,7 @@ public class WalletService {
         try {
             // send data to payos
             JsonNode jsonNode = payOS.createPaymentLink(paymentData);
-            PayOSWrapper<CheckoutResponseDTO> paymentLink = objectMapper.convertValue(jsonNode,
-                    new TypeReference<PayOSWrapper<CheckoutResponseDTO>>() {
-                    });
+            CheckoutResponseDTO paymentLink = objectMapper.convertValue(jsonNode, CheckoutResponseDTO.class);
             if (paymentLink == null)
                 return checkoutResponseDTO;
 
@@ -266,7 +264,7 @@ public class WalletService {
             firestore.collection("Transaction").add(transaction);
 
             // set result
-            checkoutResponseDTO = paymentLink.getData();
+            checkoutResponseDTO = paymentLink;
         } catch (Exception e) {
             e.printStackTrace();
         }

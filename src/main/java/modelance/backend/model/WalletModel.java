@@ -31,7 +31,6 @@ class WalletAccountModel {
 }
 
 public class WalletModel {
-    private String id;
     private WalletAccountModel account;
     private int balance;
 
@@ -60,12 +59,8 @@ public class WalletModel {
         this.account = account;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setAccount(String id, String role) {
+        this.account = new WalletAccountModel(id, role);
     }
 
 }

@@ -31,14 +31,14 @@ import modelance.backend.firebasedto.account.AccountRoleDTO;
 import modelance.backend.firebasedto.account.AccountStatusDTO;
 import modelance.backend.firebasedto.account.EmployerDTO;
 import modelance.backend.firebasedto.account.ModelDTO;
-import modelance.backend.firebasedto.wallet.WalletDTO;
 import modelance.backend.model.ModelModel;
+import modelance.backend.model.WalletModel;
 
 @Service
 public class AccountService {
-    private Firestore firestore;
-    private StorageClient storageClient;
-    private PasswordEncoder passwordEncoder;
+    private final Firestore firestore;
+    private final StorageClient storageClient;
+    private final PasswordEncoder passwordEncoder;
 
     public AccountService(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -110,7 +110,6 @@ public class AccountService {
                 account.setStatus(new AccountStatusDTO("1", "active"));
                 ApiFuture<DocumentReference> addQuery = firestore.collection("Account").add(account);
                 DocumentReference addDoc = addQuery.get();
-                account.setId(addDoc.getId());
                 account.setPassword("");
 
                 if (role.equals("model")) {
@@ -120,9 +119,7 @@ public class AccountService {
                     firestore.collection("Employer").document(addDoc.getId()).set(new EmployerDTO());
                 }
 
-                WalletDTO wallet = new WalletDTO();
-                wallet.setAccount(account);
-                wallet.setBalance(0);
+                WalletModel wallet = new WalletModel(addDoc.getId(), role, 0);
                 firestore.collection("Wallet").add(wallet);
             }
 
