@@ -3,17 +3,13 @@ package modelance.backend.service.wallet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.commons.codec.digest.HmacUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +28,6 @@ import com.lib.payos.PayOS;
 import com.lib.payos.type.ItemData;
 import com.lib.payos.type.PaymentData;
 
-import modelance.backend.config.payos.PaymentAccount;
 import modelance.backend.firebasedto.account.AccountDTO;
 import modelance.backend.firebasedto.wallet.BankTransactionDTO;
 import modelance.backend.firebasedto.wallet.CheckoutResponseDTO;
@@ -55,14 +50,11 @@ public class WalletService {
     private final AccountService accountService;
     private final ObjectMapper objectMapper;
     private final PayOS payOS;
-    private final PaymentAccount paymentAccount;
 
-    public WalletService(AccountService accountService, ObjectMapper objectMapper, PayOS payOS,
-            PaymentAccount paymentAccount) {
+    public WalletService(AccountService accountService, ObjectMapper objectMapper, PayOS payOS) {
         this.accountService = accountService;
         this.objectMapper = objectMapper;
         this.payOS = payOS;
-        this.paymentAccount = paymentAccount;
         this.firestore = FirestoreClient.getFirestore();
     }
 
@@ -189,80 +181,21 @@ public class WalletService {
         return transactions;
     }
 
-    private static Iterator<String> sortedIterator(Iterator<?> it, Comparator<String> comparator) {
-        List<String> list = new ArrayList<String>();
-        while (it.hasNext()) {
-            list.add((String) it.next());
-        }
-
-        Collections.sort(list, comparator);
-        return list.iterator();
-    }
-
-    private String generateSignature(String JSON) {
-        String signature = "";
-
-        try {
-            if (paymentAccount != null
-                    && paymentAccount.getChecksumKey() != null
-                    && paymentAccount.getChecksumKey().trim() != "") {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> jsonObject = new ObjectMapper().readValue(JSON, HashMap.class);
-                Iterator<String> sortedIt = sortedIterator(jsonObject.keySet().iterator(), (a, b) -> a.compareTo(b));
-
-                StringBuilder transactionStr = new StringBuilder();
-                while (sortedIt.hasNext()) {
-                    String key = sortedIt.next();
-                    String value = jsonObject.get(key).toString();
-                    transactionStr.append(key);
-                    transactionStr.append('=');
-                    transactionStr.append(value);
-                    if (sortedIt.hasNext()) {
-                        transactionStr.append('&');
-                    }
-                }
-
-                signature = new HmacUtils("HmacSHA256", paymentAccount.getChecksumKey())
-                        .hmacHex(transactionStr.toString());
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return signature;
-    }
-
-    public boolean testSignatureWebhook(PayOSWrapper<BankTransactionDTO> data) throws JsonProcessingException {
-        // check error
-        if (!data.getCode().equals("200") || data.getData().getOrderCode() == 0)
-            return false;
-        String dataJSON = objectMapper.writeValueAsString(data.getData());
-        String signature = generateSignature(dataJSON);
-
-        // check signature
-        if (!signature.equals(data.getSignature())) {
-            return false;
-        }
-        return true;
-    }
-
-    public boolean receiveBankTransaction(PayOSWrapper<BankTransactionDTO> data)
+    public boolean receiveBankTransaction(JsonNode inputData)
             throws InterruptedException, ExecutionException, JsonProcessingException {
 
-        if (data != null) {
-            // check error
-            if (!data.getCode().equals("200") || data.getData().getOrderCode() == 0)
-                return false;
-            String dataJSON = objectMapper.writeValueAsString(data.getData());
-            String signature = generateSignature(dataJSON);
-
-            // check signature
-            if (!signature.equals(data.getSignature())) {
+        if (inputData != null) {
+            // verify and get data
+            JsonNode testedData = null;
+            try {
+                testedData = payOS.verifyPaymentWebhookData(inputData);
+            } catch (Exception e) {
                 return false;
             }
+            PayOSWrapper<BankTransactionDTO> data = objectMapper.convertValue(testedData,
+                    new TypeReference<PayOSWrapper<BankTransactionDTO>>() {
 
+                    });
             // create batch
             WriteBatch batch = firestore.batch();
 

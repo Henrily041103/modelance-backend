@@ -4,9 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import modelance.backend.firebasedto.wallet.BankTransactionDTO;
-import modelance.backend.firebasedto.wallet.PayOSWrapper;
 import modelance.backend.service.wallet.WalletService;
 
 import java.util.HashMap;
@@ -28,7 +27,7 @@ public class PayOSWebhookController {
     }
 
     @PostMapping("/webhook")
-    public Map<String, Boolean> testWebhook(@RequestBody PayOSWrapper<BankTransactionDTO> data) {
+    public Map<String, Boolean> testWebhook(@RequestBody JsonNode data) {
         Map<String, Boolean> entity = new HashMap<>();
 
         try {

@@ -75,7 +75,7 @@ public class WalletController {
     }
 
     @GetMapping("topup/{id}")
-    public OrderTransactionDTO getTransactionInto(@PathVariable String id) {
+    public OrderTransactionDTO getTransactionInfo(@PathVariable String id) {
         OrderTransactionDTO response = null;
 
         try {
