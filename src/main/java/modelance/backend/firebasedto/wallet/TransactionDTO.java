@@ -9,9 +9,21 @@ public class TransactionDTO {
     private String id;
     private String status;
     private Date datetime;
+    private int orderCode;
     private boolean isBank;
     private long amount;
     private WalletDTO wallet;
+
+    public TransactionDTO(String id, String status, Date datetime, int orderCode, boolean isBank, long amount,
+            WalletDTO wallet) {
+        this.id = id;
+        this.status = status;
+        this.datetime = datetime;
+        this.orderCode = orderCode;
+        this.isBank = isBank;
+        this.amount = amount;
+        this.wallet = wallet;
+    }
 
     public TransactionDTO(String id, String status, Date datetime, boolean isBank, long amount, WalletDTO wallet) {
         this.id = id;
@@ -20,6 +32,7 @@ public class TransactionDTO {
         this.isBank = isBank;
         this.amount = amount;
         this.wallet = wallet;
+        this.orderCode = 0;
     }
 
     public TransactionDTO() {
@@ -72,5 +85,13 @@ public class TransactionDTO {
 
     public void setWallet(WalletDTO wallet) {
         this.wallet = wallet;
+    }
+
+    public int getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(int orderCode) {
+        this.orderCode = orderCode;
     }
 }

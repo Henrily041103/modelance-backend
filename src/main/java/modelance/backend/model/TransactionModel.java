@@ -66,6 +66,7 @@ public class TransactionModel {
     private TransactionWalletModel wallet;
     private String status;
     private Date datetime;
+    private int orderCode;
     private int amount;
     private boolean isBank;
 
@@ -75,6 +76,11 @@ public class TransactionModel {
 
     public void setWallet(TransactionWalletModel wallet) {
         this.wallet = wallet;
+    }
+
+    public void setWallet(String walletId, String userId, String role) {
+        this.wallet = new TransactionWalletModel(userId, role);
+        this.wallet.setId(walletId);
     }
 
     public String getStatus() {
@@ -107,6 +113,18 @@ public class TransactionModel {
 
     public void setBank(boolean isBank) {
         this.isBank = isBank;
+    }
+
+    public int getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(int orderName) {
+        this.orderCode = orderName;
+    }
+
+    public String getWalletId() {
+        return this.wallet.getId();
     }
 
 }

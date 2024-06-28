@@ -47,3 +47,6 @@ if %ERRORLEVEL% neq 0 (
 
 REM Change back to the previous directory
 cd ..
+
+REM Delete build folder
+rmdir /s /q target

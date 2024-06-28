@@ -10,9 +10,9 @@ import java.util.concurrent.ExecutionException;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/model/job")
@@ -37,7 +37,7 @@ public class ModelJobController {
     }
 
     @PostMapping("apply/{id}")
-    public JobModel applyForJob(Authentication authentication, @RequestBody String jobId) {
+    public JobModel applyForJob(Authentication authentication, @PathVariable String jobId) {
         JobModel result = null;
 
         try {
@@ -50,7 +50,7 @@ public class ModelJobController {
     }
 
     @PostMapping("unapply/{id}")
-    public JobModel unapplyForJob(Authentication authentication, @RequestBody String jobId) {
+    public JobModel unapplyForJob(Authentication authentication, @PathVariable String jobId) {
         JobModel result = null;
 
         try {

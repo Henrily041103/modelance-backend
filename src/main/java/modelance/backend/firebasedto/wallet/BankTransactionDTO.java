@@ -1,7 +1,7 @@
 package modelance.backend.firebasedto.wallet;
 
 public class BankTransactionDTO {
-    private long orderCode; // Mã đơn hàng từ cửa hàng
+    private int orderCode; // Mã đơn hàng từ cửa hàng
     private int amount; // Số tiền thanh toán
     private String description; // Mô tả thanh toán
     private String accountNumber; // Số tài khoản của cửa hàng
@@ -19,11 +19,11 @@ public class BankTransactionDTO {
     private String virtualAccountNumber; // Số tài khoản ảo
 
     // Getters and Setters
-    public long getOrderCode() {
+    public int getOrderCode() {
         return orderCode;
     }
 
-    public void setOrderCode(long orderCode) {
+    public void setOrderCode(int orderCode) {
         this.orderCode = orderCode;
     }
 
