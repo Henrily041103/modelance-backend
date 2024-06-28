@@ -24,4 +24,9 @@ public class AccountStatusDTO {
     public String getStatusName() {
         return statusName;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 }

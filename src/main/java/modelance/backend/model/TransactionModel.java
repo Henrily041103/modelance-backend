@@ -99,7 +99,7 @@ public class TransactionModel {
         this.datetime = datetime;
     }
 
-    public int getAmount() {
+    public long getAmount() {
         return amount;
     }
 
