@@ -192,8 +192,8 @@ public class WalletService {
             } catch (Exception e) {
                 return false;
             }
-            PayOSWrapper<BankTransactionDTO> data = objectMapper.convertValue(testedData,
-                    new TypeReference<PayOSWrapper<BankTransactionDTO>>() {
+            BankTransactionDTO data = objectMapper.convertValue(testedData,
+                    new TypeReference<BankTransactionDTO>() {
 
                     });
             // create batch
@@ -201,7 +201,7 @@ public class WalletService {
 
             // get transaction
             List<QueryDocumentSnapshot> transactionSnapshotList = firestore.collection("Transaction")
-                    .whereEqualTo("orderCode", data.getData().getOrderCode()).whereEqualTo("status", "pending")
+                    .whereEqualTo("orderCode", data.getOrderCode()).whereEqualTo("status", "pending")
                     .get().get().getDocuments();
             if (transactionSnapshotList.size() < 1)
                 return false;
@@ -213,14 +213,14 @@ public class WalletService {
             batch.update(transactionDocRef, "status", "approved");
 
             // add to bank transaction
-            BankTransactionDTO bankTransaction = data.getData();
+            BankTransactionDTO bankTransaction = data;
             DocumentReference bankTransactionRef = firestore.collection("BankTransaction").document();
             batch.create(bankTransactionRef, bankTransaction);
 
             // update wallet
             DocumentReference walletDocRef = firestore.collection("Wallet")
                     .document(transaction.getWalletId());
-            batch.update(walletDocRef, "amount", data.getData().getAmount() * TOP_UP_MULTIPLIER);
+            batch.update(walletDocRef, "amount", data.getAmount() * TOP_UP_MULTIPLIER);
 
             batch.commit();
         }

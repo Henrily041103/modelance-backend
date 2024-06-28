@@ -17,7 +17,7 @@ public class WebhookStarter {
     @EventListener
     public void registerWebhook(ApplicationReadyEvent event) {
         String url = "https://modelance-backend-rfh7esctoa-uc.a.run.app/";
-        String path = "/payos/webhook";
+        String path = "payos/webhook";
         try {
             System.out.println(payOS.confirmWebhook(url + path));
         } catch (Exception e) {
