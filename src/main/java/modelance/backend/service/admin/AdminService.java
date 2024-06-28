@@ -30,7 +30,7 @@ public class AdminService {
     private Firestore firestore;
     private ObjectMapper objectMapper;
 
-    public AdminService(Firestore firestore, ObjectMapper objectMapper) {
+    public AdminService(ObjectMapper objectMapper) {
         this.firestore = FirestoreClient.getFirestore();
         this.objectMapper = objectMapper;
     }
