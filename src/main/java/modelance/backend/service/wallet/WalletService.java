@@ -22,7 +22,6 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.WriteBatch;
 import com.google.firebase.cloud.FirestoreClient;
 import com.lib.payos.PayOS;
 import com.lib.payos.type.ItemData;
@@ -140,7 +139,7 @@ public class WalletService {
         WalletDTO modelWalletDTO = getWallet(model.getId());
         Calendar currentTime = Calendar.getInstance();
         Date date = currentTime.getTime();
-        WriteBatch batch = firestore.batch();
+        // WriteBatch batch = firestore.batch();
 
         if (employerWalletDTO.getBalance() < contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER) {
             return transactions;
@@ -156,8 +155,8 @@ public class WalletService {
         TransactionModel mTransactionModel = objectMapper.convertValue(modelTransactionDTO, TransactionModel.class);
         DocumentReference employerTransaction = firestore.collection("Transaction").document();
         DocumentReference modelTransaction = firestore.collection("Transaction").document();
-        batch.set(employerTransaction, eTransactionModel);
-        batch.set(modelTransaction, mTransactionModel);
+        employerTransaction.set(eTransactionModel);
+        modelTransaction.set(mTransactionModel);
 
         // update wallet
         Map<String, Object> employerWalletUpdate = new HashMap<>();
@@ -168,11 +167,8 @@ public class WalletService {
                 modelWalletDTO.getBalance() + contractDTO.getPayment() * MODEL_CONTRACT_MULTIPLIER);
         DocumentReference employerWallet = firestore.collection("Wallet").document(employerWalletDTO.getId());
         DocumentReference modelWallet = firestore.collection("Wallet").document(modelWalletDTO.getId());
-        batch.update(modelWallet, modelWalletUpdate);
-        batch.update(employerWallet, employerWalletUpdate);
-
-        // update everything
-        batch.commit();
+        modelWallet.update(modelWalletUpdate);
+        employerWallet.update(employerWalletUpdate);
 
         // add to results
         transactions.add(modelTransactionDTO);
@@ -186,7 +182,7 @@ public class WalletService {
 
         if (inputData != null) {
             // verify and get data
-            JsonNode testedData = null;
+            JsonNode testedData = inputData.get("data");
             try {
                 testedData = payOS.verifyPaymentWebhookData(inputData);
             } catch (Exception e) {
@@ -196,8 +192,6 @@ public class WalletService {
                     new TypeReference<BankTransactionDTO>() {
 
                     });
-            // create batch
-            WriteBatch batch = firestore.batch();
 
             // get transaction
             List<QueryDocumentSnapshot> transactionSnapshotList = firestore.collection("Transaction")
@@ -208,24 +202,22 @@ public class WalletService {
             TransactionModel transaction = transactionSnapshotList.get(0).toObject(TransactionModel.class);
 
             // update transaction
-            DocumentReference transactionDocRef = firestore.collection("Collection")
+            DocumentReference transactionDocRef = firestore.collection("Wallet")
                     .document(transactionSnapshotList.get(0).getId());
-            batch.update(transactionDocRef, "status", "approved");
+            transaction.setStatus("approved");
+            transactionDocRef.update("status", "approved");
 
             // add to bank transaction
-            BankTransactionDTO bankTransaction = data;
-            DocumentReference bankTransactionRef = firestore.collection("BankTransaction").document();
-            batch.set(bankTransactionRef, bankTransaction);
+            firestore.collection("BankTransaction").add(data);
 
             // update wallet
             DocumentReference walletDocRef = firestore.collection("Wallet")
                     .document(transaction.getWalletId());
-            batch.update(walletDocRef, "amount", data.getAmount() * TOP_UP_MULTIPLIER);
-
-            batch.commit();
+            walletDocRef.update("balance", data.getAmount() * TOP_UP_MULTIPLIER);
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     public CheckoutResponseDTO createBankTransaction(int amount, Authentication authentication)

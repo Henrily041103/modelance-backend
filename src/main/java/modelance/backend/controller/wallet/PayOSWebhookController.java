@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,7 +28,22 @@ public class PayOSWebhookController {
     }
 
     @PostMapping("/webhook")
-    public Map<String, Boolean> testWebhook(@RequestBody JsonNode data) {
+    public Map<String, Boolean> postWebhook(@RequestBody JsonNode data) {
+        Map<String, Boolean> entity = new HashMap<>();
+
+        try {
+            boolean result = walletService.receiveBankTransaction(data);
+            entity.put("success", result);
+        } catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            entity.put("success", false);
+        }
+        
+        return entity;
+    }
+
+    @GetMapping("/webhook")
+    public Map<String, Boolean> getWebhook(@RequestBody JsonNode data) {
         Map<String, Boolean> entity = new HashMap<>();
 
         try {
