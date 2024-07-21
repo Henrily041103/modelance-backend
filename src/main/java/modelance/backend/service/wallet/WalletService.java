@@ -139,7 +139,6 @@ public class WalletService {
         WalletDTO modelWalletDTO = getWallet(model.getId());
         Calendar currentTime = Calendar.getInstance();
         Date date = currentTime.getTime();
-        // WriteBatch batch = firestore.batch();
 
         if (employerWalletDTO.getBalance() < contractDTO.getPayment() * EMPLOYER_CONTRACT_MULTIPLIER) {
             return transactions;
@@ -233,8 +232,8 @@ public class WalletService {
         String confirmUrl = topUpUrl + "success";
         String cancelUrl = topUpUrl + "cancelled";
 
-        PaymentData paymentData = new PaymentData(orderCode, amount, description, new ArrayList<ItemData>(), confirmUrl,
-                cancelUrl);
+        PaymentData paymentData = new PaymentData(orderCode, amount, description, new ArrayList<ItemData>(), cancelUrl,
+                confirmUrl);
         try {
             // send data to payos
             JsonNode jsonNode = payOS.createPaymentLink(paymentData);
