@@ -64,7 +64,7 @@ public class WalletController {
         CheckoutResponseDTO response = null;
 
         try {
-            response = walletService.createBankTransaction(request.getAmount(), authentication);
+            response = walletService.createBankTransaction(request.getAmount(), request.getDescription(), authentication);
         } catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
         }
