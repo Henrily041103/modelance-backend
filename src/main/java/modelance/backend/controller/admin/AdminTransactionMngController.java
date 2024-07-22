@@ -25,6 +25,11 @@ public class AdminTransactionMngController {
     public ArrayList<TransactionModel> getAllTransactions() throws InterruptedException, ExecutionException {
         return service.getAllTransaction();
     }
+
+    @GetMapping("/bank")
+    public ArrayList<TransactionModel> getAllBankTransactions() throws InterruptedException, ExecutionException {
+        return service.getAllTransaction();
+    }
     
     @GetMapping("{doc}")
     public String getTransactionDetails(@PathVariable String doc) {

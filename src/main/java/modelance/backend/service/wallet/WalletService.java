@@ -201,10 +201,9 @@ public class WalletService {
             TransactionModel transaction = transactionSnapshotList.get(0).toObject(TransactionModel.class);
 
             // update transaction
-            DocumentReference transactionDocRef = firestore.collection("Wallet")
-                    .document(transactionSnapshotList.get(0).getId());
             transaction.setStatus("approved");
-            transactionDocRef.update("status", "approved");
+            firestore.collection("Wallet").document(transactionSnapshotList.get(0).getId()).set(transaction);
+            // transactionDocRef.update("status", "approved");
 
             // add to bank transaction
             firestore.collection("BankTransaction").add(data);

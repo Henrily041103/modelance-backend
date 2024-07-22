@@ -15,6 +15,7 @@ import com.google.firebase.cloud.FirestoreClient;
 
 import modelance.backend.firebasedto.account.AccountDTO;
 import modelance.backend.firebasedto.account.AccountStatusDTO;
+import modelance.backend.firebasedto.wallet.BankTransactionDTO;
 import modelance.backend.firebasedto.wallet.TransactionDTO;
 import modelance.backend.firebasedto.work.ContractDTO;
 import modelance.backend.firebasedto.work.ContractDTO.JobDTO;
@@ -114,4 +115,16 @@ public class AdminService {
         return transactionList;
     }
 
+    public ArrayList<BankTransactionDTO> getAllBankTransaction() throws InterruptedException, ExecutionException {
+        ArrayList<BankTransactionDTO> transactionList = new ArrayList<>();
+        ApiFuture<QuerySnapshot> future = firestore.collection("BankTransaction").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        for (QueryDocumentSnapshot snap : documents) {
+            BankTransactionDTO transaction = snap.toObject(BankTransactionDTO.class);
+            if (transaction != null) {
+                transactionList.add(transaction);
+            }
+        }
+        return transactionList;
+    }
 }
