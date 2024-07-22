@@ -44,7 +44,7 @@ import modelance.backend.service.account.NoAccountExistsException;
 public class WalletService {
     private final static double EMPLOYER_CONTRACT_MULTIPLIER = 1.05;
     private final static double MODEL_CONTRACT_MULTIPLIER = 0.9;
-    private final static double TOP_UP_MULTIPLIER = 0.9;
+    // private final static double TOP_UP_MULTIPLIER = 0.9;
 
     private final Firestore firestore;
     private final AccountService accountService;
@@ -212,7 +212,7 @@ public class WalletService {
             // update wallet
             DocumentReference walletDocRef = firestore.collection("Wallet")
                     .document(transaction.getWalletId());
-            walletDocRef.update("balance", data.getAmount() * TOP_UP_MULTIPLIER);
+            walletDocRef.update("balance", data.getAmount());
             return true;
         }
 
