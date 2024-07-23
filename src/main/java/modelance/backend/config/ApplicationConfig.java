@@ -169,6 +169,9 @@ public class ApplicationConfig {
                 // employer controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/employer/**").hasAuthority("ROLE_EMPLOYER"))
+                // admin controller
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN"))
                 // job controller
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/job").authenticated()
