@@ -16,7 +16,6 @@ import com.google.firebase.cloud.FirestoreClient;
 import modelance.backend.firebasedto.account.AccountDTO;
 import modelance.backend.firebasedto.account.AccountStatusDTO;
 import modelance.backend.firebasedto.wallet.BankTransactionDTO;
-import modelance.backend.firebasedto.wallet.TransactionDTO;
 import modelance.backend.firebasedto.work.ContractDTO;
 import modelance.backend.firebasedto.work.ContractDTO.JobDTO;
 import modelance.backend.model.AccountDetailsModel;
@@ -106,8 +105,7 @@ public class AdminService {
         ApiFuture<QuerySnapshot> future = firestore.collection("Transaction").get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         for (QueryDocumentSnapshot snap : documents) {
-            TransactionDTO dto = snap.toObject(TransactionDTO.class);
-            TransactionModel transaction = objectMapper.convertValue(dto, TransactionModel.class);
+            TransactionModel transaction = snap.toObject(TransactionModel.class);
             if (transaction != null) {
                 transactionList.add(transaction);
             }
