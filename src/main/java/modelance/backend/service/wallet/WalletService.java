@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +29,8 @@ import com.lib.payos.type.ItemData;
 import com.lib.payos.type.PaymentData;
 
 import modelance.backend.firebasedto.account.AccountDTO;
+import modelance.backend.firebasedto.premium.PremiumPackDTO;
+import modelance.backend.firebasedto.premium.PremiumPackRenewalDTO;
 import modelance.backend.firebasedto.wallet.BankTransactionDTO;
 import modelance.backend.firebasedto.wallet.CheckoutResponseDTO;
 import modelance.backend.firebasedto.wallet.OrderTransactionDTO;
@@ -287,5 +290,65 @@ public class WalletService {
         }
 
         return orderTransaction;
+    }
+
+    public PremiumPackRenewalDTO purchasePremium(Authentication authentication)
+            throws IOException, InterruptedException, ExecutionException, NoPackFoundException,
+            NotEnoughMoneyException, NoAccountExistsException {
+        PremiumPackRenewalDTO purchase = null;
+
+        // consts
+        String userId = authentication.getName();
+        String roleName = "";
+        for (GrantedAuthority auth : authentication.getAuthorities()) {
+            roleName = auth.getAuthority().replace("ROLE_", "").toLowerCase();
+            break;
+        }
+        Date currentDate = Calendar.getInstance().getTime();
+        int orderCode = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
+
+        QuerySnapshot documentSnapshot = firestore.collection("PremiumPack")
+                .whereEqualTo("role.roleName", roleName).get().get();
+
+        if (documentSnapshot.isEmpty()) {
+            throw new NoPackFoundException();
+        }
+        List<QueryDocumentSnapshot> snapshots = documentSnapshot.getDocuments();
+        if (snapshots.isEmpty()) {
+            throw new NoPackFoundException();
+        }
+        PremiumPackDTO premiumPack = snapshots.get(0).toObject(PremiumPackDTO.class);
+
+        // get wallet
+        WalletDTO wallet = getOwnWallet(authentication);
+
+        if (wallet.getBalance() < premiumPack.getPackPrice()) {
+            throw new NotEnoughMoneyException();
+        }
+
+        // pack purchase
+        purchase = new PremiumPackRenewalDTO();
+        purchase.setAccount(userId, roleName);
+        purchase.setPackId(premiumPack.getId());
+        purchase.setRenewalDate(currentDate);
+        DocumentReference docRef = firestore.collection("PremiumPackRenewal").document();
+        purchase.setId(docRef.getId());
+        docRef.set(purchase);
+
+        // create transaction
+        TransactionModel transaction = new TransactionModel();
+        transaction.setAmount(-premiumPack.getPackPrice());
+        transaction.setBank(false);
+        transaction.setDatetime(currentDate);
+        transaction.setOrderCode(orderCode);
+        transaction.setStatus("approved");
+        transaction.setWallet(wallet.getId(), userId, wallet.getAccount().getRole().getRoleName());
+        firestore.collection("Transaction").add(transaction);
+
+        // update wallet
+        firestore.collection("Wallet").document(wallet.getId()).update("balance",
+                wallet.getBalance() - premiumPack.getPackPrice());
+
+        return purchase;
     }
 }

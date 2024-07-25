@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,8 +32,11 @@ import modelance.backend.firebasedto.account.AccountRoleDTO;
 import modelance.backend.firebasedto.account.AccountStatusDTO;
 import modelance.backend.firebasedto.account.EmployerDTO;
 import modelance.backend.firebasedto.account.ModelDTO;
+import modelance.backend.firebasedto.premium.PremiumPackDTO;
+import modelance.backend.firebasedto.premium.PremiumPackRenewalDTO;
 import modelance.backend.model.ModelModel;
 import modelance.backend.model.WalletModel;
+import modelance.backend.service.wallet.NoPackFoundException;
 
 @Service
 public class AccountService {
@@ -407,5 +411,54 @@ public class AccountService {
         }
 
         return modelList;
+    }
+
+    public PremiumPackDTO getPremiumPack(Authentication authentication)
+            throws InterruptedException, ExecutionException, NoPackFoundException {
+        PremiumPackDTO premiumPack = null;
+        String roleName = "";
+        for (GrantedAuthority auth : authentication.getAuthorities()) {
+            roleName = auth.getAuthority().replace("ROLE_", "").toLowerCase();
+            break;
+        }
+
+        QuerySnapshot documentSnapshot = firestore.collection("PremiumPack")
+                .whereEqualTo("role.roleName", roleName).get().get();
+
+        if (documentSnapshot.isEmpty()) {
+            throw new NoPackFoundException();
+        }
+        List<QueryDocumentSnapshot> snapshots = documentSnapshot.getDocuments();
+        if (snapshots.isEmpty()) {
+            throw new NoPackFoundException();
+        }
+        premiumPack = snapshots.get(0).toObject(PremiumPackDTO.class);
+
+        return premiumPack;
+    }
+
+    public List<PremiumPackRenewalDTO> getRenewals(Authentication authentication)
+            throws InterruptedException, ExecutionException, NoAccountExistsException {
+        List<PremiumPackRenewalDTO> purchases = new ArrayList<>();
+
+        String userId = authentication.getName();
+        QuerySnapshot documentSnapshot = firestore.collection("PremiumPackRenewal")
+                .whereEqualTo("account.id", userId).get().get();
+
+        if (documentSnapshot.isEmpty()) {
+            throw new NoAccountExistsException();
+        }
+        List<QueryDocumentSnapshot> snapshots = documentSnapshot.getDocuments();
+        if (snapshots.isEmpty()) {
+            throw new NoAccountExistsException();
+        }
+        for (QueryDocumentSnapshot snap : snapshots) {
+            PremiumPackRenewalDTO purchase = snap.toObject(PremiumPackRenewalDTO.class);
+            purchases.add(purchase);
+        }
+        if (purchases.size() > 0)
+            purchases.sort((o1, o2) -> o2.getRenewalDate().compareTo(o1.getRenewalDate()));
+
+        return purchases;
     }
 }

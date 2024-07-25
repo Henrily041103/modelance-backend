@@ -3,11 +3,14 @@ package modelance.backend.controller.wallet;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import modelance.backend.firebasedto.premium.PremiumPackRenewalDTO;
 import modelance.backend.firebasedto.wallet.CheckoutResponseDTO;
 import modelance.backend.firebasedto.wallet.OrderTransactionDTO;
 import modelance.backend.firebasedto.wallet.TransactionDTO;
 import modelance.backend.firebasedto.wallet.WalletDTO;
 import modelance.backend.service.account.NoAccountExistsException;
+import modelance.backend.service.wallet.NoPackFoundException;
+import modelance.backend.service.wallet.NotEnoughMoneyException;
 import modelance.backend.service.wallet.WalletService;
 
 import java.io.IOException;
@@ -85,4 +88,20 @@ public class WalletController {
         return response;
     }
 
+    @PostMapping("premium/purchase")
+    public RenewPremiumPackResponse purchasePremiumPack(Authentication authentication) {
+        RenewPremiumPackResponse response = new RenewPremiumPackResponse();
+        try {
+            PremiumPackRenewalDTO data = walletService.purchasePremium(authentication);
+            response.setData(data);
+            response.setMessage("purchase success");
+        } catch (IOException | InterruptedException | ExecutionException | NoPackFoundException
+                | NotEnoughMoneyException | NoAccountExistsException e) {
+            response.setMessage("purchase failed");
+            e.printStackTrace();
+        }
+        
+        return response;
+    }
+    
 }

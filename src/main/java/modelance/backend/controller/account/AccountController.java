@@ -18,10 +18,13 @@ import modelance.backend.config.security.TokenGenerator;
 import modelance.backend.firebasedto.account.AccountDTO;
 import modelance.backend.firebasedto.account.EmployerDTO;
 import modelance.backend.firebasedto.account.ModelDTO;
+import modelance.backend.firebasedto.premium.PremiumPackDTO;
+import modelance.backend.firebasedto.premium.PremiumPackRenewalDTO;
 import modelance.backend.model.AccountModel;
 import modelance.backend.service.account.AccountService;
 import modelance.backend.service.account.NoAccountExistsException;
 import modelance.backend.service.account.QueryMismatchException;
+import modelance.backend.service.wallet.NoPackFoundException;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -197,4 +200,30 @@ public class AccountController {
         return response;
     }
 
+    @GetMapping("premium")
+    public PremiumPackDTO getPremiumPack(Authentication authentication) {
+        PremiumPackDTO pack = null;
+
+        try {
+            pack = accountService.getPremiumPack(authentication);
+        } catch (InterruptedException | ExecutionException | NoPackFoundException e) {
+            e.printStackTrace();
+        }
+
+        return pack;
+    }
+
+    @GetMapping("premium/purchases")
+    public List<PremiumPackRenewalDTO> getPremiumPurchases(Authentication authentication) {
+        List<PremiumPackRenewalDTO> renewals = null;
+
+        try {
+            renewals = accountService.getRenewals(authentication);
+        } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
+            e.printStackTrace();
+        }
+
+        return renewals;
+    }
+    
 }
