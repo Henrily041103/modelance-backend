@@ -93,7 +93,7 @@ public class ModelProfileController {
         return profileService.getAllReview(authentication);
     }
 
-    @PostMapping(path = "portfolio/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(path = "compcard/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public AddImagesResponse changeCompCard(
             @RequestParam("file") MultipartFile[] files,
             Authentication authentication) {
@@ -111,7 +111,7 @@ public class ModelProfileController {
         return response;
     }
 
-    @PostMapping(path = "compcard/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(path = "portfolio/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public AddImagesResponse changeAvatar(
             @RequestParam("file") MultipartFile[] files,
             @RequestParam String title,

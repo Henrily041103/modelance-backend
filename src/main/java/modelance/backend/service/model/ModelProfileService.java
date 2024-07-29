@@ -27,12 +27,13 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.cloud.StorageClient;
 
 import modelance.backend.firebasedto.account.AccountDTO;
+import modelance.backend.firebasedto.account.ModelDTO;
+import modelance.backend.firebasedto.account.PortfolioDTO;
 import modelance.backend.firebasedto.work.ReviewDTO;
 import modelance.backend.model.AccountModel;
 import modelance.backend.model.IndustryModel;
 import modelance.backend.model.LocationModel;
 import modelance.backend.model.ModelBodyIndexModel;
-import modelance.backend.model.PortfolioModel;
 import modelance.backend.model.ReviewModel;
 import modelance.backend.model.SocialMediaModel;
 
@@ -82,7 +83,7 @@ public class ModelProfileService {
         Bucket bucket = storageClient.bucket();
         List<String> urlList = new ArrayList<>();
         UUID uuid = UUID.nameUUIDFromBytes((userId + title).getBytes());
-        String jobId = uuid.toString().toString().replace('-','_');
+        String jobId = uuid.toString().toString().replace('-', '_');
 
         // add file
         for (MultipartFile file : files) {
@@ -105,11 +106,14 @@ public class ModelProfileService {
 
         // change data
         DocumentReference compCardRef = firestore.collection("Model").document(userId);
-        @SuppressWarnings("unchecked")
-        List<PortfolioModel> portfolioList = (List<PortfolioModel>) compCardRef.get().get().get("portfolio");
-        if (portfolioList != null) {
-            PortfolioModel portfolio = new PortfolioModel(jobId, urlList, title);
-            portfolioList.add(portfolio);
+        ModelDTO model = compCardRef.get().get().toObject(ModelDTO.class);
+        List<PortfolioDTO> portfolioList = new ArrayList<>();
+
+        if (model != null) {
+            if (model.getPortfolio() != null)
+                portfolioList.addAll(model.getPortfolio());
+            portfolioList.add(new PortfolioDTO(jobId, urlList, title));
+
             compCardRef.update("portfolio", portfolioList);
         }
 
