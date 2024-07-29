@@ -81,8 +81,8 @@ public class ModelProfileService {
         String userId = authentication.getName();
         Bucket bucket = storageClient.bucket();
         List<String> urlList = new ArrayList<>();
-        UUID uuid = UUID.fromString(userId + title);
-        String jobId = uuid.toString();
+        UUID uuid = UUID.nameUUIDFromBytes((userId + title).getBytes());
+        String jobId = uuid.toString().toString().replace('-','_');
 
         // add file
         for (MultipartFile file : files) {
