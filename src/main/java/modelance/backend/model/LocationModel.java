@@ -1,13 +1,13 @@
 package modelance.backend.model;
 
 public class LocationModel {
-    private String andress;
+    private String address;
     private String district;
     private String province;
     private String ward;
 
     public LocationModel(String andress, String district, String province, String ward) {
-        this.andress = andress;
+        this.address = andress;
         this.district = district;
         this.province = province;
         this.ward = ward;
@@ -16,12 +16,12 @@ public class LocationModel {
     public LocationModel() {
     }
 
-    public String getAndress() {
-        return andress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAndress(String andress) {
-        this.andress = andress;
+    public void setAddress(String andress) {
+        this.address = andress;
     }
 
     public String getDistrict() {
