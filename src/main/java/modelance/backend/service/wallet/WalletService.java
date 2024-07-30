@@ -332,7 +332,6 @@ public class WalletService {
         purchase.setPackId(premiumPack.getId());
         purchase.setRenewalDate(currentDate);
         DocumentReference docRef = firestore.collection("PremiumPackRenewal").document();
-        purchase.setId(docRef.getId());
         docRef.set(purchase);
 
         // create transaction

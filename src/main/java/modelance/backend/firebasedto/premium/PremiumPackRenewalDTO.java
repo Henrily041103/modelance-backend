@@ -60,14 +60,6 @@ public class PremiumPackRenewalDTO {
         this.account = account;
     }
 
-    public String getAccountId() {
-        return account.getId();
-    }
-
-    public String getAccountRole() {
-        return account.getRole();
-    }
-
     public void setAccount(String id, String role) {
         this.account = new PackAccountDTO(id, role);
     }
