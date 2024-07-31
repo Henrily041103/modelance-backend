@@ -34,6 +34,7 @@ import modelance.backend.firebasedto.account.EmployerDTO;
 import modelance.backend.firebasedto.account.ModelDTO;
 import modelance.backend.firebasedto.premium.PremiumPackDTO;
 import modelance.backend.firebasedto.premium.PremiumPackRenewalDTO;
+import modelance.backend.firebasedto.work.ReviewDTO;
 import modelance.backend.model.ModelModel;
 import modelance.backend.model.WalletModel;
 import modelance.backend.service.wallet.NoPackFoundException;
@@ -79,10 +80,10 @@ public class AccountService {
                 throw new NoAccountExistsException();
             }
             DocumentSnapshot accountDocument = matchedAccount.get(0);
-            if (accountDocument.exists()) {
+            if (accountDocument.exists() && passwordEncoder.matches(password, accountDocument.getString("password"))) {
                 try {
                     accountDTO = accountDocument.toObject(AccountDTO.class);
-                    if (accountDTO != null && passwordEncoder.matches(password, accountDTO.getPassword())) {
+                    if (accountDTO != null) {
                         accountDTO.setId(accountDocument.getId());
                         accountDTO.setPassword("");
                     }
@@ -182,9 +183,9 @@ public class AccountService {
         return result;
     }
 
-    private ModelDTO loadModelModel(String id)
+    private AccountDTO loadModelModel(String id)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
-        ModelDTO account = null;
+        AccountDTO account = null;
         if (id.trim() != "") {
             Firestore dbFirestore = FirestoreClient.getFirestore();
             // Model
@@ -194,6 +195,29 @@ public class AccountService {
             if (docSnap.exists()) {
                 account = docSnap.toObject(ModelDTO.class);
             }
+
+            // Rating
+            List<QueryDocumentSnapshot> queryResult = firestore.collection("Review")
+                    .whereEqualTo("reviewee.id", id).get().get().getDocuments();
+            float ratings = 0;
+            List<ReviewDTO> reviews = new ArrayList<>();
+            if (!queryResult.isEmpty()) {
+                for (QueryDocumentSnapshot query : queryResult) {
+                    ReviewDTO review = query.toObject(ReviewDTO.class);
+                    reviews.add(review);
+                }
+            }
+
+            for (ReviewDTO review : reviews) {
+                ratings += review.getRating();
+            }
+
+            if (reviews.size() > 0)
+                ratings /= reviews.size();
+
+            if (account != null)
+                ((ModelDTO) account).setRating(ratings);
+
             // Account
             DocumentReference docAccRef = dbFirestore.collection("Account").document(id);
             ApiFuture<DocumentSnapshot> accfuture = docAccRef.get();
@@ -217,9 +241,9 @@ public class AccountService {
         return account;
     }
 
-    private EmployerDTO loadEmployerModel(String id)
+    private AccountDTO loadEmployerModel(String id)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
-        EmployerDTO employerModel = null;
+        AccountDTO employerModel = null;
         if (id.trim() != "") {
             // Employer
             Firestore dbFirestore = FirestoreClient.getFirestore();

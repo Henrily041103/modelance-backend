@@ -1,5 +1,6 @@
 package modelance.backend.controller.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import modelance.backend.model.IndustryModel;
@@ -12,6 +13,9 @@ class ModelProfileUpdateRequest {
     private ModelBodyIndexModel bodyModel;
     private IndustryModel industry;
     private LocationModel location;
+    private String eyeColor;
+    private String hairColor;
+    private Float hourlyRate;
 
     public String getDescription() {
         return description;
@@ -43,6 +47,30 @@ class ModelProfileUpdateRequest {
 
     public void setLocation(LocationModel location) {
         this.location = location;
+    }
+
+    public String getEyeColor() {
+        return eyeColor;
+    }
+
+    public void setEyeColor(String eyeColor) {
+        this.eyeColor = eyeColor;
+    }
+
+    public String getHairColor() {
+        return hairColor;
+    }
+
+    public void setHairColor(String hairColor) {
+        this.hairColor = hairColor;
+    }
+
+    public Float getHourlyRate() {
+        return hourlyRate;
+    }
+
+    public void setHourlyRate(float hourlyRate) {
+        this.hourlyRate = hourlyRate;
     }
 
 }
@@ -82,6 +110,19 @@ class AddImagesResponse {
 
 }
 
+class ModelSocialMediaUpdateRequest {
+    private List<SocialMediaModel> updates;
+
+    public List<SocialMediaModel> getUpdates() {
+        return updates;
+    }
+
+    public void setUpdates(List<SocialMediaModel> socialMedia) {
+        this.updates = socialMedia;
+    }
+
+}
+
 class ModelSocialMediaUpdateResponse {
     private List<SocialMediaModel> socialMedia;
     private boolean result;
@@ -100,6 +141,39 @@ class ModelSocialMediaUpdateResponse {
 
     public void setResult(boolean result) {
         this.result = result;
+    }
+
+}
+
+class CategoryRequestObject {
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+}
+
+class ModelCategoryUpdateRequest {
+    private List<CategoryRequestObject> updates;
+
+    public List<CategoryRequestObject> getUpdates() {
+        return updates;
+    }
+
+    public void setUpdates(List<CategoryRequestObject> updates) {
+        this.updates = updates;
+    }
+
+    public List<String> getList() {
+        List<String> list = new ArrayList<>();
+        for (CategoryRequestObject cat : updates) {
+            list.add(cat.getCategory());
+        }
+        return list;
     }
 
 }

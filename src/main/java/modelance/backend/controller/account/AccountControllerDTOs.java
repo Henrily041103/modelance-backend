@@ -24,7 +24,7 @@ class LoginResponse {
     private String statusMessage;
 
     public LoginResponse() {
-        statusMessage = "Error!";
+        statusMessage = "Wrong username or password!";
     }
 
     public void setAccount(AccountModel account) {

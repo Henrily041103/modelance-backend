@@ -71,7 +71,13 @@ public class ModelProfileService {
                     + "?alt=media";
             urlList.add(url);
         }
-        firestore.collection("Model").document(userId).update("compCard", urlList);
+
+        DocumentReference compCardRef = firestore.collection("Model").document(userId);
+        ModelDTO model = compCardRef.get().get().toObject(ModelDTO.class);
+        if (model != null) {
+            model.addToCompCardList(urlList);
+            compCardRef.update("compCard", model.getCompCard());
+        }
 
         return urlList;
     }
@@ -136,7 +142,10 @@ public class ModelProfileService {
             String description,
             ModelBodyIndexModel bodyModel,
             IndustryModel industry,
-            LocationModel location)
+            LocationModel location,
+            String eyeColor,
+            String hairColor,
+            Float hourlyRate)
             throws InterruptedException, ExecutionException {
         boolean result = false;
         Map<String, Object> updater = new HashMap<>();
@@ -159,6 +168,18 @@ public class ModelProfileService {
         }
         if (description != null) {
             updater.put("description", description);
+            result = true;
+        }
+        if (eyeColor != null) {
+            updater.put("eyeColor", eyeColor);
+            result = true;
+        }
+        if (hairColor != null) {
+            updater.put("hairColor", hairColor);
+            result = true;
+        }
+        if (hourlyRate != null) {
+            updater.put("hourlyRate", hourlyRate);
             result = true;
         }
         firestore.collection("Model").document(userId).update(updater);

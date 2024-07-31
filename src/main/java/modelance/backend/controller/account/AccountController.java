@@ -62,18 +62,20 @@ public class AccountController {
         LoginResponse response = new LoginResponse();
         try {
             AccountDTO accountDTO = accountService.login(requestBody.getUsername(), requestBody.getPassword());
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    accountDTO.getId(),
-                    accountDTO.getPassword(),
-                    accountService.getAuthorities(accountDTO));
-            String token = tokenGenerator.generateToken(authentication);
-            String message = "Success";
+            if (accountDTO != null) {
+                Authentication authentication = new UsernamePasswordAuthenticationToken(
+                        accountDTO.getId(),
+                        accountDTO.getPassword(),
+                        accountService.getAuthorities(accountDTO));
+                String token = tokenGenerator.generateToken(authentication);
+                String message = "Success";
 
-            AccountModel account = new AccountModel(accountDTO);
+                AccountModel account = new AccountModel(accountDTO);
 
-            response.setAccount(account);
-            response.setJwtToken(token);
-            response.setStatusMessage(message);
+                response.setAccount(account);
+                response.setJwtToken(token);
+                response.setStatusMessage(message);
+            }
         } catch (InterruptedException | ExecutionException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -225,5 +227,5 @@ public class AccountController {
 
         return renewals;
     }
-    
+
 }

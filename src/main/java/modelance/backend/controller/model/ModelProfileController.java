@@ -39,7 +39,8 @@ public class ModelProfileController {
 
         try {
             response.setResult(profileService.updateModelWorkInfo(authentication, updates.getDescription(),
-                    updates.getBodyModel(), updates.getIndustry(), updates.getLocation()));
+                    updates.getBodyModel(), updates.getIndustry(), updates.getLocation(), updates.getEyeColor(),
+                    updates.getHairColor(), updates.getHourlyRate()));
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -48,14 +49,14 @@ public class ModelProfileController {
     }
 
     @PostMapping("social-media/update")
-    public ModelSocialMediaUpdateResponse updateSocialMedia(@RequestBody List<SocialMediaModel> updates,
+    public ModelSocialMediaUpdateResponse updateSocialMedia(@RequestBody ModelSocialMediaUpdateRequest updates,
             Authentication authentication)
             throws InterruptedException, ExecutionException {
         ModelSocialMediaUpdateResponse response = new ModelSocialMediaUpdateResponse();
         response.setResult(false);
 
         try {
-            List<SocialMediaModel> newList = profileService.updateSocialMedia(authentication, updates);
+            List<SocialMediaModel> newList = profileService.updateSocialMedia(authentication, updates.getUpdates());
             if (!newList.isEmpty()) {
                 response.setResult(true);
                 response.setSocialMedia(newList);
@@ -68,14 +69,14 @@ public class ModelProfileController {
     }
 
     @PostMapping("category/update")
-    public ModelCategoryUpdateResponse updateCategory(@RequestBody List<String> updates,
+    public ModelCategoryUpdateResponse updateCategory(@RequestBody ModelCategoryUpdateRequest updates,
             Authentication authentication)
             throws InterruptedException, ExecutionException {
         ModelCategoryUpdateResponse response = new ModelCategoryUpdateResponse();
         response.setResult(false);
 
         try {
-            List<String> newList = profileService.updateCategory(authentication, updates);
+            List<String> newList = profileService.updateCategory(authentication, updates.getList());
             if (!newList.isEmpty()) {
                 response.setResult(true);
                 response.setCategory(newList);
@@ -112,7 +113,7 @@ public class ModelProfileController {
     }
 
     @PostMapping(path = "portfolio/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public AddImagesResponse changeAvatar(
+    public AddImagesResponse changePortfolio(
             @RequestParam("file") MultipartFile[] files,
             @RequestParam String title,
             Authentication authentication) {
