@@ -2,22 +2,9 @@ package modelance.backend.firebasedto.account;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import modelance.backend.firebasedto.work.IndustryDTO;
 import modelance.backend.firebasedto.work.LocationDTO;
 
-@JsonIgnoreProperties({ "username",
-        "fullName",
-        "gender",
-        "role",
-        "status",
-        "avatar",
-        "createDate",
-        "dateOfBirth",
-        "password",
-        "id",
-        "email" })
 public class EmployerDTO extends AccountDTO {
 
     private String companyName;
