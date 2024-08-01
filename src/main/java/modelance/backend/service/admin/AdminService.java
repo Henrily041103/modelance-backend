@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
@@ -53,8 +54,10 @@ public class AdminService {
 
     public String updateAccountStatus(String doc, String status) throws InterruptedException, ExecutionException {
         AccountStatusDTO statusDTO = new AccountStatusDTO("id", status);
-        if (status.equalsIgnoreCase("active")) statusDTO.setId("1");
-        else statusDTO.setId("2");
+        if (status.equalsIgnoreCase("active"))
+            statusDTO.setId("1");
+        else
+            statusDTO.setId("2");
         DocumentReference ref = firestore.collection("Account").document(doc);
         ref.update("status", statusDTO);
         return "Banned account: " + doc;
@@ -124,5 +127,27 @@ public class AdminService {
             }
         }
         return transactionList;
+    }
+
+    public BankTransactionDTO getBankTransactionById(String id) throws InterruptedException, ExecutionException {
+        BankTransactionDTO bankTransaction = null;
+
+        DocumentSnapshot docRef = firestore.collection("BankTransaction").document(id).get().get();
+        if (docRef.exists()) {
+            bankTransaction = docRef.toObject(BankTransactionDTO.class);
+        }
+
+        return bankTransaction;
+    }
+
+    public TransactionModel getTransactionById(String id) throws InterruptedException, ExecutionException {
+        TransactionModel transaction = null;
+
+        DocumentSnapshot docRef = firestore.collection("Transaction").document(id).get().get();
+        if (docRef.exists()) {
+            transaction = docRef.toObject(TransactionModel.class);
+        }
+
+        return transaction;
     }
 }

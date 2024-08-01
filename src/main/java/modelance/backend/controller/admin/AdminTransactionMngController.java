@@ -3,6 +3,7 @@ package modelance.backend.controller.admin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import modelance.backend.firebasedto.wallet.BankTransactionDTO;
 import modelance.backend.model.TransactionModel;
 import modelance.backend.service.admin.AdminService;
 
@@ -22,18 +23,78 @@ public class AdminTransactionMngController {
     }
 
     @GetMapping("")
-    public ArrayList<TransactionModel> getAllTransactions() throws InterruptedException, ExecutionException {
-        return service.getAllTransaction();
+    public GetAllTransactionsResponse getAllTransactions() {
+        ArrayList<TransactionModel> result = null;
+        GetAllTransactionsResponse response = new GetAllTransactionsResponse();
+        response.setMessage("Failed");
+
+        try {
+            result = service.getAllTransaction();
+            if (result.size() > 0) {
+                response.setTransactions(result);
+                response.setMessage("Success");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return response;
     }
 
-    @GetMapping("/bank")
-    public ArrayList<TransactionModel> getAllBankTransactions() throws InterruptedException, ExecutionException {
-        return service.getAllTransaction();
+    @GetMapping("{id}")
+    public GetTransactionByIdResponse getTransactionById(@PathVariable String id) {
+        TransactionModel result = null;
+        GetTransactionByIdResponse response = new GetTransactionByIdResponse();
+        response.setMessage("Failed");
+
+        try {
+            result = service.getTransactionById(id);
+            if (result != null) {
+                response.setTransaction(result);
+                response.setMessage("Success");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return response;
     }
-    
-    @GetMapping("{doc}")
-    public String getTransactionDetails(@PathVariable String doc) {
-        return new String();
+
+    @GetMapping("bank")
+    public GetAllBankTransactionsResponse getAllBankTransactions() throws InterruptedException, ExecutionException {
+        ArrayList<BankTransactionDTO> result = null;
+        GetAllBankTransactionsResponse response = new GetAllBankTransactionsResponse();
+        response.setMessage("Failed");
+
+        try {
+            result = service.getAllBankTransaction();
+            if (result.size() > 0) {
+                response.setTransactions(result);
+                response.setMessage("Success");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return response;
     }
-    
+
+    @GetMapping("bank/{id}")
+    public GetBankTransactionByIdResponse getBankTransactionById(@PathVariable String id) {
+        BankTransactionDTO result = null;
+        GetBankTransactionByIdResponse response = new GetBankTransactionByIdResponse();
+        response.setMessage("Failed");
+
+        try {
+            result = service.getBankTransactionById(id);
+            if (result != null) {
+                response.setTransaction(result);
+                response.setMessage("Success");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
 }
