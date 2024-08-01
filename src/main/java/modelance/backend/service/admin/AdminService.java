@@ -46,6 +46,7 @@ public class AdminService {
         for (QueryDocumentSnapshot snap : documents) {
             AccountDTO accountDTO = snap.toObject(AccountDTO.class);
             AccountModel account = objectMapper.convertValue(accountDTO, AccountModel.class);
+            account.setId(snap.getId());
             if (account != null) {
                 accountList.add(account);
             }
