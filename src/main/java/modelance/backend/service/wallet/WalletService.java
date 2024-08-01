@@ -182,43 +182,47 @@ public class WalletService {
     public boolean receiveBankTransaction(JsonNode inputData)
             throws InterruptedException, ExecutionException, JsonProcessingException {
 
-        if (inputData != null) {
-            // verify and get data
-            JsonNode testedData = inputData.get("data");
-            try {
-                testedData = payOS.verifyPaymentWebhookData(inputData);
-            } catch (Exception e) {
-                return false;
-            }
-            BankTransactionDTO data = objectMapper.convertValue(testedData,
-                    new TypeReference<BankTransactionDTO>() {
-
-                    });
-
-            // get transaction
-            List<QueryDocumentSnapshot> transactionSnapshotList = firestore.collection("Transaction")
-                    .whereEqualTo("orderCode", data.getOrderCode()).whereEqualTo("status", "pending")
-                    .get().get().getDocuments();
-            if (transactionSnapshotList.size() < 1)
-                return false;
-            TransactionModel transaction = transactionSnapshotList.get(0).toObject(TransactionModel.class);
-
-            // update transaction
-            transaction.setStatus("approved");
-            firestore.collection("Wallet").document(transactionSnapshotList.get(0).getId()).set(transaction);
-            // transactionDocRef.update("status", "approved");
-
-            // add to bank transaction
-            firestore.collection("BankTransaction").add(data);
-
-            // update wallet
-            DocumentReference walletDocRef = firestore.collection("Wallet")
-                    .document(transaction.getWalletId());
-            walletDocRef.update("balance", data.getAmount());
-            return true;
+        if (inputData == null) {
+            return false;
         }
 
-        return false;
+        // verify and get data
+        JsonNode testedData = inputData.get("data");
+        try {
+            testedData = payOS.verifyPaymentWebhookData(inputData);
+        } catch (Exception e) {
+            return false;
+        }
+        BankTransactionDTO data = objectMapper.convertValue(testedData,
+                new TypeReference<BankTransactionDTO>() {
+
+                });
+
+        // get transaction
+        List<QueryDocumentSnapshot> transactionSnapshotList = firestore.collection("Transaction")
+                .whereEqualTo("orderCode", data.getOrderCode()).whereEqualTo("status", "pending")
+                .get().get().getDocuments();
+        if (transactionSnapshotList.size() < 1)
+            return false;
+        TransactionModel transaction = transactionSnapshotList.get(0).toObject(TransactionModel.class);
+
+        // update transaction
+        transaction.setStatus("approved");
+        firestore.collection("Transaction")
+                .document(transactionSnapshotList.get(0).getId()).set(transaction);
+        // transactionDocRef.update("status", "approved");
+
+        // add to bank transaction
+        firestore.collection("BankTransaction").add(data);
+
+        // update wallet
+        WalletDTO wallet = objectMapper.convertValue(transaction.getWallet(), WalletDTO.class);
+        if (wallet != null && wallet.getId() != null) {
+            DocumentReference walletDocRef = firestore.collection("Wallet").document(wallet.getId());
+            walletDocRef.update("balance", data.getAmount());
+        }
+
+        return true;
     }
 
     public CheckoutResponseDTO createBankTransaction(int amount, String description, Authentication authentication)

@@ -122,9 +122,4 @@ public class TransactionModel {
     public void setOrderCode(int orderName) {
         this.orderCode = orderName;
     }
-
-    public String getWalletId() {
-        return this.wallet.getId();
-    }
-
 }
