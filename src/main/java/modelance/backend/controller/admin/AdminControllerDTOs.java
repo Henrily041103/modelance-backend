@@ -68,7 +68,7 @@ class GetAllBankTransactionsResponse {
     }
 }
 
-class GetBankTransactionByIdResponse {
+class GetBankTransactionByOCResponse {
     private String message;
     private BankTransactionDTO transaction;
 

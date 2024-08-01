@@ -79,14 +79,14 @@ public class AdminTransactionMngController {
         return response;
     }
 
-    @GetMapping("bank/{id}")
-    public GetBankTransactionByIdResponse getBankTransactionById(@PathVariable String id) {
+    @GetMapping("bank/{orderCode}")
+    public GetBankTransactionByOCResponse getBankTransactionById(@PathVariable String orderCode) {
         BankTransactionDTO result = null;
-        GetBankTransactionByIdResponse response = new GetBankTransactionByIdResponse();
+        GetBankTransactionByOCResponse response = new GetBankTransactionByOCResponse();
         response.setMessage("Failed");
 
         try {
-            result = service.getBankTransactionById(id);
+            result = service.getBankTransactionByOC(orderCode);
             if (result != null) {
                 response.setTransaction(result);
                 response.setMessage("Success");

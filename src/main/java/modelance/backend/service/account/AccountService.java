@@ -307,8 +307,13 @@ public class AccountService {
 
     public AccountDTO getAccountByRoleId(String userId, String role)
             throws InterruptedException, ExecutionException, NoAccountExistsException {
-        AccountDTO account = null;
         String roleString = role.substring(5);
+        return getAccountByRoleString(userId, roleString);
+    }
+
+    public AccountDTO getAccountByRoleString(String userId, String roleString)
+            throws InterruptedException, ExecutionException, NoAccountExistsException {
+        AccountDTO account = null;
         switch (roleString) {
             case "model":
                 account = loadModelModel(userId);

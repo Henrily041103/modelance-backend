@@ -2,8 +2,9 @@ package modelance.backend.controller.admin;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import modelance.backend.model.AccountDetailsModel;
+import modelance.backend.firebasedto.account.AccountDTO;
 import modelance.backend.model.AccountModel;
+import modelance.backend.service.account.NoAccountExistsException;
 import modelance.backend.service.admin.AdminService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,23 +27,55 @@ public class AdminUserMngController {
     }
 
     @GetMapping("")
-    public ArrayList<AccountModel> getAllUsers(@RequestParam String param) throws InterruptedException, ExecutionException {
-        return service.getAllUsers();
+    public ArrayList<AccountModel> getAllUsers() {
+        ArrayList<AccountModel> accounts = null;
+
+        try {
+            accounts = service.getAllUsers();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return accounts;
     }
 
-    @GetMapping("/{doc}")
-    public AccountDetailsModel getAccount(@PathVariable String doc) throws InterruptedException, ExecutionException {
-        return service.getAccount(doc);
-    }
-    
-    @PutMapping("/ban/{doc}")
-    public String banAccount(@PathVariable String doc) throws InterruptedException, ExecutionException {
-        return service.updateAccountStatus(doc, "inactive");
+    @GetMapping("{doc}")
+    public AccountDTO getAccount(@PathVariable String doc, @RequestParam String role){
+        AccountDTO account = null;
+
+        try {
+            account = service.getAccountByIdRole(doc, role);
+        } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
+            e.printStackTrace();
+        }
+
+        return account;
     }
 
-    @PutMapping("/unban/{doc}")
-    public String unbanAccount(@PathVariable String doc) throws InterruptedException, ExecutionException {
-        return service.updateAccountStatus(doc, "active");
+    @PutMapping("{doc}/ban")
+    public String banAccount(@PathVariable String doc) {
+        String result = "";
+
+        try {
+            result = service.updateAccountStatus(doc, "inactive");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return "Unsuccessful";
+        }
+        return result;
     }
-    
+
+    @PutMapping("{doc}/unban")
+    public String unbanAccount(@PathVariable String doc) {
+        String result = "";
+
+        try {
+            result = service.updateAccountStatus(doc, "active");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return "Unsuccessful";
+        }
+        return result;
+    }
+
 }

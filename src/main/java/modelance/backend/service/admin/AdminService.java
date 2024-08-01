@@ -19,24 +19,25 @@ import modelance.backend.firebasedto.account.AccountStatusDTO;
 import modelance.backend.firebasedto.wallet.BankTransactionDTO;
 import modelance.backend.firebasedto.work.ContractDTO;
 import modelance.backend.firebasedto.work.ContractDTO.JobDTO;
-import modelance.backend.model.AccountDetailsModel;
 import modelance.backend.model.AccountModel;
 import modelance.backend.model.ContractModel;
 import modelance.backend.model.JobItemModel;
 import modelance.backend.model.JobModel;
 import modelance.backend.model.TransactionModel;
+import modelance.backend.service.account.AccountService;
+import modelance.backend.service.account.NoAccountExistsException;
 
 @Service
 public class AdminService {
     private Firestore firestore;
     private ObjectMapper objectMapper;
+    private AccountService accountService;
 
-    public AdminService(ObjectMapper objectMapper) {
-        this.firestore = FirestoreClient.getFirestore();
+    public AdminService(ObjectMapper objectMapper, AccountService accountService) {
         this.objectMapper = objectMapper;
+        this.accountService = accountService;
+        this.firestore = FirestoreClient.getFirestore();
     }
-
-    // USERS MANAGEMENT
 
     public ArrayList<AccountModel> getAllUsers() throws ExecutionException, InterruptedException {
         ArrayList<AccountModel> accountList = new ArrayList<>();
@@ -63,12 +64,9 @@ public class AdminService {
         return "Banned account: " + doc;
     }
 
-    public AccountDetailsModel getAccount(String doc) throws InterruptedException, ExecutionException {
-        DocumentReference ref = firestore.collection("Account").document(doc);
-        AccountDTO dto = ref.get().get().toObject(AccountDTO.class);
-        AccountDetailsModel details = objectMapper.convertValue(dto, AccountDetailsModel.class);
-        details.setId(doc);
-        return details;
+    public AccountDTO getAccountByIdRole(String id, String roleName)
+            throws InterruptedException, ExecutionException, NoAccountExistsException {
+        return accountService.getAccountByRoleString(id, roleName.toLowerCase());
     }
 
     // JOBS AND CONTRACTS MANAGEMENT
@@ -129,14 +127,21 @@ public class AdminService {
         return transactionList;
     }
 
-    public BankTransactionDTO getBankTransactionById(String id) throws InterruptedException, ExecutionException {
+    public BankTransactionDTO getBankTransactionByOC(String orderCode) throws InterruptedException, ExecutionException {
         BankTransactionDTO bankTransaction = null;
 
-        DocumentSnapshot docRef = firestore.collection("BankTransaction").document(id).get().get();
-        if (docRef.exists()) {
-            bankTransaction = docRef.toObject(BankTransactionDTO.class);
-        }
+        // DocumentSnapshot docRef =
+        // firestore.collection("BankTransaction").document(id).get().get();
+        // if (docRef.exists()) {
+        // bankTransaction = docRef.toObject(BankTransactionDTO.class);
+        // }
 
+        QuerySnapshot querySnapshot = firestore.collection("BankTransaction")
+                .whereEqualTo("orderCode", orderCode).get().get();
+        if (!querySnapshot.isEmpty()) {
+            List<QueryDocumentSnapshot> result = querySnapshot.getDocuments();
+            bankTransaction = result.get(0).toObject(BankTransactionDTO.class);
+        }
         return bankTransaction;
     }
 
