@@ -1,12 +1,14 @@
 package modelance.backend.firebasedto.wallet;
 
+import java.util.Date;
+
 public class BankTransactionDTO {
     private int orderCode; // Mã đơn hàng từ cửa hàng
     private int amount; // Số tiền thanh toán
     private String description; // Mô tả thanh toán
     private String accountNumber; // Số tài khoản của cửa hàng
     private String reference; // Mã tham chiếu giao dịch, dùng để tra soát với ngân hàng
-    private String transactionDateTime; // Ngày giờ giao dịch thực hiện thành công
+    private Date transactionDateTime; // Ngày giờ giao dịch thực hiện thành công
     private String currency; // Đơn vị tiền tệ
     private String paymentLinkId; // Mã link thanh toán
     private String code; // Mã lỗi của giao dịch
@@ -59,11 +61,11 @@ public class BankTransactionDTO {
         this.reference = reference;
     }
 
-    public String getTransactionDateTime() {
+    public Date getTransactionDateTime() {
         return transactionDateTime;
     }
 
-    public void setTransactionDateTime(String transactionDateTime) {
+    public void setTransactionDateTime(Date transactionDateTime) {
         this.transactionDateTime = transactionDateTime;
     }
 
