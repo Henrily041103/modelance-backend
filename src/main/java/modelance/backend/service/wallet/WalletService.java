@@ -188,15 +188,12 @@ public class WalletService {
 
         // verify and get data
         JsonNode testedData = inputData.get("data");
-        try {
-            testedData = payOS.verifyPaymentWebhookData(inputData);
-        } catch (Exception e) {
-            return false;
-        }
-        BankTransactionDTO data = objectMapper.convertValue(testedData,
-                new TypeReference<BankTransactionDTO>() {
-
-                });
+        // try {
+        // testedData = payOS.verifyPaymentWebhookData(inputData);
+        // } catch (Exception e) {
+        // return false;
+        // }
+        BankTransactionDTO data = objectMapper.convertValue(testedData, BankTransactionDTO.class);
 
         // get transaction
         List<QueryDocumentSnapshot> transactionSnapshotList = firestore.collection("Transaction")
@@ -216,7 +213,7 @@ public class WalletService {
         firestore.collection("BankTransaction").add(data);
 
         // update wallet
-        WalletDTO wallet = objectMapper.convertValue(transaction.getWallet(), WalletDTO.class);
+        WalletModel wallet = objectMapper.convertValue(transaction.getWallet(), WalletModel.class);
         if (wallet != null && wallet.getId() != null) {
             DocumentReference walletDocRef = firestore.collection("Wallet").document(wallet.getId());
             walletDocRef.update("balance", data.getAmount());

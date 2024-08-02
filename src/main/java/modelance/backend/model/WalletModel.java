@@ -1,5 +1,7 @@
 package modelance.backend.model;
 
+import com.google.firebase.database.Exclude;
+
 class WalletAccountModel {
     private String id;
     private String role;
@@ -33,9 +35,10 @@ class WalletAccountModel {
 public class WalletModel {
     private WalletAccountModel account;
     private int balance;
+    private String id;
 
-    public WalletModel(String id, String role, int balance) {
-        WalletAccountModel account = new WalletAccountModel(id, role);
+    public WalletModel(String userId, String role, int balance) {
+        WalletAccountModel account = new WalletAccountModel(userId, role);
         this.account = account;
         this.balance = balance;
     }
@@ -63,4 +66,12 @@ public class WalletModel {
         this.account = new WalletAccountModel(id, role);
     }
 
+    @Exclude
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }
