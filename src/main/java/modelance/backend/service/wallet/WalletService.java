@@ -216,7 +216,7 @@ public class WalletService {
         WalletModel wallet = objectMapper.convertValue(transaction.getWallet(), WalletModel.class);
         if (wallet != null && wallet.getId() != null) {
             DocumentReference walletDocRef = firestore.collection("Wallet").document(wallet.getId());
-            walletDocRef.update("balance", data.getAmount());
+            walletDocRef.update("balance", wallet.getBalance() + data.getAmount());
         }
 
         return true;
@@ -319,6 +319,7 @@ public class WalletService {
             throw new NoPackFoundException();
         }
         PremiumPackDTO premiumPack = snapshots.get(0).toObject(PremiumPackDTO.class);
+        premiumPack.setId(snapshots.get(0).getId());
 
         // get wallet
         WalletDTO wallet = getOwnWallet(authentication);
