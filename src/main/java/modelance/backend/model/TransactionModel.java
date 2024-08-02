@@ -2,6 +2,8 @@ package modelance.backend.model;
 
 import java.util.Date;
 
+import com.google.firebase.database.Exclude;
+
 class TransactionAccountModel {
     private String id;
     private String role;
@@ -66,6 +68,7 @@ public class TransactionModel {
     private TransactionWalletModel wallet;
     private String status;
     private Date datetime;
+    private String id;
     private int orderCode;
     private int amount;
     private boolean isBank;
@@ -121,5 +124,14 @@ public class TransactionModel {
 
     public void setOrderCode(int orderName) {
         this.orderCode = orderName;
+    }
+
+    @Exclude
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

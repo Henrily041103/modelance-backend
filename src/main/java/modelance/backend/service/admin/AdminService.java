@@ -109,6 +109,7 @@ public class AdminService {
         for (QueryDocumentSnapshot snap : documents) {
             TransactionModel transaction = snap.toObject(TransactionModel.class);
             if (transaction != null) {
+                transaction.setId(snap.getId());
                 transactionList.add(transaction);
             }
         }
