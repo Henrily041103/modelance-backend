@@ -16,10 +16,11 @@ import com.google.firebase.cloud.FirestoreClient;
 
 import modelance.backend.firebasedto.account.AccountDTO;
 import modelance.backend.firebasedto.account.AccountStatusDTO;
+import modelance.backend.firebasedto.premium.PremiumPackDTO;
+import modelance.backend.firebasedto.premium.PremiumPackRenewalDTO;
 import modelance.backend.firebasedto.wallet.BankTransactionDTO;
 import modelance.backend.firebasedto.work.ContractDTO;
 import modelance.backend.firebasedto.work.ContractDTO.JobDTO;
-import modelance.backend.model.AccountModel;
 import modelance.backend.model.ContractModel;
 import modelance.backend.model.JobItemModel;
 import modelance.backend.model.JobModel;
@@ -39,16 +40,15 @@ public class AdminService {
         this.firestore = FirestoreClient.getFirestore();
     }
 
-    public ArrayList<AccountModel> getAllUsers() throws ExecutionException, InterruptedException {
-        ArrayList<AccountModel> accountList = new ArrayList<>();
+    public ArrayList<AccountDTO> getAllUsers() throws ExecutionException, InterruptedException {
+        ArrayList<AccountDTO> accountList = new ArrayList<>();
         ApiFuture<QuerySnapshot> future = firestore.collection("Account").get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         for (QueryDocumentSnapshot snap : documents) {
             AccountDTO accountDTO = snap.toObject(AccountDTO.class);
-            AccountModel account = objectMapper.convertValue(accountDTO, AccountModel.class);
-            account.setId(snap.getId());
-            if (account != null) {
-                accountList.add(account);
+            accountDTO.setId(snap.getId());
+            if (accountDTO != null) {
+                accountList.add(accountDTO);
             }
         }
         return accountList;
@@ -131,12 +131,6 @@ public class AdminService {
     public BankTransactionDTO getBankTransactionByOC(String orderCode) throws InterruptedException, ExecutionException {
         BankTransactionDTO bankTransaction = null;
 
-        // DocumentSnapshot docRef =
-        // firestore.collection("BankTransaction").document(id).get().get();
-        // if (docRef.exists()) {
-        // bankTransaction = docRef.toObject(BankTransactionDTO.class);
-        // }
-
         QuerySnapshot querySnapshot = firestore.collection("BankTransaction")
                 .whereEqualTo("orderCode", orderCode).get().get();
         if (!querySnapshot.isEmpty()) {
@@ -155,5 +149,34 @@ public class AdminService {
         }
 
         return transaction;
+    }
+
+    // PREMIUM PACK
+    public ArrayList<PremiumPackDTO> getPacks() throws InterruptedException, ExecutionException {
+        ArrayList<PremiumPackDTO> packs = null;
+
+        QuerySnapshot querySnapshot = firestore.collection("PremiumPack").get().get();
+        if (!querySnapshot.isEmpty()) {
+            List<QueryDocumentSnapshot> queryResult = querySnapshot.getDocuments();
+            packs = new ArrayList<>();
+            for (QueryDocumentSnapshot result : queryResult) {
+                packs.add(result.toObject(PremiumPackDTO.class));
+            }
+        }
+        return packs;
+    }
+
+    public ArrayList<PremiumPackRenewalDTO> getPackRenewals() throws InterruptedException, ExecutionException {
+        ArrayList<PremiumPackRenewalDTO> packs = null;
+
+        QuerySnapshot querySnapshot = firestore.collection("PremiumPackRenewal").get().get();
+        if (!querySnapshot.isEmpty()) {
+            List<QueryDocumentSnapshot> queryResult = querySnapshot.getDocuments();
+            packs = new ArrayList<>();
+            for (QueryDocumentSnapshot result : queryResult) {
+                packs.add(result.toObject(PremiumPackRenewalDTO.class));
+            }
+        }
+        return packs;
     }
 }

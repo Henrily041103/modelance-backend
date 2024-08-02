@@ -3,7 +3,6 @@ package modelance.backend.controller.admin;
 import org.springframework.web.bind.annotation.RestController;
 
 import modelance.backend.firebasedto.account.AccountDTO;
-import modelance.backend.model.AccountModel;
 import modelance.backend.service.account.NoAccountExistsException;
 import modelance.backend.service.admin.AdminService;
 
@@ -27,8 +26,8 @@ public class AdminUserMngController {
     }
 
     @GetMapping("")
-    public ArrayList<AccountModel> getAllUsers() {
-        ArrayList<AccountModel> accounts = null;
+    public ArrayList<AccountDTO> getAllUsers() {
+        ArrayList<AccountDTO> accounts = null;
 
         try {
             accounts = service.getAllUsers();
@@ -39,12 +38,12 @@ public class AdminUserMngController {
         return accounts;
     }
 
-    @GetMapping("{doc}")
-    public AccountDTO getAccount(@PathVariable String doc, @RequestParam String role){
+    @GetMapping("{id}")
+    public AccountDTO getAccount(@PathVariable String id, @RequestParam String role){
         AccountDTO account = null;
 
         try {
-            account = service.getAccountByIdRole(doc, role);
+            account = service.getAccountByIdRole(id, role);
         } catch (InterruptedException | ExecutionException | NoAccountExistsException e) {
             e.printStackTrace();
         }
@@ -52,12 +51,12 @@ public class AdminUserMngController {
         return account;
     }
 
-    @PutMapping("{doc}/ban")
-    public String banAccount(@PathVariable String doc) {
+    @PutMapping("{id}/ban")
+    public String banAccount(@PathVariable String id) {
         String result = "";
 
         try {
-            result = service.updateAccountStatus(doc, "inactive");
+            result = service.updateAccountStatus(id, "inactive");
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
             return "Unsuccessful";
@@ -65,12 +64,12 @@ public class AdminUserMngController {
         return result;
     }
 
-    @PutMapping("{doc}/unban")
-    public String unbanAccount(@PathVariable String doc) {
+    @PutMapping("{id}/unban")
+    public String unbanAccount(@PathVariable String id) {
         String result = "";
 
         try {
-            result = service.updateAccountStatus(doc, "active");
+            result = service.updateAccountStatus(id, "active");
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
             return "Unsuccessful";
