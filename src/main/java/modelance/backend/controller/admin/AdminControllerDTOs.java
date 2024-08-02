@@ -2,6 +2,8 @@ package modelance.backend.controller.admin;
 
 import java.util.ArrayList;
 
+import modelance.backend.firebasedto.premium.PremiumPackDTO;
+import modelance.backend.firebasedto.premium.PremiumPackRenewalDTO;
 import modelance.backend.firebasedto.wallet.BankTransactionDTO;
 import modelance.backend.model.TransactionModel;
 
@@ -39,11 +41,11 @@ class GetTransactionByIdResponse {
     }
 
     public TransactionModel getTransaction() {
-        return transaction; 
+        return transaction;
     }
 
     public void setTransaction(TransactionModel transaction) {
-        this.transaction = transaction; 
+        this.transaction = transaction;
     }
 }
 
@@ -87,4 +89,48 @@ class GetBankTransactionByOCResponse {
     public void setTransaction(BankTransactionDTO transaction) {
         this.transaction = transaction;
     }
+}
+
+class GetAllPremiumPacksResponse {
+    private ArrayList<PremiumPackDTO> packs;
+    private String message;
+
+    public ArrayList<PremiumPackDTO> getPacks() {
+        return packs;
+    }
+
+    public void setPacks(ArrayList<PremiumPackDTO> packs) {
+        this.packs = packs;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+}
+
+class GetAllPremiumPackRenewalsResponse {
+    private ArrayList<PremiumPackRenewalDTO> packs;
+    private String message;
+
+    public ArrayList<PremiumPackRenewalDTO> getPacks() {
+        return packs;
+    }
+
+    public void setPacks(ArrayList<PremiumPackRenewalDTO> packs) {
+        this.packs = packs;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
 }
