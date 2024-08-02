@@ -42,7 +42,7 @@ public class AdminService {
 
     public ArrayList<AccountDTO> getAllUsers() throws ExecutionException, InterruptedException {
         ArrayList<AccountDTO> accountList = new ArrayList<>();
-        ApiFuture<QuerySnapshot> future = firestore.collection("Account").get();
+        ApiFuture<QuerySnapshot> future = firestore.collection("Account").whereNotEqualTo("role.id", "1").get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         for (QueryDocumentSnapshot snap : documents) {
             AccountDTO accountDTO = snap.toObject(AccountDTO.class);
