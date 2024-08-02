@@ -4,11 +4,13 @@ import java.util.Date;
 
 import com.google.cloud.firestore.annotation.Exclude;
 
+import modelance.backend.firebasedto.account.AccountRoleDTO;
+
 class PackAccountDTO {
     private String id;
-    private String role;
+    private AccountRoleDTO role;
 
-    public PackAccountDTO(String id, String role) {
+    public PackAccountDTO(String id, AccountRoleDTO role) {
         this.id = id;
         this.role = role;
     }
@@ -24,11 +26,11 @@ class PackAccountDTO {
         this.id = id;
     }
 
-    public String getRole() {
+    public AccountRoleDTO getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(AccountRoleDTO role) {
         this.role = role;
     }
 
@@ -60,7 +62,7 @@ public class PremiumPackRenewalDTO {
         this.account = account;
     }
 
-    public void setAccount(String id, String role) {
+    public void setAccount(String id, AccountRoleDTO role) {
         this.account = new PackAccountDTO(id, role);
     }
 

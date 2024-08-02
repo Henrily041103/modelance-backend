@@ -343,7 +343,7 @@ public class WalletService {
 
         // pack purchase
         purchase = new PremiumPackRenewalDTO();
-        purchase.setAccount(userId, roleName);
+        purchase.setAccount(userId, wallet.getAccount().getRole());
         purchase.setPackId(premiumPack.getId());
         purchase.setRenewalDate(currentDate);
         DocumentReference purchaseRef = firestore.collection("PremiumPackRenewal").document(transactionRef.getId());
