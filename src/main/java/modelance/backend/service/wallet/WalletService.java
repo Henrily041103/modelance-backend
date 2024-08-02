@@ -330,14 +330,6 @@ public class WalletService {
             throw new NotEnoughMoneyException();
         }
 
-        // pack purchase
-        purchase = new PremiumPackRenewalDTO();
-        purchase.setAccount(userId, roleName);
-        purchase.setPackId(premiumPack.getId());
-        purchase.setRenewalDate(currentDate);
-        DocumentReference docRef = firestore.collection("PremiumPackRenewal").document();
-        docRef.set(purchase);
-
         // create transaction
         TransactionModel transaction = new TransactionModel();
         transaction.setAmount(-premiumPack.getPackPrice());
@@ -346,7 +338,16 @@ public class WalletService {
         transaction.setOrderCode(orderCode);
         transaction.setStatus("approved");
         transaction.setWallet(wallet.getId(), userId, wallet.getAccount().getRole().getRoleName());
-        firestore.collection("Transaction").add(transaction);
+        DocumentReference transactionRef = firestore.collection("Transaction").document();
+        transactionRef.set(transaction);
+
+        // pack purchase
+        purchase = new PremiumPackRenewalDTO();
+        purchase.setAccount(userId, roleName);
+        purchase.setPackId(premiumPack.getId());
+        purchase.setRenewalDate(currentDate);
+        DocumentReference purchaseRef = firestore.collection("PremiumPackRenewal").document(transactionRef.getId());
+        purchaseRef.set(purchase);
 
         // update wallet
         firestore.collection("Wallet").document(wallet.getId()).update("balance",
