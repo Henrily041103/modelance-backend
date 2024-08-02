@@ -161,7 +161,9 @@ public class AdminService {
             List<QueryDocumentSnapshot> queryResult = querySnapshot.getDocuments();
             packs = new ArrayList<>();
             for (QueryDocumentSnapshot result : queryResult) {
-                packs.add(result.toObject(PremiumPackDTO.class));
+                PremiumPackDTO pack = result.toObject(PremiumPackDTO.class);
+                pack.setId(result.getId());
+                packs.add(pack);
             }
         }
         return packs;
@@ -175,7 +177,9 @@ public class AdminService {
             List<QueryDocumentSnapshot> queryResult = querySnapshot.getDocuments();
             packs = new ArrayList<>();
             for (QueryDocumentSnapshot result : queryResult) {
-                packs.add(result.toObject(PremiumPackRenewalDTO.class));
+                PremiumPackRenewalDTO pack = result.toObject(PremiumPackRenewalDTO.class);
+                pack.setId(result.getId());
+                packs.add(pack);
             }
         }
         return packs;

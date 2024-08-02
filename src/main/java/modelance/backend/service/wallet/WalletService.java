@@ -234,7 +234,7 @@ public class WalletService {
         int orderCode = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
         String baseUrl = "https://modelancefe.vercel.app";
         String topUpUrl = baseUrl + "/wallet" + "/topup" + "/";
-        String confirmUrl = topUpUrl + "success";
+        String confirmUrl = baseUrl + "/profile";
         String cancelUrl = topUpUrl + "cancelled";
 
         PaymentData paymentData = new PaymentData(orderCode, amount, description, new ArrayList<ItemData>(), cancelUrl,
