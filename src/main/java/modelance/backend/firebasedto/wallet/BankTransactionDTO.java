@@ -2,12 +2,15 @@ package modelance.backend.firebasedto.wallet;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class BankTransactionDTO {
     private int orderCode; // Mã đơn hàng từ cửa hàng
     private int amount; // Số tiền thanh toán
     private String description; // Mô tả thanh toán
     private String accountNumber; // Số tài khoản của cửa hàng
     private String reference; // Mã tham chiếu giao dịch, dùng để tra soát với ngân hàng
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date transactionDateTime; // Ngày giờ giao dịch thực hiện thành công
     private String currency; // Đơn vị tiền tệ
     private String paymentLinkId; // Mã link thanh toán
@@ -61,10 +64,12 @@ public class BankTransactionDTO {
         this.reference = reference;
     }
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getTransactionDateTime() {
         return transactionDateTime;
     }
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public void setTransactionDateTime(Date transactionDateTime) {
         this.transactionDateTime = transactionDateTime;
     }
