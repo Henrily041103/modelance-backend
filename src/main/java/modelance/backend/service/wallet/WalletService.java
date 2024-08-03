@@ -222,14 +222,13 @@ public class WalletService {
         return true;
     }
 
-    public CheckoutResponseDTO createBankTransaction(int amount, String description, Authentication authentication)
+    public CheckoutResponseDTO createBankTransaction(int amount, String description, String baseUrl, Authentication authentication)
             throws InterruptedException, ExecutionException, IOException {
         CheckoutResponseDTO checkoutResponseDTO = null;
         String userId = authentication.getName();
 
         // create new payment data
         int orderCode = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
-        String baseUrl = "https://modelancefe.vercel.app";
         String topUpUrl = baseUrl + "/wallet" + "/topup" + "/";
         String confirmUrl = baseUrl + "/profile";
         String cancelUrl = topUpUrl + "cancelled";

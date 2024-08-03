@@ -67,7 +67,8 @@ public class WalletController {
         CheckoutResponseDTO response = null;
 
         try {
-            response = walletService.createBankTransaction(request.getAmount(), request.getDescription(), authentication);
+            response = walletService.createBankTransaction(request.getAmount(), request.getDescription(),
+                    request.getBaseUrl(), authentication);
         } catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
         }
@@ -100,8 +101,8 @@ public class WalletController {
             response.setMessage("purchase failed");
             e.printStackTrace();
         }
-        
+
         return response;
     }
-    
+
 }

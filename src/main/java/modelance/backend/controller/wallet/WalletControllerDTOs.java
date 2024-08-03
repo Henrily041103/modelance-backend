@@ -1,10 +1,15 @@
 package modelance.backend.controller.wallet;
 
-import modelance.backend.firebasedto.premium.PremiumPackRenewalDTO; 
+import modelance.backend.firebasedto.premium.PremiumPackRenewalDTO;
 
 class CreateLinkRequest {
     private int amount;
     private String description;
+    private String baseUrl;
+
+    public CreateLinkRequest() {
+        baseUrl = "https://modelancefe.vercel.app";
+    }
 
     public int getAmount() {
         return amount;
@@ -20,6 +25,14 @@ class CreateLinkRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }
 
