@@ -78,6 +78,14 @@ public class ModelDTO extends AccountDTO {
     private String hairColor;
     private String eyeColor;
 
+    
+    public ModelDTO() {
+        portfolio = new ArrayList<>();
+        compCard = new ArrayList<>();
+        socialMedia = new ArrayList<>();
+        category = new ArrayList<>();
+    }
+
     public String getHairColor() {
         return hairColor;
     }
