@@ -32,7 +32,7 @@ class SocialMediaModelDTO {
 
 class CompCardModelDTO {
     String url;
-    String id;
+    int id;
 
     public String getUrl() {
         return url;
@@ -42,18 +42,18 @@ class CompCardModelDTO {
         this.url = url;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
     public CompCardModelDTO() {
     }
 
-    public CompCardModelDTO(String url, String id) {
+    public CompCardModelDTO(String url, int id) {
         this.url = url;
         this.id = id;
     }
@@ -177,7 +177,7 @@ public class ModelDTO extends AccountDTO {
     public void setCompCardList(List<String> compCard) {
         List<CompCardModelDTO> compCardList = new ArrayList<>();
         for (int i = 0; i < compCard.size(); i++) {
-            compCardList.add(new CompCardModelDTO(compCard.get(i), Integer.toString(i + 1 + this.compCard.size())));
+            compCardList.add(new CompCardModelDTO(compCard.get(i), i + 1 + this.compCard.size()));
         }
         setCompCard(compCardList);
     }
