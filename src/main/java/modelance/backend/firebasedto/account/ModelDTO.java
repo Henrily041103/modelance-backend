@@ -168,15 +168,7 @@ public class ModelDTO extends AccountDTO {
 
     public List<CompCardModelDTO> getCompCard() {
         return compCard;
-    }
-
-    public void setCompCard(List<String> compCard) {
-        List<CompCardModelDTO> compCardList = new ArrayList<>();
-        for (int i = 0; i < compCard.size(); i++) {
-            compCardList.add(new CompCardModelDTO(compCard.get(i), i + 1 + this.compCard.size()));
-        }
-        this.compCard = compCardList;
-    }
+    }    
 
     public List<SocialMediaModelDTO> getSocialMedia() {
         return socialMedia;
@@ -218,6 +210,10 @@ public class ModelDTO extends AccountDTO {
 
     public void setCategory(List<String> category) {
         this.category = category;
+    }
+
+    public void setCompCard(List<CompCardModelDTO> compCard) {
+        this.compCard = compCard;
     }
 
 }
