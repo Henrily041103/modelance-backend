@@ -75,7 +75,7 @@ public class ModelProfileService {
         DocumentReference compCardRef = firestore.collection("Model").document(userId);
         ModelDTO model = compCardRef.get().get().toObject(ModelDTO.class);
         if (model != null) {
-            model.setCompCardList(urlList);
+            model.setCompCard(urlList);
             compCardRef.update("compCard", model.getCompCard());
         }
 

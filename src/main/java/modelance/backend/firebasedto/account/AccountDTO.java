@@ -137,12 +137,44 @@ public class AccountDTO {
         this.gender = gender;
     }
 
+    public void setGender(String genderName) {
+        String genderId = "1";
+        switch (genderName) {
+            case "female":
+                genderId = "2";
+                break;
+            case "other":
+                genderId = "3";
+                break;
+        }
+        this.gender = new GenderDTO(genderId, genderName);
+    }
+
     public void setRole(AccountRoleDTO role) {
         this.role = role;
     }
 
+    public void setRole(String roleName) {
+        String roleId = "1";
+        switch (roleName) {
+            case "model":
+                roleId = "2";
+                break;
+            case "employer":
+                roleId = "3";
+                break;
+        }
+        this.role = new AccountRoleDTO(roleId, roleName);
+    }
+
     public void setStatus(AccountStatusDTO status) {
         this.status = status;
+    }
+
+    public void setStatus(String statusName) {
+        String statusId = "1";
+        if (statusName.equals("inactive")) statusId = "2";
+        this.status = new AccountStatusDTO(statusId, statusName);
     }
 
     public void setAvatar(String avatar) {
