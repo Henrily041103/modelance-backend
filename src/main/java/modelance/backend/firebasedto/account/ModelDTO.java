@@ -78,7 +78,6 @@ public class ModelDTO extends AccountDTO {
     private String hairColor;
     private String eyeColor;
 
-    
     public ModelDTO() {
         portfolio = new ArrayList<>();
         compCard = new ArrayList<>();
@@ -168,7 +167,7 @@ public class ModelDTO extends AccountDTO {
 
     public List<CompCardModelDTO> getCompCard() {
         return compCard;
-    }    
+    }
 
     public List<SocialMediaModelDTO> getSocialMedia() {
         return socialMedia;
@@ -216,4 +215,11 @@ public class ModelDTO extends AccountDTO {
         this.compCard = compCard;
     }
 
+    public void setCompCardList(List<String> urlList) {
+        if (this.compCard.size() <= 0 && urlList.size() > 0)
+            this.compCard = new ArrayList<>();
+        for (int i = 0; i < urlList.size(); i++) {
+            this.compCard.add(new CompCardModelDTO(urlList.get(i), i + 1));
+        }
+    }
 }
